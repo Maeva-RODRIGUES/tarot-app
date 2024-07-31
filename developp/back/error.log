@@ -1,0 +1,24 @@
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/cards - POST - ::1","timestamp":"2024-06-26T18:04:25.090Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/cards/1 - PUT - ::1","timestamp":"2024-06-26T18:04:25.281Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/cards/1 - DELETE - ::1","timestamp":"2024-06-26T18:04:25.444Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/drawings - POST - ::1","timestamp":"2024-06-26T18:04:25.940Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/drawings/1 - PUT - ::1","timestamp":"2024-06-26T18:04:26.071Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/drawings/1 - DELETE - ::1","timestamp":"2024-06-26T18:04:26.179Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/reviews - POST - ::1","timestamp":"2024-06-26T18:04:26.658Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/reviews/1 - PUT - ::1","timestamp":"2024-06-26T18:04:26.791Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/reviews/1 - DELETE - ::1","timestamp":"2024-06-26T18:04:26.951Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/roles - POST - ::1","timestamp":"2024-06-26T18:04:27.283Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/roles/1 - PUT - ::1","timestamp":"2024-06-26T18:04:27.381Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/roles/1 - DELETE - ::1","timestamp":"2024-06-26T18:04:27.528Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/themes - POST - ::1","timestamp":"2024-06-26T18:04:27.858Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/themes/1 - PUT - ::1","timestamp":"2024-06-26T18:04:27.978Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/themes/1 - DELETE - ::1","timestamp":"2024-06-26T18:04:28.132Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/users/1%0A - POST - ::1","timestamp":"2024-06-26T18:04:28.577Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/users/1%0A - PUT - ::1","timestamp":"2024-06-26T18:04:28.725Z"}
+{"level":"error","message":"403 - invalid csrf token - /api/tarot/users/1%0A - DELETE - ::1","timestamp":"2024-06-26T18:04:28.809Z"}
+{"level":"error","message":"400 - Unexpected end of JSON input - /api/tarot/drawings/random/Amour - POST - ::1","timestamp":"2024-07-15T20:03:57.709Z"}
+
+{"level":"error","message":"400 - Unexpected non-whitespace character after JSON at position 38 (line 4 column 6) - /api/tarot/drawings/1 - PUT - ::1","timestamp":"2024-07-16T12:50:23.913Z"}
+{"level":"error","message":"400 - Unexpected non-whitespace character after JSON at position 766 (line 7 column 6) - /api/tarot/drawings/1 - PUT - ::1","timestamp":"2024-07-16T12:52:26.667Z"}
+{"level":"error","message":"500 - ENOENT: no such file or directory, open 'C:\\Users\\pc\\Desktop\\DEV\\B_PROJETS SITES\\2_PROJET LA ROUE DU DESTIN\\BACK\\CODE\\tarot-api\\uploads\\1721149259487-1_lemagicien.PNG' - /api/tarot/api/upload - POST - ::1","timestamp":"2024-07-16T17:00:59.496Z"}
+{"level":"error","message":"500 - ENOENT: no such file or directory, open 'C:\\Users\\pc\\Desktop\\DEV\\B_PROJETS SITES\\2_PROJET LA ROUE DU DESTIN\\BACK\\CODE\\tarot-api\\uploads\\1721149718540-1_lemagicien.PNG' - /api/tarot/upload - POST - ::1","timestamp":"2024-07-16T17:08:38.544Z"}

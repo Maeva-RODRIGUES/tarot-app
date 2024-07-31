@@ -1,0 +1,21 @@
+{
+	"id": "8dc86f8c-fe2d-4030-b4bd-09fda988c417",
+	"name": "DevEnvironment",
+	"values": [
+		{
+			"key": "JWT_TOKEN",
+			"value": "8f93123ad00748f50eb8f47e0b78abaf467873f7fbb8fb0e5b963e75bd676595",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "userID",
+			"value": "1\n",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-06-26T17:54:21.279Z",
+	"_postman_exported_using": "Postman/11.2.13"
+}

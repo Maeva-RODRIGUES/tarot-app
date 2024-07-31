@@ -1,0 +1,53 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+
+@font-face {
+  font-family: 'Urbanist';
+  src: url('../assets/font/Urbanist/static/Urbanist-Bold.ttf') format('truetype');
+
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cinzel_Decorative';
+  src: url('../assets/font/Cinzel_Decorative/CinzelDecorative-Regular.ttf') format('truetype');
+}
+
+h1 {
+  font-family: 'Cinzel_Decorative';
+  color: #191970; /* Bleu nuit */
+  font-size: 28px;
+  text-align: center;
+
+}
+
+h2 {
+  font-family: 'Cinzel_Decorative';
+  color: #191970; /* Bleu nuit */
+  font-size: 25px;
+
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: black; 
+}
+
+h3 {
+  font-family: 'Cinzel_Decorative';
+  color: #191970; /* Bleu nuit */
+  font-size: 25px;
+} 
+
+h4 {
+font-family: 'Urbanist';
+font-size: 20;
+}
+
+
