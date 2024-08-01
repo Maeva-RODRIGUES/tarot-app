@@ -1,46 +1,27 @@
 // src/api/reviewsApi.js
 
 import api from "./configAxios";
+import { REVIEWS_ENDPOINT } from "./apiEndpoints";
 
-// Récupérer tous les avis
+// Récupérer tous les commentaires
 export const fetchReviews = async () => {
-  try {
-    const response = await api.get("/reviews");
-    return response.data;
-  } catch (error) {
-    console.error("Erreur lors de la récupération des avis :", error);
-    throw error;
-  }
+  const response = await api.get(REVIEWS_ENDPOINT);
+  return response.data;
 };
 
-// Créer un nouvel avis
+// Créer un nouveau commentaire
 export const createReview = async (reviewData) => {
-  try {
-    const response = await api.post("/reviews", reviewData);
-    return response.data;
-  } catch (error) {
-    console.error("Erreur lors de la création de l'avis :", error);
-    throw error;
-  }
+  const response = await api.post(REVIEWS_ENDPOINT, reviewData);
+  return response.data;
 };
 
-// Mettre à jour un avis existant
+// Mettre à jour un commentaire existant
 export const updateReview = async (id, reviewData) => {
-  try {
-    const response = await api.put(`/reviews/${id}`, reviewData);
-    return response.data;
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour de l'avis :", error);
-    throw error;
-  }
+  const response = await api.put(`${REVIEWS_ENDPOINT}/${id}`, reviewData);
+  return response.data;
 };
 
-// Supprimer un avis
+// Supprimer un commentaire
 export const deleteReview = async (id) => {
-  try {
-    await api.delete(`/reviews/${id}`);
-  } catch (error) {
-    console.error("Erreur lors de la suppression de l'avis :", error);
-    throw error;
-  }
+  await api.delete(`${REVIEWS_ENDPOINT}/${id}`);
 };

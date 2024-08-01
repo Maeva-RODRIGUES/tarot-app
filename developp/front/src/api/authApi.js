@@ -1,24 +1,16 @@
 // src/api/authApi.js
 
 import api from "./configAxios";
+import { AUTH_ENDPOINT } from "./apiEndpoints";
 
-// Authentifier un utilisateur
-export const authenticateUser = async (credentials) => {
-  try {
-    const response = await api.post("/auth/login", credentials);
-    return response.data;
-  } catch (error) {
-    console.error("Erreur lors de l'authentification :", error);
-    throw error;
-  }
+// Connexion utilisateur
+export const login = async (credentials) => {
+  const response = await api.post(AUTH_ENDPOINT.LOGIN, credentials);
+  return response.data;
 };
 
-// Déconnexion de l'utilisateur
-export const logoutUser = async () => {
-  try {
-    await api.post("/auth/logout");
-  } catch (error) {
-    console.error("Erreur lors de la déconnexion :", error);
-    throw error;
-  }
+// Déconnexion utilisateur
+export const logout = async () => {
+  const response = await api.post("/auth/logout"); // Si logout a une URL différente
+  return response.data;
 };
