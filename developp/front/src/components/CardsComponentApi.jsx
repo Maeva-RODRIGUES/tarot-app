@@ -1,6 +1,4 @@
-// src/components/CardsComponent.jsx : Ce composant affichera les cartes et vous permettra d'effectuer des opérations CRUD.
-
-// src/components/CardsComponent.jsx
+// src/components/CardsComponentApi.jsx : Ce composant affichera les cartes et permettra d'effectuer des opérations CRUD.
 
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,7 +7,7 @@ import {
   createCard,
   updateCard,
   deleteCard,
-} from "../api/tarotApi";
+} from "../api/cardsApi";
 
 function CardsComponent() {
   const queryClient = useQueryClient();
@@ -51,8 +49,7 @@ function CardsComponent() {
       <ul>
         {cards.map((card) => (
           <li key={card.id}>
-            {card.name}{" "}
-            {/* Remplacez par les propriétés réelles des cartes */}
+            {card.name} {/* Remplacer par les propriétés réelles des cartes */}
             <button
               onClick={() =>
                 mutationUpdate.mutate({

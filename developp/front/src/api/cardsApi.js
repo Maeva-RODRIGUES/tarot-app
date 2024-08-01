@@ -1,4 +1,4 @@
-// src/api/tarotApi.js : CRUD pour les cartes - Appels d'API avec axios
+// src/api/cardsApi.js : CRUD pour les cartes - Appels d'API avec axios
 
 import api from "./axios";
 
