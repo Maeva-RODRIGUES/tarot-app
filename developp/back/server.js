@@ -26,8 +26,13 @@ app.use(helmet()); // Utilisation de Helmet pour configurer divers en-têtes HTT
 app.use(express.json()); // Middleware pour parser les données JSON des requêtes
 app.use(morgan('dev')); // Logging détaillé des requêtes HTTP dans la console (environnement de développement)
 app.use(cookieParser()); // Middleware pour parser les cookies des requêtes
-//Utilisation de CORS avec les options par défaut
-app.use(cors());
+
+// Configuration des options CORS
+const corsOptions = {
+    origin: 'http://localhost:5173', // Origine autorisée
+    credentials: true, // Permet d'envoyer des cookies
+  };
+  app.use(cors(corsOptions));
 
 // Limitation du taux de requêtes
 const limiter = rateLimit({

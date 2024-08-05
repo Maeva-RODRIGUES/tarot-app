@@ -20,7 +20,8 @@ export const USERS_ENDPOINT = "/users";
 
 // Endpoints pour l'authentification
 export const AUTH_ENDPOINT = {
-  LOGIN: "/login",
+  LOGIN: "/auth/login",
+  SIGNUP: "/users",
 };
 
 // Endpoints pour les téléchargements

@@ -2,15 +2,23 @@
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
-const { User } = require('../models/indexModels'); // chemin du fichier indexModels ou tous les models sont centralisés
+const { User, Role } = require('../models/indexModels'); 
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
+  console.log('Requête de connexion reçue avec:', req.body);
+
   try {
-    // Trouver l'utilisateur par son email
-    const user = await User.findOne({ where: { email } });
+    // Trouver l'utilisateur par son email et inclure le rôle
+    const user = await User.findOne({ 
+      where: { email },
+      include: {
+        model: Role,
+        as: 'role',
+        attributes: ['role_name'] // Assurez-vous que le modèle Role a un champ 'role_name'
+      }
+    });
 
     if (!user) {
       return res.status(401).json({ message: 'Identifiants incorrects' });
@@ -24,8 +32,9 @@ const login = async (req, res) => {
 
     if (isMatch) {
       // Générer le token JWT
-      const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-      res.json({ token });
+      const token = jwt.sign({ id: user.id, role: user.role.role_name }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      // Ajouter userId et role à la réponse
+      res.json({ token, userId: user.id, role: user.role.role_name });
     } else {
       res.status(401).json({ message: 'Identifiants incorrects' });
     }
@@ -39,4 +48,3 @@ const login = async (req, res) => {
 module.exports = {
   login,
 };
-

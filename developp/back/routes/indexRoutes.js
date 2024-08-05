@@ -60,14 +60,17 @@ router.use('/themes', protect, themesRoutes);
 router.use('/drawings', protect,  drawingsRoutes);
 router.use('/reviews', protect,  reviewsRoutes);
 
-// Routes des rôles (accessible uniquement aux admins)
-router.use('/roles', protect, authorize(['Admin']), rolesRoutes);
+// === MISE À JOUR ===
+// Route pour créer un utilisateur sans authentification
+const usersControllers = require('../controllers/usersControllers');
+router.post('/users', usersControllers.createUser);
 
-// / Routes des utilisateurs pour tous admin + users
+// Routes des utilisateurs (protégées)
 router.use('/users', protect, authorize(['Admin', 'User']), usersRoutes);
 
 // Routes d'authentification
 router.use('/auth', authRoutes);
+// === FIN DE MISE À JOUR ===
 
 
 module.exports = router;

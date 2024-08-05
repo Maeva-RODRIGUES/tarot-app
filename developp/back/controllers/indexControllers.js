@@ -1,4 +1,4 @@
-// indexControllers.js : centralise tout les fichiers controllers en les importan
+// indexControllers.js : centralise tout les fichiers controllers en les important
 
 const cardsControllers = require('./cardsControllers');
 const drawingsControllers = require('./drawingsControllers');

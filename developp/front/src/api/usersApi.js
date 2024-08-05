@@ -11,7 +11,9 @@ export const fetchUsers = async () => {
 
 // Créer un nouvel utilisateur
 export const createUser = async (userData) => {
+  console.log("Données utilisateur à envoyer :", userData);
   const response = await api.post(USERS_ENDPOINT, userData);
+  console.log("Réponse de l'API de création d'utilisateur :", response.data);
   return response.data;
 };
 
@@ -24,4 +26,10 @@ export const updateUser = async (id, userData) => {
 // Supprimer un utilisateur
 export const deleteUser = async (id) => {
   await api.delete(`${USERS_ENDPOINT}/${id}`);
+};
+
+// Récupérer les données d'un utilisateur spécifique
+export const getUserData = async (id) => {
+  const response = await api.get(`${USERS_ENDPOINT}/${id}`);
+  return response.data;
 };

@@ -1,6 +1,6 @@
-// DashboardUserPage.jsx
+// src/pages/DashboardUserPage.jsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -12,34 +12,99 @@ import {
   HStack,
   Icon,
   Spacer,
+  useToast,
+  Spinner,
 } from "@chakra-ui/react";
 import { CalendarIcon, TimeIcon } from "@chakra-ui/icons";
 import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
-import { Routes, Route, Link as RouterLink, useNavigate } from "react-router-dom";
+import {
+  Outlet,
+  Link as RouterLink,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
-import { mockUserData } from "../utils/mockData";
-import UserSettingPage from "./UserSettingPage";
-import TarotHistoryPage from "./TarotHistoryPage";
 import { useAuth } from "../components/context/AuthContext";
+import { getUserData } from "../api/usersApi";
 
 function DashboardUserPage() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { userId } = useParams();
+  const toast = useToast();
+  const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getUserData(userId); // Utilisez userId ici
+        setUserData(data);
+      } catch (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de récupérer les données utilisateur.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchData();
+    } else {
+      navigate("/login"); // Redirige vers la page de connexion si l'utilisateur n'est pas authentifié
+    }
+  }, [userId, toast, navigate]);
 
   const handleViewMoreClick = () => {
-    navigate("/drawingsstory");
+    navigate(`/profile/${userId}/drawingsstory`);
   };
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // Redirige vers la page d'accueil après la déconnexion
+    toast({
+      title: "Déconnexion réussie",
+      description: "Vous avez été déconnecté avec succès.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
   };
+
+  if (loading) {
+    return (
+      <Box
+        minHeight="100vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <Box
+        minHeight="100vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Text>Erreur de chargement des données utilisateur.</Text>
+      </Box>
+    );
+  }
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
-
       <Flex
         as="nav"
         p="4"
@@ -55,7 +120,7 @@ function DashboardUserPage() {
       >
         <VStack align="start" spacing="4" w="full">
           <RouterLink
-            to="/profile"
+            to={`/profile/${userId}`}
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
@@ -64,7 +129,7 @@ function DashboardUserPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/drawingsstory"
+            to={`/profile/${userId}/drawingsstory`}
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
@@ -73,7 +138,7 @@ function DashboardUserPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/settings"
+            to={`/profile/${userId}/settings`}
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
@@ -99,86 +164,7 @@ function DashboardUserPage() {
       </Flex>
 
       <Box ml="250px" p="8" pt="8" flex="1">
-        <Routes>
-          <Route path="settings" element={<UserSettingPage />} />
-          <Route path="drawingsstory" element={<TarotHistoryPage />} />
-          <Route
-            path="*"
-            element={
-              <>
-                <Heading mb="4">
-                  Bonjour {mockUserData.name}, bienvenue sur votre espace
-                  utilisateur !
-                </Heading>
-                <Box mb="8" />
-
-                <Box
-                  p="4"
-                  borderWidth="1px"
-                  borderRadius="md"
-                  borderColor="gray.200"
-                  bg="white"
-                  boxShadow="md"
-                  mb="8"
-                  maxWidth="300px"
-                >
-                  <Heading size="md" mb="4">
-                    Activité Récente :
-                  </Heading>
-                  <HStack spacing="4" mb="4">
-                    <CalendarIcon boxSize="6" color="customBlue" />
-                    <Text fontSize="lg">
-                      Date : {mockUserData.recentActivity}
-                    </Text>
-                  </HStack>
-                  <HStack spacing="4">
-                    <TimeIcon boxSize="6" color="customBlue" />
-                    <Text fontSize="lg">Heure : {mockUserData.recentTime}</Text>
-                  </HStack>
-                </Box>
-
-                <Flex direction="column" alignItems="center" mb="8">
-                  <Heading size="lg" mb="16">
-                    VOTRE DERNIER TIRAGE
-                  </Heading>
-                  <Flex mb="7" justifyContent="center">
-                    {mockUserData.lastDraw.map((src, index) => (
-                      <Image
-                        key={index}
-                        src={src}
-                        alt={`Tarot Card ${index + 1}`}
-                        width="120px"
-                        height="180px"
-                        borderRadius="10px"
-                        mx="7"
-                        transform={
-                          index === 0
-                            ? "rotate(-10deg)"
-                            : index === mockUserData.lastDraw.length - 1
-                            ? "rotate(10deg)"
-                            : "none"
-                        }
-                        mt={
-                          index === Math.floor(mockUserData.lastDraw.length / 2)
-                            ? "-10px"
-                            : "0"
-                        }
-                      />
-                    ))}
-                  </Flex>
-                  <Button
-                    mt="4"
-                    bg="customBlue"
-                    color="white"
-                    onClick={handleViewMoreClick}
-                  >
-                    Voir plus
-                  </Button>
-                </Flex>
-              </>
-            }
-          />
-        </Routes>
+        <Outlet /> {/* Pour afficher les routes enfants */}
       </Box>
 
       <Footer />

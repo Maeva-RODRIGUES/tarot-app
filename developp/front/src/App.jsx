@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable react/jsx-no-undef */
 // App.jsx
 
 import React from "react";
@@ -21,29 +19,63 @@ import TarotHistoryPage from "./pages/TarotHistoryPage.jsx";
 import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
 import AdminUserManagementPage from "./pages/AdminUserManagementPage.jsx";
 import ContentManagementPage from "./pages/ContentManagementPage.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
 
 function App() {
   return (
     <ChakraProviderWrapper>
       <PopupProvider>
         <Routes>
+          {/* Routes principales */}
           <Route path="/" element={<Homepage />} />
           <Route path="/love" element={<LoveTarotPage />} />
           <Route path="/legal-mentions" element={<LegalMentionsPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-          <Route path="/about" element={<AboutPage />} />{" "}
-          <Route path="/profile/*" element={<DashboardUserPage />} />
-          <Route path="/settings" element={<UserSettingPage />} />
-          <Route path="/drawingsstory" element={<TarotHistoryPage />} />
-          <Route path="/admin" element={<AdminDashboardPage />} />
-          <Route path="/admin/users" element={<AdminUserManagementPage />} />
-          <Route path="/admin/content" element={<ContentManagementPage />} /> {/* Ajouter la route pour ContentManagementPage */}
+          <Route path="/about" element={<AboutPage />} />
 
-       
+          {/* Route pour l'espace utilisateur avec Outlet pour les routes enfants */}
+          <Route
+            path="/profile/:userId/*"
+            element={
+              <PrivateRoute>
+                <DashboardUserPage />
+              </PrivateRoute>
+            }
+          >
+            <Route path="settings" element={<UserSettingPage />} />
+            <Route path="drawingsstory" element={<TarotHistoryPage />} />
+          </Route>
+
+          {/* Routes administrateurs */}
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminDashboardPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <PrivateRoute>
+                <AdminUserManagementPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/content"
+            element={
+              <PrivateRoute>
+                <ContentManagementPage />
+              </PrivateRoute>
+            }
+          />
         </Routes>
-        <AppointmentPopup /> {/* Popup de contact */}
-        <LoginPopup /> {/* Popup de connexion */}
-        <SignupPopup /> {/* Ajout du composant SignupPopup ici */}
+        {/* Composants de popup */}
+        <AppointmentPopup />
+        <LoginPopup />
+        <SignupPopup />
       </PopupProvider>
     </ChakraProviderWrapper>
   );

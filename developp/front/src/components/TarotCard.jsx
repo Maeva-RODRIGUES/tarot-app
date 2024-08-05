@@ -1,11 +1,12 @@
 // TarotCard.jsx
 
 // Importation des composants nécessaires de Chakra UI et de framer-motion
-import { Box } from "@chakra-ui/react";
+import { Box, Text, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
 // Composant TarotCard pour afficher une carte de tarot
 function TarotCard({
+  card,
   frontColor,
   backImage,
   height,
@@ -25,7 +26,16 @@ function TarotCard({
           width={width}
           bgColor={frontColor} // Couleur du recto
           borderRadius="md" // Bords arrondis
-        />
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          padding="4"
+        >
+          <Text fontSize="xl" fontWeight="bold" mb={2}>{card.name_card}</Text>
+          <Image src={card.image_url} alt={card.name_card} boxSize="80%" />
+          <Text mt={2}>{card.keyword1}, {card.keyword2}, {card.keyword3}</Text>
+        </Box>
       ) : (
         // Si la carte n'est pas retournée
         <Box

@@ -1,6 +1,7 @@
 // usersControllers.js
 
-const { User } = require('../models/indexModels');
+const bcrypt = require('bcrypt');
+const { User, Role } = require('../models/indexModels');
 
 const usersControllers = {
     // Récupérer tous les utilisateurs
@@ -29,11 +30,34 @@ const usersControllers = {
 
     // Créer un nouvel utilisateur
     createUser: async (req, res) => {
+        const { name, surname, email, birthday, city_of_birth, time_of_birth, password, role } = req.body;
+
         try {
-            const newUser = await User.create(req.body);
-            res.status(201).json(newUser);
+            // Vérifier si l'utilisateur existe déjà
+            const existingUser = await User.findOne({ where: { email } });
+            if (existingUser) {
+                return res.status(400).json({ message: 'Un utilisateur avec cet email existe déjà' });
+            }
+
+            // Hacher le mot de passe
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Créer un nouvel utilisateur
+            const newUser = await User.create({
+                name,
+                surname,
+                email,
+                birthday,
+                city_of_birth,
+                time_of_birth,
+                password: hashedPassword,
+                id_Roles: role // Assurez-vous que vous passez le bon ID de rôle
+            });
+
+            res.status(201).json({ message: 'Utilisateur créé avec succès', user: newUser });
         } catch (error) {
-            res.status(400).json({ message: 'Erreur lors de la création de l\'utilisateur', error });
+            console.error('Erreur lors de la création de l\'utilisateur:', error);
+            res.status(500).json({ message: 'Erreur lors de la création de l\'utilisateur', error });
         }
     },
 
@@ -77,3 +101,4 @@ const usersControllers = {
 };
 
 module.exports = usersControllers;
+

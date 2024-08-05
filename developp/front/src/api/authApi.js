@@ -5,12 +5,23 @@ import { AUTH_ENDPOINT } from "./apiEndpoints";
 
 // Connexion utilisateur
 export const login = async (credentials) => {
+  console.log("Tentative de connexion avec les identifiants :", credentials);
   const response = await api.post(AUTH_ENDPOINT.LOGIN, credentials);
-  return response.data;
+  const { token, userId, role } = response.data;
+  console.log("Réponse de l'API de connexion :", response.data);
+  if (token) {
+    localStorage.setItem("token", token);
+    console.log("Jeton d'authentification stocké dans localStorage");
+  } else {
+    console.error("Erreur : Le jeton est manquant dans la réponse de l'API");
+  }
+  return { token, userId, role };
 };
 
-// Déconnexion utilisateur
-export const logout = async () => {
-  const response = await api.post("/auth/logout"); // Si logout a une URL différente
+// Créer un nouvel utilisateur
+export const signup = async (userData) => {
+  console.log("Tentative de création d'un nouvel utilisateur avec les données :", userData);
+  const response = await api.post(AUTH_ENDPOINT.SIGNUP, userData);
+  console.log("Réponse de l'API de création d'utilisateur :", response.data);
   return response.data;
 };

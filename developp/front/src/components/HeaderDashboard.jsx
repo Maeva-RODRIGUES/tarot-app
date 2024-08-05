@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { FaUserCircle } from "react-icons/fa";
 import { Link as RouterLink } from "react-router-dom";
-import { useAuth } from "./context/AuthContext"; // Assurez-vous que ce chemin est correct
+import { useAuth } from "./context/AuthContext"; 
 
 function HeaderDashboard() {
   const { user } = useAuth(); // Supposer que vous avez un utilisateur dans votre contexte d'authentification
