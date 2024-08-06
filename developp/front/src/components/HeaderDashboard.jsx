@@ -18,7 +18,7 @@ function HeaderDashboard() {
   const { user } = useAuth(); // Supposer que vous avez un utilisateur dans votre contexte d'authentification
 
   // Déterminer le lien en fonction du type d'utilisateur
-  const profileLink = user?.isAdmin ? "/admin" : "/profile/*"; // Modifiez selon vos routes
+  const profileLink = user?.role === "Admin" ? "/admin" : `/profile/${user?.id}`; // Modifiez selon vos routes
 
   return (
     <Box

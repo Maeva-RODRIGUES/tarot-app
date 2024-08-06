@@ -3,13 +3,11 @@
 // auth.js contient les implémentations des fonctions nécessaires pour gérer les authentifications comme : Créer et vérifier les tokens JWT pour sécuriser les routes.
 
 const jwt = require('jsonwebtoken');
-const { User } = require('../models/indexModels');
-
-
+const { User, Role } = require('../models/indexModels');
 
 // Générer un token JWT avec expiration d'une heure
 const generateToken = (user) => {
-  return jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ id: user.id, role: user.role.role_name }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
 // Middleware pour protéger les routes
@@ -17,26 +15,28 @@ const protect = async (req, res, next) => {
   let token;
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      try {
-          token = req.headers.authorization.split(' ')[1];
-          console.log('Token reçu :', token); // Vérifiez le token reçu depuis l'en-tête Authorization
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          console.log('Token décodé :', decoded); // Vérifiez le token décodé pour voir les informations utilisateur
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      console.log('Token reçu :', token);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('Token décodé :', decoded);
 
-          // Rechercher l'utilisateur dans la base de données
-          const user = await User.findByPk(decoded.id);
-          if (!user) {
-              return res.status(401).json({ message: 'Utilisateur non trouvé' });
-          }
-
-          req.user = user; // Attacher l'utilisateur trouvé à la requête
-          next();
-      } catch (error) {
-          console.error('Erreur de vérification du token :', error);
-          res.status(401).json({ message: 'Non autorisé, token invalide' });
+      // Rechercher l'utilisateur dans la base de données
+      const user = await User.findByPk(decoded.id, {
+        include: [{ model: Role, as: 'role' }]
+      });
+      if (!user) {
+        return res.status(401).json({ message: 'Utilisateur non trouvé' });
       }
+
+      req.user = user; // Attacher l'utilisateur trouvé à la requête
+      next();
+    } catch (error) {
+      console.error('Erreur de vérification du token :', error);
+      res.status(401).json({ message: 'Non autorisé, token invalide' });
+    }
   } else {
-      res.status(401).json({ message: 'Non autorisé, pas de token' });
+    res.status(401).json({ message: 'Non autorisé, pas de token' });
   }
 };
 

@@ -18,16 +18,22 @@ const validate = (req, res, next) => {
 // Route pour la récupération de tous les utilisateurs (accessible uniquement aux admins)
 router.get('/', protect, authorize(['Admin']), usersController.getAllUsers);
 
-// Route pour la récupération d'un utilisateur par son ID (accessible uniquement aux admins)
-router.get('/:id', protect, authorize(['Admin']), 
+// Route pour la récupération d'un utilisateur par son ID (accessible aux admins et à l'utilisateur lui-même)
+router.get('/:id', protect, 
     param('id').isInt().withMessage('ID doit être un entier'),
     validate,
+    (req, res, next) => {
+        if (req.user.id === parseInt(req.params.id, 10) || req.user.role.role_name === 'Admin') {
+            next();
+        } else {
+            return res.status(403).json({ message: 'Accès interdit' });
+        }
+    },
     usersController.getUserById
 );
 
 // Route pour la création d'un nouvel utilisateur (accessible à tous)
 router.post('/',
-    protect,
     body('name').notEmpty().withMessage('Le nom est requis'),
     body('surname').notEmpty().withMessage('Le prénom est requis'),
     body('email').isEmail().withMessage('Entrez un email valide'),

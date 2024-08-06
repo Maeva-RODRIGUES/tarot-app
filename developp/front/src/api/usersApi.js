@@ -33,3 +33,9 @@ export const getUserData = async (id) => {
   const response = await api.get(`${USERS_ENDPOINT}/${id}`);
   return response.data;
 };
+
+// Mettre à jour les données d'un utilisateur spécifique
+export const updateUserData = async (id, userData) => {
+  const response = await api.put(`${USERS_ENDPOINT}/${id}`, userData);
+  return response.data;
+};

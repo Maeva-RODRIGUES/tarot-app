@@ -6,14 +6,14 @@ import Homepage from "./pages/HomePage.jsx";
 import LoveTarotPage from "./pages/LoveTarotPage.jsx";
 import LegalMentionsPage from "./pages/LegalMentionsPage.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.jsx";
-import AboutPage from "./pages/AboutPage.jsx"; // Importer AboutPage
+import AboutPage from "./pages/AboutPage.jsx";
 import ChakraProviderWrapper from "./ChakraProviderWrapper";
-import { PopupProvider } from "./components/context/PopupContext"; // Importation du PopupProvider
-import AppointmentPopup from "./components/AppointmentPopup.jsx"; // Importation du composant AppointmentPopup
-import LoginPopup from "./components/LoginPopup"; // Importer LoginPopup
-import SignupPopup from "./components/SignupPopup"; // Importer SignupPopup
+import { PopupProvider } from "./components/context/PopupContext";
+import AppointmentPopup from "./components/AppointmentPopup.jsx";
+import LoginPopup from "./components/LoginPopup";
+import SignupPopup from "./components/SignupPopup";
 import DashboardUserPage from "./pages/DashboardUserPage";
-import "./styles/index.css";
+import { AuthProvider } from "./components/context/AuthContext";
 import UserSettingPage from "./pages/UserSettingPage.jsx";
 import TarotHistoryPage from "./pages/TarotHistoryPage.jsx";
 import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
@@ -24,29 +24,40 @@ import PrivateRoute from "./components/PrivateRoute.jsx";
 function App() {
   return (
     <ChakraProviderWrapper>
+       <AuthProvider>
       <PopupProvider>
         <Routes>
-          {/* Routes principales */}
           <Route path="/" element={<Homepage />} />
           <Route path="/love" element={<LoveTarotPage />} />
           <Route path="/legal-mentions" element={<LegalMentionsPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/about" element={<AboutPage />} />
 
-          {/* Route pour l'espace utilisateur avec Outlet pour les routes enfants */}
           <Route
-            path="/profile/:userId/*"
+            path="/profile/:userId"
             element={
               <PrivateRoute>
                 <DashboardUserPage />
               </PrivateRoute>
             }
-          >
-            <Route path="settings" element={<UserSettingPage />} />
-            <Route path="drawingsstory" element={<TarotHistoryPage />} />
-          </Route>
+          />
+          <Route
+            path="/profile/:userId/settings"
+            element={
+              <PrivateRoute>
+                <UserSettingPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile/:userId/drawingsstory"
+            element={
+              <PrivateRoute>
+                <TarotHistoryPage />
+              </PrivateRoute>
+            }
+          />
 
-          {/* Routes administrateurs */}
           <Route
             path="/admin"
             element={
@@ -72,13 +83,14 @@ function App() {
             }
           />
         </Routes>
-        {/* Composants de popup */}
         <AppointmentPopup />
         <LoginPopup />
         <SignupPopup />
       </PopupProvider>
+      </AuthProvider>
     </ChakraProviderWrapper>
   );
 }
 
 export default App;
+

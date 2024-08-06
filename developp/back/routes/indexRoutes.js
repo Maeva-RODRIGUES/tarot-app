@@ -53,12 +53,11 @@ router.get('/user', (req, res) => {
 // Middleware pour gérer les erreurs
 router.use(errorHandler);
 
-
 // Monter les routes spécifiques sur le routeur principal
 router.use('/cards', protect, cardsRoutes);
 router.use('/themes', protect, themesRoutes);
-router.use('/drawings', protect,  drawingsRoutes);
-router.use('/reviews', protect,  reviewsRoutes);
+router.use('/drawings', protect, drawingsRoutes);
+router.use('/reviews', protect, reviewsRoutes);
 
 // === MISE À JOUR ===
 // Route pour créer un utilisateur sans authentification
@@ -71,6 +70,5 @@ router.use('/users', protect, authorize(['Admin', 'User']), usersRoutes);
 // Routes d'authentification
 router.use('/auth', authRoutes);
 // === FIN DE MISE À JOUR ===
-
 
 module.exports = router;

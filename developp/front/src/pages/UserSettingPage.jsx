@@ -1,6 +1,6 @@
-// UserSettingPage.jsx :  fonctionnalités d'affichage et de modification des informations de l'utilisateur connecté.
+// src/pages/UserSettingPage.jsx
 
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -16,38 +16,78 @@ import {
   Icon,
   Spacer,
   Text,
-} from '@chakra-ui/react';
-import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt } from 'react-icons/fa';
-import Header from '../components/HeaderDashboard';
-import Footer from '../components/Footer';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../components/context/AuthContext';
+} from "@chakra-ui/react";
+import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import HeaderDashboard from "../components/HeaderDashboard";
+import Footer from "../components/Footer";
+import { useAuth } from "../components/context/AuthContext";
+import { getUserData, updateUserData } from "../api/usersApi";
 
 function UserSettingPage() {
   const toast = useToast();
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const [userData, setUserData] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    birthday: "",
+    city_of_birth: "",
+    time_of_birth: "",
+  });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const data = await getUserData(user.userId);
+          setUserData(data);
+        } catch (error) {
+          toast({
+            title: "Erreur",
+            description: "Impossible de récupérer les données utilisateur.",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user, toast]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Ajoutez ici la logique pour gérer la soumission du formulaire
-    toast({
-      title: 'Informations mises à jour.',
-      description: 'Vos informations ont été mises à jour avec succès.',
-      status: 'success',
-      duration: 5000,
-      isClosable: true,
-    });
+    try {
+      await updateUserData(user.userId, userData);
+      toast({
+        title: "Informations mises à jour.",
+        description: "Vos informations ont été mises à jour avec succès.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour les informations.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleLogout = () => {
     logout();
-    navigate('/'); // Redirige vers la page d'accueil après la déconnexion
+    navigate("/");
   };
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
-      <Header />
+      <HeaderDashboard />
 
       <Flex
         as="nav"
@@ -64,8 +104,8 @@ function UserSettingPage() {
       >
         <VStack align="start" spacing="4" w="full">
           <RouterLink
-            to="/profile"
-            style={{ textDecoration: 'none', color: 'white' }}
+            to={`/profile/${user?.userId}`}
+            style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
               <Icon as={FaUser} />
@@ -73,8 +113,8 @@ function UserSettingPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/drawingsstory"
-            style={{ textDecoration: 'none', color: 'white' }}
+            to={`/profile/${user?.userId}/drawingsstory`}
+            style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
               <Icon as={FaRegFileAlt} />
@@ -82,8 +122,8 @@ function UserSettingPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/settings"
-            style={{ textDecoration: 'none', color: 'white' }}
+            to={`/profile/${user?.userId}/settings`}
+            style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
               <Icon as={FaCog} />
@@ -97,7 +137,7 @@ function UserSettingPage() {
             onClick={handleLogout}
             variant="link"
             color="white"
-            _hover={{ textDecoration: 'none', color: 'blue.400' }}
+            _hover={{ textDecoration: "none", color: "blue.400" }}
           >
             <HStack>
               <Icon as={FaSignOutAlt} />
@@ -113,32 +153,71 @@ function UserSettingPage() {
           <Stack spacing="4">
             <FormControl id="last-name" isRequired>
               <FormLabel>Nom</FormLabel>
-              <Input placeholder="Votre nom" />
+              <Input
+                placeholder="Votre nom"
+                value={userData.name}
+                onChange={(e) =>
+                  setUserData({ ...userData, name: e.target.value })
+                }
+              />
             </FormControl>
 
             <FormControl id="first-name" isRequired>
               <FormLabel>Prénom</FormLabel>
-              <Input placeholder="Votre prénom" />
+              <Input
+                placeholder="Votre prénom"
+                value={userData.surname}
+                onChange={(e) =>
+                  setUserData({ ...userData, surname: e.target.value })
+                }
+              />
             </FormControl>
 
             <FormControl id="email" isRequired>
               <FormLabel>Email</FormLabel>
-              <Input type="email" placeholder="Votre email" />
+              <Input
+                type="email"
+                placeholder="Votre email"
+                value={userData.email}
+                onChange={(e) =>
+                  setUserData({ ...userData, email: e.target.value })
+                }
+              />
             </FormControl>
 
             <FormControl id="birthdate" isRequired>
               <FormLabel>Date de naissance</FormLabel>
-              <Input type="date" placeholder="Votre date de naissance" />
+              <Input
+                type="date"
+                placeholder="Votre date de naissance"
+                value={userData.birthday}
+                onChange={(e) =>
+                  setUserData({ ...userData, birthday: e.target.value })
+                }
+              />
             </FormControl>
 
             <FormControl id="birthplace" isRequired>
               <FormLabel>Ville de naissance</FormLabel>
-              <Input placeholder="Votre ville de naissance" />
+              <Input
+                placeholder="Votre ville de naissance"
+                value={userData.city_of_birth}
+                onChange={(e) =>
+                  setUserData({ ...userData, city_of_birth: e.target.value })
+                }
+              />
             </FormControl>
 
             <FormControl id="birthtime" isRequired>
               <FormLabel>Heure de naissance</FormLabel>
-              <Input type="time" placeholder="Votre heure de naissance" />
+              <Input
+                type="time"
+                placeholder="Votre heure de naissance"
+                value={userData.time_of_birth}
+                onChange={(e) =>
+                  setUserData({ ...userData, time_of_birth: e.target.value })
+                }
+              />
             </FormControl>
 
             <FormControl id="password">
@@ -148,7 +227,10 @@ function UserSettingPage() {
 
             <FormControl id="confirm-password">
               <FormLabel>Confirmation du mot de passe</FormLabel>
-              <Input type="password" placeholder="Confirmez votre mot de passe" />
+              <Input
+                type="password"
+                placeholder="Confirmez votre mot de passe"
+              />
             </FormControl>
 
             <Button
@@ -171,4 +253,3 @@ function UserSettingPage() {
 }
 
 export default UserSettingPage;
-

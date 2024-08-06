@@ -39,7 +39,7 @@ function DashboardUserPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getUserData(userId); // Utilisez userId ici
+        const data = await getUserData(userId);
         setUserData(data);
       } catch (error) {
         toast({
@@ -57,7 +57,7 @@ function DashboardUserPage() {
     if (userId) {
       fetchData();
     } else {
-      navigate("/login"); // Redirige vers la page de connexion si l'utilisateur n'est pas authentifié
+      navigate("/login");
     }
   }, [userId, toast, navigate]);
 
@@ -74,6 +74,7 @@ function DashboardUserPage() {
       duration: 5000,
       isClosable: true,
     });
+    navigate("/"); // Redirige vers la page d'accueil après la déconnexion
   };
 
   if (loading) {
@@ -138,7 +139,7 @@ function DashboardUserPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to={`/profile/${userId}/settings`}
+            to={`/profile/${userId}/settings`} // Utilisation du bon chemin pour les paramètres
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
@@ -164,6 +165,74 @@ function DashboardUserPage() {
       </Flex>
 
       <Box ml="250px" p="8" pt="8" flex="1">
+        {/* Activité Récente */}
+        <Box
+          p="4"
+          borderWidth="1px"
+          borderRadius="md"
+          borderColor="gray.200"
+          bg="white"
+          boxShadow="md"
+          mb="8"
+          maxWidth="300px"
+        >
+          <Heading size="md" mb="4">
+            Activité Récente :
+          </Heading>
+          <HStack spacing="4" mb="4">
+            <CalendarIcon boxSize="6" color="customBlue" />
+            <Text fontSize="lg">
+              Date :{" "}
+              {userData.recentActivity?.date || "Aucune activité récente"}
+            </Text>
+          </HStack>
+          <HStack spacing="4">
+            <TimeIcon boxSize="6" color="customBlue" />
+            <Text fontSize="lg">
+              Heure :{" "}
+              {userData.recentActivity?.time || "Aucune activité récente"}
+            </Text>
+          </HStack>
+        </Box>
+        {/* Dernier Tirage */}
+        <Flex direction="column" alignItems="center" mb="8">
+          <Heading size="lg" mb="16">
+            VOTRE DERNIER TIRAGE
+          </Heading>
+          <Flex mb="7" justifyContent="center">
+            {userData.lastDraw?.map((src, index) => (
+              <Image
+                key={index}
+                src={src}
+                alt={`Tarot Card ${index + 1}`}
+                width="120px"
+                height="180px"
+                borderRadius="10px"
+                mx="7"
+                transform={
+                  index === 0
+                    ? "rotate(-10deg)"
+                    : index === userData.lastDraw.length - 1
+                      ? "rotate(10deg)"
+                      : "none"
+                }
+                mt={
+                  index === Math.floor(userData.lastDraw.length / 2)
+                    ? "-10px"
+                    : "0"
+                }
+              />
+            ))}
+          </Flex>
+          <Button
+            mt="4"
+            bg="customBlue"
+            color="white"
+            onClick={handleViewMoreClick}
+          >
+            Voir plus
+          </Button>
+        </Flex>
         <Outlet /> {/* Pour afficher les routes enfants */}
       </Box>
 
@@ -173,4 +242,3 @@ function DashboardUserPage() {
 }
 
 export default DashboardUserPage;
-
