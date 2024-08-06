@@ -16,6 +16,7 @@ import {
   Icon,
   Spacer,
   Text,
+  Avatar,
 } from "@chakra-ui/react";
 import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -23,6 +24,7 @@ import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData, updateUserData } from "../api/usersApi";
+import { uploadFile } from "../api/uploadApi";
 
 function UserSettingPage() {
   const toast = useToast();
@@ -35,7 +37,9 @@ function UserSettingPage() {
     birthday: "",
     city_of_birth: "",
     time_of_birth: "",
+    avatarUrl: "", // Ajouté pour stocker l'URL de l'avatar
   });
+  const [avatarFile, setAvatarFile] = useState(null); // Ajouté pour gérer le fichier d'avatar
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -57,6 +61,37 @@ function UserSettingPage() {
 
     fetchUserData();
   }, [user, toast]);
+
+  const handleAvatarChange = (e) => {
+    setAvatarFile(e.target.files[0]);
+  };
+
+  const handleAvatarUpload = async () => {
+    if (avatarFile) {
+      try {
+        const formData = new FormData();
+        formData.append("image", avatarFile);
+        formData.append("id", user.userId); // Ajout de l'ID de l'utilisateur
+        const response = await uploadFile(formData);
+        setUserData({ ...userData, avatarUrl: response.avatarUrl });
+        toast({
+          title: "Avatar mis à jour.",
+          description: "Votre avatar a été mis à jour avec succès.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } catch (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de mettre à jour l'avatar.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -149,6 +184,22 @@ function UserSettingPage() {
 
       <Box ml="250px" p="8" flex="1">
         <Heading mb="4">Paramètres du Profil</Heading>
+        {/* Début de la section ajoutée pour l'avatar */}
+        <VStack mb="8" align="center">
+          <Avatar size="xl" src={userData.avatarUrl} />
+          <FormControl id="avatar" mt="4">
+            <FormLabel>Mettre à jour l'avatar</FormLabel>
+            <Input type="file" onChange={handleAvatarChange} />
+            <Button
+              mt="2"
+              colorScheme="blue"
+              onClick={handleAvatarUpload}
+            >
+              Télécharger
+            </Button>
+          </FormControl>
+        </VStack>
+        {/* Fin de la section ajoutée pour l'avatar */}
         <form onSubmit={handleSubmit}>
           <Stack spacing="4">
             <FormControl id="last-name" isRequired>
@@ -251,5 +302,6 @@ function UserSettingPage() {
     </Box>
   );
 }
+
 
 export default UserSettingPage;
