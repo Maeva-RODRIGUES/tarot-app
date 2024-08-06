@@ -3,12 +3,52 @@
 const bcrypt = require('bcrypt');
 const { User, Role } = require('../models/indexModels');
 
+// Fonction pour formater les dates au format dd/MM/yyyy HH:mm:ss
+const formatDateTime = (date) => {
+    if (!date) return null;
+    const d = new Date(date);
+    let day = d.getDate();
+    let month = d.getMonth() + 1;
+    const year = d.getFullYear();
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    let seconds = d.getSeconds();
+
+    if (day < 10) day = '0' + day;
+    if (month < 10) month = '0' + month;
+    if (hours < 10) hours = '0' + hours;
+    if (minutes < 10) minutes = '0' + minutes;
+    if (seconds < 10) seconds = '0' + seconds;
+
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+};
+
+// Fonction pour convertir les dates du format dd/MM/yyyy HH:mm:ss au format yyyy-MM-dd HH:mm:ss
+const convertToDBFormat = (dateTime) => {
+    if (!dateTime) return null;
+    const [date, time] = dateTime.split(' ');
+    const [day, month, year] = date.split('/');
+    return `${year}-${month}-${day} ${time}`;
+};
+
 const usersControllers = {
     // Récupérer tous les utilisateurs
     getAllUsers: async (req, res) => {
         try {
-            const users = await User.findAll();
-            res.status(200).json(users);
+            const users = await User.findAll({
+                include: { model: Role, as: 'role' }
+            });
+
+            // Formater les dates avant de renvoyer la réponse
+            const formattedUsers = users.map(user => {
+                const formattedUser = user.toJSON();
+                formattedUser.birthday = formatDateTime(formattedUser.birthday);
+                formattedUser.createdAt = formatDateTime(formattedUser.createdAt);
+                formattedUser.updatedAt = formatDateTime(formattedUser.updatedAt);
+                return formattedUser;
+            });
+
+            res.status(200).json(formattedUsers);
         } catch (error) {
             res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs', error });
         }
@@ -18,11 +58,20 @@ const usersControllers = {
     getUserById: async (req, res) => {
         const id = req.params.id;
         try {
-            const user = await User.findByPk(id);
+            const user = await User.findByPk(id, {
+                include: { model: Role, as: 'role' }
+            });
             if (!user) {
                 return res.status(404).json({ message: 'Utilisateur non trouvé' });
             }
-            res.status(200).json(user);
+
+            // Formater les dates avant de renvoyer la réponse
+            const formattedUser = user.toJSON();
+            formattedUser.birthday = formatDateTime(formattedUser.birthday);
+            formattedUser.createdAt = formatDateTime(formattedUser.createdAt);
+            formattedUser.updatedAt = formatDateTime(formattedUser.updatedAt);
+
+            res.status(200).json(formattedUser);
         } catch (error) {
             res.status(500).json({ message: 'Erreur lors de la récupération de l\'utilisateur', error });
         }
@@ -33,25 +82,22 @@ const usersControllers = {
         const { name, surname, email, birthday, city_of_birth, time_of_birth, password, role } = req.body;
 
         try {
-            // Vérifier si l'utilisateur existe déjà
             const existingUser = await User.findOne({ where: { email } });
             if (existingUser) {
                 return res.status(400).json({ message: 'Un utilisateur avec cet email existe déjà' });
             }
 
-            // Hacher le mot de passe
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Créer un nouvel utilisateur
             const newUser = await User.create({
                 name,
                 surname,
                 email,
-                birthday,
+                birthday: convertToDBFormat(birthday),
                 city_of_birth,
                 time_of_birth,
                 password: hashedPassword,
-                id_Roles: role // Assurez-vous que vous passez le bon ID de rôle
+                id_Roles: role
             });
 
             res.status(201).json({ message: 'Utilisateur créé avec succès', user: newUser });
@@ -69,15 +115,20 @@ const usersControllers = {
             if (!user) {
                 return res.status(404).send('Utilisateur non trouvé');
             }
-    
-            // Mettre à jour uniquement les champs fournis dans req.body
-            await user.update(req.body);
-    
-            // Recharger les données mises à jour
+
+            const updatedData = { ...req.body };
+            if (updatedData.birthday) {
+                updatedData.birthday = convertToDBFormat(updatedData.birthday);
+            }
+
+            console.log('Données de mise à jour reçues :', updatedData);
+            await user.update(updatedData);
+
             const updatedUser = await User.findByPk(id);
-    
+
             res.json({ message: 'Utilisateur mis à jour avec succès', updatedUser });
         } catch (error) {
+            console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
             res.status(500).json({ message: 'Erreur lors de la mise à jour de l\'utilisateur', error });
         }
     },
@@ -101,4 +152,5 @@ const usersControllers = {
 };
 
 module.exports = usersControllers;
+
 

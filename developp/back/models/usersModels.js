@@ -3,6 +3,7 @@
 // usersModels.js
 
 const bcrypt = require('bcrypt');
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     id: {
@@ -28,7 +29,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     birthday: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: false,
+      get() {
+        const rawValue = this.getDataValue('birthday');
+        return rawValue ? new Date(rawValue).toLocaleDateString('fr-FR') : null;
+      }
     },
     city_of_birth: {
       type: DataTypes.STRING,
@@ -43,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         len: {
-          args: [8, 100], // Longueur minimale et maximale
+          args: [8, 100],
           msg: 'Le mot de passe doit contenir au moins 8 caractères'
         }
       }
@@ -58,7 +63,6 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     timestamps: true,
     hooks: {
-      // Avant de créer ou mettre à jour un utilisateur, hacher son mot de passe
       beforeCreate: async (user) => {
         if (user.password) {
           const salt = await bcrypt.genSalt(10);
@@ -70,17 +74,36 @@ module.exports = (sequelize, DataTypes) => {
           const salt = await bcrypt.genSalt(10);
           user.password = await bcrypt.hash(user.password, salt);
         }
+      }
+    },
+    // Surcharge de la méthode toJSON pour formater les dates
+    instanceMethods: {
+      toJSON: function () {
+        const values = Object.assign({}, this.get());
+        const formatDate = (date) => {
+          if (!date) return null;
+          const d = new Date(date);
+          let day = d.getDate();
+          let month = d.getMonth() + 1;
+          const year = d.getFullYear();
 
-          }
+          if (day < 10) day = '0' + day;
+          if (month < 10) month = '0' + month;
+
+          return `${day}/${month}/${year}`;
+        };
+        values.birthday = formatDate(values.birthday);
+        values.createdAt = formatDate(values.createdAt);
+        values.updatedAt = formatDate(values.updatedAt);
+        return values;
+      }
     }
-    
   });
 
- // Définir l'association entre User et Role
- User.associate = function(models) {
-  User.belongsTo(models.Role, { foreignKey: 'id_Roles', as: 'role' });
-};
-
+  User.associate = function(models) {
+    User.belongsTo(models.Role, { foreignKey: 'id_Roles', as: 'role' });
+  };
 
   return User;
 };
+
