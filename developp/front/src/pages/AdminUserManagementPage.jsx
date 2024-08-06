@@ -1,6 +1,6 @@
-// AdminUserManagementPage.jsx : Gestion des utilisateurs par l'administrateur
+// src/pages/AdminUserManagementPage.jsx
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -18,6 +18,7 @@ import {
   Th,
   Td,
   Link,
+  useToast,
 } from "@chakra-ui/react";
 import {
   FaUser,
@@ -31,12 +32,40 @@ import { Link as RouterLink } from "react-router-dom";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
-
-// Importer les données fictives des utilisateurs
-import { mockUsers } from "../utils/mockData";
+import { fetchUsers, updateUser, deleteUser } from "../api/usersApi";
+import { fetchRoles } from "../api/rolesApi";
 
 function AdminUserManagementPage() {
   const { logout } = useAuth();
+  const toast = useToast();
+  const [users, setUsers] = useState([]);
+  const [roles, setRoles] = useState({});
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const usersData = await fetchUsers();
+        const rolesData = await fetchRoles();
+        const rolesMap = rolesData.reduce((acc, role) => {
+          acc[role.id] = role.role_name;
+          return acc;
+        }, {});
+
+        setUsers(usersData);
+        setRoles(rolesMap);
+      } catch (error) {
+        toast({
+          title: "Erreur",
+          description: "Erreur lors de la récupération des utilisateurs ou des rôles",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    };
+
+    loadData();
+  }, [toast]);
 
   const handleLogout = () => {
     logout();
@@ -46,11 +75,29 @@ function AdminUserManagementPage() {
   const handleUpdate = (userId) => {
     // Fonction de gestion de la mise à jour de l'utilisateur
     console.log("Mettre à jour l'utilisateur avec l'ID :", userId);
+    // Implémentez ici la logique de mise à jour
   };
 
-  const handleDelete = (userId) => {
-    // Fonction de gestion de la suppression de l'utilisateur
-    console.log("Supprimer l'utilisateur avec l'ID :", userId);
+  const handleDelete = async (userId) => {
+    try {
+      await deleteUser(userId);
+      setUsers(users.filter(user => user.id !== userId));
+      toast({
+        title: "Utilisateur supprimé",
+        description: "L'utilisateur a été supprimé avec succès",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la suppression de l'utilisateur",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -128,12 +175,12 @@ function AdminUserManagementPage() {
             </Tr>
           </Thead>
           <Tbody>
-            {mockUsers.map((user) => (
+            {users.map((user) => (
               <Tr key={user.id}>
                 <Td>{user.id}</Td>
                 <Td>{user.name}</Td>
                 <Td>{user.email}</Td>
-                <Td>{user.role}</Td>
+                <Td>{roles[user.id_Roles]}</Td>
                 <Td>
                   <HStack spacing="2">
                     <Link
@@ -159,3 +206,4 @@ function AdminUserManagementPage() {
 }
 
 export default AdminUserManagementPage;
+

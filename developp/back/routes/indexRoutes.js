@@ -67,6 +67,9 @@ router.post('/users', usersControllers.createUser);
 // Routes des utilisateurs (protégées)
 router.use('/users', protect, authorize(['Admin', 'User']), usersRoutes);
 
+// Routes des rôles (protégées)
+router.use('/roles', protect, authorize(['Admin']), rolesRoutes); // Ajouté la protection
+
 // Routes d'authentification
 router.use('/auth', authRoutes);
 // === FIN DE MISE À JOUR ===

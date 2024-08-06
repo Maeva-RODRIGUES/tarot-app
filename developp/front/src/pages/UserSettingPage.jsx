@@ -138,6 +138,7 @@ function UserSettingPage() {
         boxShadow="md"
       >
         <VStack align="start" spacing="4" w="full">
+          {/* Début de la mise à jour */}
           <RouterLink
             to={`/profile/${user?.userId}`}
             style={{ textDecoration: "none", color: "white" }}
@@ -165,6 +166,7 @@ function UserSettingPage() {
               <Text>Paramètres</Text>
             </HStack>
           </RouterLink>
+          {/* Fin de la mise à jour */}
 
           <Spacer />
 
@@ -303,5 +305,5 @@ function UserSettingPage() {
   );
 }
 
-
 export default UserSettingPage;
+

@@ -23,7 +23,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import Header from "../components/HeaderDashboard";
+import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData } from "../api/usersApi";
@@ -105,7 +105,7 @@ function DashboardUserPage() {
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
-      <Header />
+      <HeaderDashboard />
       <Flex
         as="nav"
         p="4"
@@ -120,6 +120,7 @@ function DashboardUserPage() {
         boxShadow="md"
       >
         <VStack align="start" spacing="4" w="full">
+          {/* Début de la mise à jour */}
           <RouterLink
             to={`/profile/${userId}`}
             style={{ textDecoration: "none", color: "white" }}
@@ -147,6 +148,7 @@ function DashboardUserPage() {
               <Text>Paramètres</Text>
             </HStack>
           </RouterLink>
+          {/* Fin de la mise à jour */}
 
           <Spacer />
 
