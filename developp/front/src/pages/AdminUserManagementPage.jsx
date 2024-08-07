@@ -55,6 +55,7 @@ function AdminUserManagementPage() {
     time_of_birth: "",
   });
 
+  // Chargement initial des données des utilisateurs et des rôles
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -81,17 +82,18 @@ function AdminUserManagementPage() {
     loadData();
   }, [toast]);
 
+  // Gestion de la déconnexion
   const handleLogout = () => {
     logout();
     navigate("/"); // Redirige vers la page d'accueil après la déconnexion
   };
 
+  // Gestion de la mise à jour d'un utilisateur
   const handleUpdate = (user) => {
     setEditingUserId(user.id);
 
     // Conversion de la date en format yyyy-MM-dd pour le champ de saisie
-    const parts = user.birthday.split('/');
-    const formattedBirthday = `${parts[2]}-${parts[1]}-${parts[0]}`;
+    const formattedBirthday = user.birthday.split('/').reverse().join('-');
 
     setEditFormData({
       name: user.name,
@@ -105,6 +107,7 @@ function AdminUserManagementPage() {
     });
   };
 
+  // Annuler la mise à jour
   const handleCancelUpdate = () => {
     setEditingUserId(null);
     setEditFormData({
@@ -119,11 +122,13 @@ function AdminUserManagementPage() {
     });
   };
 
+  // Gestion des modifications du formulaire
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setEditFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  // Soumission du formulaire de mise à jour
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (editFormData.password && editFormData.password !== editFormData.confirmPassword) {
@@ -139,16 +144,14 @@ function AdminUserManagementPage() {
 
     const updatedData = { ...editFormData };
 
-    // Remove password fields if they are empty
+    // Effacer les champs de mot de passe s'ils sont vides
     if (!updatedData.password) {
       delete updatedData.password;
       delete updatedData.confirmPassword;
     }
 
-    // Convert the date format from yyyy-MM-dd to dd/MM/yyyy HH:mm:ss before sending to the server
-    const [year, month, day] = updatedData.birthday.split("-");
-    const date = new Date(`${year}-${month}-${day}`);
-    updatedData.birthday = `${day}/${month}/${year} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    // Convertir la date au format yyyy-MM-dd
+    updatedData.birthday = editFormData.birthday;
 
     console.log("Données mises à jour à envoyer:", updatedData);
 
@@ -179,6 +182,7 @@ function AdminUserManagementPage() {
     }
   };
 
+  // Gestion de la suppression d'un utilisateur
   const handleDelete = async (userId) => {
     try {
       await deleteUser(userId);
@@ -399,7 +403,3 @@ function AdminUserManagementPage() {
 }
 
 export default AdminUserManagementPage;
-
-
-
-

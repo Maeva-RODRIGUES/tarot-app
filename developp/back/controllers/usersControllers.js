@@ -3,32 +3,25 @@
 const bcrypt = require('bcrypt');
 const { User, Role } = require('../models/indexModels');
 
-// Fonction pour formater les dates au format dd/MM/yyyy HH:mm:ss
-const formatDateTime = (date) => {
+// Fonction pour formater les dates au format dd/MM/yyyy
+const formatDate = (date) => {
     if (!date) return null;
     const d = new Date(date);
     let day = d.getDate();
     let month = d.getMonth() + 1;
     const year = d.getFullYear();
-    let hours = d.getHours();
-    let minutes = d.getMinutes();
-    let seconds = d.getSeconds();
 
     if (day < 10) day = '0' + day;
     if (month < 10) month = '0' + month;
-    if (hours < 10) hours = '0' + hours;
-    if (minutes < 10) minutes = '0' + minutes;
-    if (seconds < 10) seconds = '0' + seconds;
 
-    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    return `${day}/${month}/${year}`;
 };
 
-// Fonction pour convertir les dates du format dd/MM/yyyy HH:mm:ss au format yyyy-MM-dd HH:mm:ss
-const convertToDBFormat = (dateTime) => {
-    if (!dateTime) return null;
-    const [date, time] = dateTime.split(' ');
+// Fonction pour convertir les dates du format dd/MM/yyyy au format yyyy-MM-dd
+const convertToDBFormat = (date) => {
+    if (!date) return null;
     const [day, month, year] = date.split('/');
-    return `${year}-${month}-${day} ${time}`;
+    return `${year}-${month}-${day}`;
 };
 
 const usersControllers = {
@@ -42,9 +35,9 @@ const usersControllers = {
             // Formater les dates avant de renvoyer la réponse
             const formattedUsers = users.map(user => {
                 const formattedUser = user.toJSON();
-                formattedUser.birthday = formatDateTime(formattedUser.birthday);
-                formattedUser.createdAt = formatDateTime(formattedUser.createdAt);
-                formattedUser.updatedAt = formatDateTime(formattedUser.updatedAt);
+                formattedUser.birthday = formatDate(formattedUser.birthday);
+                formattedUser.createdAt = formatDate(formattedUser.createdAt);
+                formattedUser.updatedAt = formatDate(formattedUser.updatedAt);
                 return formattedUser;
             });
 
@@ -67,9 +60,9 @@ const usersControllers = {
 
             // Formater les dates avant de renvoyer la réponse
             const formattedUser = user.toJSON();
-            formattedUser.birthday = formatDateTime(formattedUser.birthday);
-            formattedUser.createdAt = formatDateTime(formattedUser.createdAt);
-            formattedUser.updatedAt = formatDateTime(formattedUser.updatedAt);
+            formattedUser.birthday = formatDate(formattedUser.birthday);
+            formattedUser.createdAt = formatDate(formattedUser.createdAt);
+            formattedUser.updatedAt = formatDate(formattedUser.updatedAt);
 
             res.status(200).json(formattedUser);
         } catch (error) {
@@ -152,5 +145,3 @@ const usersControllers = {
 };
 
 module.exports = usersControllers;
-
-
