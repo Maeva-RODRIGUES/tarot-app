@@ -25,6 +25,7 @@ import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData, updateUser } from "../api/usersApi";
 import { uploadFile } from "../api/uploadApi";
+import { parse, format, isValid } from "date-fns";
 
 function UserSettingPage() {
   const toast = useToast();
@@ -39,7 +40,7 @@ function UserSettingPage() {
     time_of_birth: "",
     avatarUrl: "", // Ajouté pour stocker l'URL de l'avatar
   });
- 
+
   const [avatarFile, setAvatarFile] = useState(null); // Ajouté pour gérer le fichier d'avatar
 
   useEffect(() => {
@@ -48,6 +49,15 @@ function UserSettingPage() {
         try {
           console.log("Fetching user data for userId:", user.userId);
           const data = await getUserData(user.userId);
+          // Si la date de naissance est présente, la formater correctement
+          if (data.birthday) {
+            const parsedDate = parse(data.birthday, "yyyy-MM-dd", new Date());
+            if (isValid(parsedDate)) {
+              data.birthday = format(parsedDate, "yyyy-MM-dd");
+            } else {
+              data.birthday = ""; // Ou toute autre valeur par défaut appropriée
+            }
+          }
           setUserData(data);
         } catch (error) {
           toast({
@@ -95,12 +105,32 @@ function UserSettingPage() {
     }
   };
 
+  const cleanAndFormatData = (data) => {
+    const cleanedData = { ...data };
+
+    // Effacer le champ birthday s'il est vide ou invalide
+    if (!cleanedData.birthday || isNaN(new Date(cleanedData.birthday).getTime())) {
+      delete cleanedData.birthday;
+    } else {
+      // Si la date est valide, la formater au format ISO (yyyy-MM-dd)
+      const parsedDate = parse(cleanedData.birthday, "yyyy-MM-dd", new Date());
+      if (isValid(parsedDate)) {
+        cleanedData.birthday = format(parsedDate, "yyyy-MM-dd");
+      } else {
+        delete cleanedData.birthday;
+      }
+    }
+
+    return cleanedData;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (user && user.userId) {
       try {
-        console.log("Tentative de mise à jour avec les données :", userData);
-        const response = await updateUser(user.userId, userData);
+        const cleanedData = cleanAndFormatData(userData);
+        console.log("Tentative de mise à jour avec les données :", cleanedData);
+        const response = await updateUser(user.userId, cleanedData);
         console.log("Réponse de l'API après mise à jour :", response);
         toast({
           title: "Informations mises à jour.",
