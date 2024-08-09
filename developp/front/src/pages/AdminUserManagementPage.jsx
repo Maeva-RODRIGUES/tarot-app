@@ -31,7 +31,7 @@ import {
   FaUsers,
   FaFileAlt,
 } from "react-icons/fa";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
@@ -40,6 +40,7 @@ import { fetchRoles } from "../api/rolesApi";
 
 function AdminUserManagementPage() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
   const toast = useToast();
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState({});
@@ -88,12 +89,21 @@ function AdminUserManagementPage() {
     navigate("/"); // Redirige vers la page d'accueil après la déconnexion
   };
 
+  // Fonction pour vérifier si une date est valide
+  const isValidDate = (date) => {
+    const dateObject = new Date(date);
+    return dateObject instanceof Date && !isNaN(dateObject);
+  };
+
   // Gestion de la mise à jour d'un utilisateur
   const handleUpdate = (user) => {
     setEditingUserId(user.id);
 
-    // Conversion de la date en format yyyy-MM-dd pour le champ de saisie
-    const formattedBirthday = user.birthday.split('/').reverse().join('-');
+    // Vérifier si la date est valide avant de la formater
+    let formattedBirthday = '';
+    if (isValidDate(user.birthday)) {
+      formattedBirthday = user.birthday.split('/').reverse().join('-');
+    }
 
     setEditFormData({
       name: user.name,
@@ -128,6 +138,28 @@ function AdminUserManagementPage() {
     setEditFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  // Fonction pour nettoyer et formater les données avant l'envoi
+  const cleanAndFormatData = (data) => {
+    const cleanedData = { ...data };
+
+    // Effacer les champs de mot de passe s'ils sont vides
+    if (!cleanedData.password) {
+      delete cleanedData.password;
+      delete cleanedData.confirmPassword;
+    }
+
+    // Convertir la date au format yyyy-MM-dd
+    if (cleanedData.birthday) {
+      const dateParts = cleanedData.birthday.split('-');
+      if (dateParts.length === 3) {
+        const [year, month, day] = dateParts;
+        cleanedData.birthday = `${year}-${month}-${day}`;
+      }
+    }
+
+    return cleanedData;
+  };
+
   // Soumission du formulaire de mise à jour
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -142,16 +174,7 @@ function AdminUserManagementPage() {
       return;
     }
 
-    const updatedData = { ...editFormData };
-
-    // Effacer les champs de mot de passe s'ils sont vides
-    if (!updatedData.password) {
-      delete updatedData.password;
-      delete updatedData.confirmPassword;
-    }
-
-    // Convertir la date au format yyyy-MM-dd
-    updatedData.birthday = editFormData.birthday;
+    const updatedData = cleanAndFormatData(editFormData);
 
     console.log("Données mises à jour à envoyer:", updatedData);
 

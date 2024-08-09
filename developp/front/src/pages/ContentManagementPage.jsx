@@ -1,6 +1,6 @@
 // src/pages/ContentManagementPage.jsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Flex,
@@ -21,7 +21,6 @@ import {
   FormLabel,
   Input,
   Textarea,
-  Select,
   Stack,
   Image,
   Grid,
@@ -30,197 +29,187 @@ import {
 import { FaFileAlt, FaCog, FaSignOutAlt, FaUsers } from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/context/AuthContext";
-import Header from "../components/HeaderDashboard"; // Assurez-vous que le chemin est correct
-import Footer from "../components/Footer"; // Assurez-vous que le chemin est correct
+import Header from "../components/HeaderDashboard";
+import Footer from "../components/Footer";
+import useCards from "../hooks/useCards";
+import useThemes from "../hooks/useThemes";
+import useReviews from "../hooks/useReviews";
 
 function ContentManagementPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const [content, setContent] = useState([]);
-  const [themes, setThemes] = useState([]);
+  const {
+    cards,
+    isLoading: isLoadingCards,
+    mutateCreateCard,
+    mutateUpdateCard,
+    mutateDeleteCard,
+  } = useCards();
+  const {
+    themes,
+    isLoading: isLoadingThemes,
+    mutateCreateTheme,
+    mutateUpdateTheme,
+    mutateDeleteTheme,
+  } = useThemes();
+  const {
+    reviews,
+    isLoading: isLoadingReviews,
+    mutateCreateReview,
+    mutateUpdateReview,
+    mutateDeleteReview,
+  } = useReviews();
+
   const [selectedContent, setSelectedContent] = useState(null);
-  const [form, setForm] = useState({ title: "", description: "", theme: "" });
+  const [form, setForm] = useState({ title_theme: "", meaning_theme: "" });
   const [editing, setEditing] = useState(false);
 
-  const [cards, setCards] = useState([]);
-  const [selectedCard, setSelectedCard] = useState(null);
+ 
   const [cardForm, setCardForm] = useState({
-    name: "",
-    interpretation: "",
-    keywords: "",
-    imageUrl: "",
+    id: "",
+    name_card: "",
+    keyword1: "",
+    keyword2: "",
+    keyword3: "",
+    image_url: "",
   });
   const [editingCard, setEditingCard] = useState(false);
 
-  const [comments, setComments] = useState([]);
   const [selectedComment, setSelectedComment] = useState(null);
   const [commentForm, setCommentForm] = useState({
-    author: "",
-    content: "",
+    rating: "",
+    comment: "",
+    date: "",
+    id_Users: "",
   });
   const [editingComment, setEditingComment] = useState(false);
-
-  useEffect(() => {
-    // Données simulées
-    const simulatedContent = [
-      {
-        id: 1,
-        title: "Contenu 1",
-        description: "Description du contenu 1",
-        themeName: "Thème 1",
-      },
-      {
-        id: 2,
-        title: "Contenu 2",
-        description: "Description du contenu 2",
-        themeName: "Thème 2",
-      },
-    ];
-
-    const simulatedThemes = [
-      { id: "1", name: "Thème 1" },
-      { id: "2", name: "Thème 2" },
-    ];
-
-    const simulatedCards = [
-      {
-        id: 1,
-        name: "Carte 1",
-        interpretation: "Interprétation 1",
-        keywords: "Mot-clé 1",
-        imageUrl: "https://via.placeholder.com/150",
-      },
-      {
-        id: 2,
-        name: "Carte 2",
-        interpretation: "Interprétation 2",
-        keywords: "Mot-clé 2",
-        imageUrl: "https://via.placeholder.com/150",
-      },
-    ];
-
-    const simulatedComments = [
-      { id: 1, author: "Auteur 1", content: "Commentaire 1" },
-      { id: 2, author: "Auteur 2", content: "Commentaire 2" },
-    ];
-
-    // Simuler le chargement des données
-    setContent(simulatedContent);
-    setThemes(simulatedThemes);
-    setCards(simulatedCards);
-    setComments(simulatedComments);
-  }, []);
 
   const handleLogout = () => {
     logout();
     navigate("/"); // Redirige vers la page d'accueil après la déconnexion
   };
 
-  const handleEdit = (item) => {
-    setSelectedContent(item);
+  // Gestion des thèmes
+  const handleEditTheme = (theme) => {
+    setSelectedContent(theme);
     setForm({
-      title: item.title,
-      description: item.description,
-      theme: item.theme,
+      title_theme: theme.title_theme,
+      meaning_theme: theme.meaning_theme,
     });
     setEditing(true);
   };
 
-  const handleDelete = (id) => {
-    setContent(content.filter((item) => item.id !== id));
+  const handleDeleteTheme = (id) => {
+    mutateDeleteTheme(id);
   };
 
-  const handleCardEdit = (card) => {
+  const handleSubmitTheme = (e) => {
+    e.preventDefault();
+    const themeData = {
+      title_theme: form.title_theme,
+      meaning_theme: form.meaning_theme,
+    };
+    if (editing) {
+      mutateUpdateTheme({ id: selectedContent.id, themeData });
+    } else {
+      mutateCreateTheme(themeData);
+    }
+    setForm({ title_theme: "", meaning_theme: "" });
+    setEditing(false);
+  };
+
+  // Gestion des cartes
+  const handleEditCard = (card) => {
     setSelectedCard(card);
     setCardForm({
-      name: card.name,
-      interpretation: card.interpretation,
-      keywords: card.keywords,
-      imageUrl: card.imageUrl,
+      id: card.id,
+      name_card: card.name_card,
+      keyword1: card.keyword1,
+      keyword2: card.keyword2,
+      keyword3: card.keyword3,
+      image_url: card.image_url,
     });
     setEditingCard(true);
   };
 
-  const handleCardDelete = (id) => {
-    setCards(cards.filter((card) => card.id !== id));
+  const handleDeleteCard = (id) => {
+    mutateDeleteCard(id);
   };
 
-  const handleCardSubmit = (e) => {
+  //-----------------------------------------------------------------------------------------
+  const handleSubmitCard = (e) => {
     e.preventDefault();
-
-    const newCard = { id: Date.now(), ...cardForm };
-
+    const cardData = {
+      name_card: cardForm.name_card,
+      keyword1: cardForm.keyword1,
+      keyword2: cardForm.keyword2,
+      keyword3: cardForm.keyword3,
+      image_url: cardForm.image_url,
+    };
     if (editingCard) {
-      setCards(
-        cards.map((card) => (card.id === selectedCard.id ? newCard : card)),
-      );
+      if (cardForm.id) {
+        console.log(
+          `Mise à jour de la carte avec ID: ${cardForm.id}`,
+          cardData,
+        );
+        mutateUpdateCard(cardForm.id, cardData);
+      } else {
+        console.error("ID de la carte sélectionnée est invalide");
+      }
     } else {
-      setCards([...cards, newCard]);
+      mutateCreateCard(cardData);
     }
-
-    setCardForm({ name: "", interpretation: "", keywords: "", imageUrl: "" });
+    setCardForm({
+      id: "",
+      name_card: "",
+      keyword1: "",
+      keyword2: "",
+      keyword3: "",
+      image_url: "",
+    });
     setEditingCard(false);
-    setSelectedCard(null);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  //----------------------------------------------------------------------------------------------------
 
-    if (editing) {
-      // Update existing content
-      setContent(
-        content.map((item) =>
-          item.id === selectedContent.id
-            ? {
-                ...item,
-                title: form.title,
-                description: form.description,
-                theme: form.theme,
-              }
-            : item,
-        ),
-      );
-    } else {
-      // Add new content
-      setContent([...content, { id: Date.now(), ...form }]);
-    }
-
-    setForm({ title: "", description: "", theme: "" });
-    setEditing(false);
-    setSelectedContent(null);
-  };
-
-  const handleCommentEdit = (comment) => {
+  // Gestion des commentaires
+  const handleEditComment = (comment) => {
     setSelectedComment(comment);
-    setCommentForm({ author: comment.author, content: comment.content });
+    setCommentForm({
+      rating: comment.rating,
+      comment: comment.comment,
+      date: comment.date,
+      id_Users: comment.id_Users,
+    });
     setEditingComment(true);
   };
 
-  const handleCommentDelete = (id) => {
-    setComments(comments.filter((comment) => comment.id !== id));
+  const handleDeleteComment = (id) => {
+    mutateDeleteReview(id);
   };
 
-  const handleCommentSubmit = (e) => {
+  const handleSubmitComment = (e) => {
     e.preventDefault();
-
-    const newComment = { id: Date.now(), ...commentForm };
-
+    const commentData = {
+      rating: commentForm.rating,
+      comment: commentForm.comment,
+      date: commentForm.date,
+      id_Users: commentForm.id_Users,
+    };
     if (editingComment) {
-      setComments(
-        comments.map((comment) =>
-          comment.id === selectedComment.id ? newComment : comment,
-        ),
-      );
+      mutateUpdateReview({ id: selectedComment.id, commentData });
     } else {
-      setComments([...comments, newComment]);
+      mutateCreateReview(commentData);
     }
-
-    setCommentForm({ author: "", content: "" });
+    setCommentForm({ rating: "", comment: "", date: "", id_Users: "" });
     setEditingComment(false);
-    setSelectedComment(null);
   };
+
+  if (isLoadingCards || isLoadingThemes || isLoadingReviews) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
@@ -287,43 +276,29 @@ function ContentManagementPage() {
       <Box ml="250px" p="8" pt="2" flex="1">
         <Heading mb="12">🔮Gestion des thèmes</Heading>
 
-        {/* Bloc de Gestion des Contenus */}
         <Stack spacing="4">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmitTheme}>
             <FormControl mb="4">
               <FormLabel>Titre</FormLabel>
               <Input
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-                placeholder="Titre du contenu"
+                value={form.title_theme}
+                onChange={(e) =>
+                  setForm({ ...form, title_theme: e.target.value })
+                }
+                placeholder="Titre du thème"
                 required
               />
             </FormControl>
             <FormControl mb="4">
               <FormLabel>Description</FormLabel>
               <Textarea
-                value={form.description}
+                value={form.meaning_theme}
                 onChange={(e) =>
-                  setForm({ ...form, description: e.target.value })
+                  setForm({ ...form, meaning_theme: e.target.value })
                 }
-                placeholder="Description du contenu"
+                placeholder="Description du thème"
                 required
               />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Thème</FormLabel>
-              <Select
-                value={form.theme}
-                onChange={(e) => setForm({ ...form, theme: e.target.value })}
-                placeholder="Sélectionnez un thème"
-                required
-              >
-                {themes.map((theme) => (
-                  <option key={theme.id} value={theme.name}>
-                    {theme.name}
-                  </option>
-                ))}
-              </Select>
             </FormControl>
             <Button
               bg="customBlue"
@@ -340,27 +315,25 @@ function ContentManagementPage() {
               <Tr>
                 <Th>Titre</Th>
                 <Th>Description</Th>
-                <Th>Thème</Th>
                 <Th>Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {content.map((item) => (
-                <Tr key={item.id}>
-                  <Td>{item.title}</Td>
-                  <Td>{item.description}</Td>
-                  <Td>{item.themeName}</Td>
+              {themes.map((theme) => (
+                <Tr key={theme.id}>
+                  <Td>{theme.title_theme}</Td>
+                  <Td>{theme.meaning_theme}</Td>
                   <Td>
                     <Stack direction="row" spacing="4">
                       <Button
-                        onClick={() => handleEdit(item)}
+                        onClick={() => handleEditTheme(theme)}
                         aria-label="Éditer"
                         colorScheme="blue"
                       >
                         Éditer
                       </Button>
                       <Button
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDeleteTheme(theme.id)}
                         aria-label="Supprimer"
                         colorScheme="red"
                       >
@@ -378,48 +351,66 @@ function ContentManagementPage() {
           🃏Gestion des cartes
         </Heading>
 
-        {/* Bloc de Gestion des Cartes */}
         <Stack spacing="4">
-          <form onSubmit={handleCardSubmit}>
+          <form onSubmit={handleSubmitCard}>
+            <FormControl mb="4">
+              <FormLabel>ID</FormLabel>
+              <Input
+                value={cardForm.id}
+                readOnly
+                placeholder="ID de la carte"
+              />
+            </FormControl>
             <FormControl mb="4">
               <FormLabel>Nom</FormLabel>
               <Input
-                value={cardForm.name}
+                value={cardForm.name_card}
                 onChange={(e) =>
-                  setCardForm({ ...cardForm, name: e.target.value })
+                  setCardForm({ ...cardForm, name_card: e.target.value })
                 }
                 placeholder="Nom de la carte"
                 required
               />
             </FormControl>
             <FormControl mb="4">
-              <FormLabel>Interprétation</FormLabel>
-              <Textarea
-                value={cardForm.interpretation}
+              <FormLabel>Mot-clé 1</FormLabel>
+              <Input
+                value={cardForm.keyword1}
                 onChange={(e) =>
-                  setCardForm({ ...cardForm, interpretation: e.target.value })
+                  setCardForm({ ...cardForm, keyword1: e.target.value })
                 }
-                placeholder="Interprétation de la carte"
+                placeholder="Mot-clé 1"
                 required
               />
             </FormControl>
             <FormControl mb="4">
-              <FormLabel>Mots-clés</FormLabel>
+              <FormLabel>Mot-clé 2</FormLabel>
               <Input
-                value={cardForm.keywords}
+                value={cardForm.keyword2}
                 onChange={(e) =>
-                  setCardForm({ ...cardForm, keywords: e.target.value })
+                  setCardForm({ ...cardForm, keyword2: e.target.value })
                 }
-                placeholder="Mots-clés de la carte"
+                placeholder="Mot-clé 2"
+                required
+              />
+            </FormControl>
+            <FormControl mb="4">
+              <FormLabel>Mot-clé 3</FormLabel>
+              <Input
+                value={cardForm.keyword3}
+                onChange={(e) =>
+                  setCardForm({ ...cardForm, keyword3: e.target.value })
+                }
+                placeholder="Mot-clé 3"
                 required
               />
             </FormControl>
             <FormControl mb="4">
               <FormLabel>Image URL</FormLabel>
               <Input
-                value={cardForm.imageUrl}
+                value={cardForm.image_url}
                 onChange={(e) =>
-                  setCardForm({ ...cardForm, imageUrl: e.target.value })
+                  setCardForm({ ...cardForm, image_url: e.target.value })
                 }
                 placeholder="URL de l'image"
                 required
@@ -445,31 +436,29 @@ function ContentManagementPage() {
                 bg="white"
               >
                 <Image
-                  src={card.imageUrl}
-                  alt={card.name}
+                  src={card.image_url}
+                  alt={card.name_card}
                   boxSize="150px"
                   objectFit="cover"
                   mb="4"
                 />
                 <Heading size="md" mb="2">
-                  {card.name}
+                  {card.name_card}
                 </Heading>
                 <Text mb="2">
-                  <strong>Interprétation:</strong> {card.interpretation}
-                </Text>
-                <Text mb="2">
-                  <strong>Mots-clés:</strong> {card.keywords}
+                  <strong>Interprétation:</strong> {card.keyword1},{" "}
+                  {card.keyword2}, {card.keyword3}
                 </Text>
                 <Stack direction="row" spacing="4">
                   <Button
-                    onClick={() => handleCardEdit(card)}
+                    onClick={() => handleEditCard(card)}
                     aria-label="Éditer"
                     colorScheme="blue"
                   >
                     Éditer
                   </Button>
                   <Button
-                    onClick={() => handleCardDelete(card.id)}
+                    onClick={() => handleDeleteCard(card.id)}
                     aria-label="Supprimer"
                     colorScheme="red"
                   >
@@ -485,28 +474,49 @@ function ContentManagementPage() {
           🖋Gestion des commentaires
         </Heading>
 
-        {/* Bloc de Gestion des Commentaires */}
         <Stack spacing="4">
-          <form onSubmit={handleCommentSubmit}>
+          <form onSubmit={handleSubmitComment}>
             <FormControl mb="4">
-              <FormLabel>Auteur</FormLabel>
+              <FormLabel>Évaluation</FormLabel>
               <Input
-                value={commentForm.author}
+                value={commentForm.rating}
                 onChange={(e) =>
-                  setCommentForm({ ...commentForm, author: e.target.value })
+                  setCommentForm({ ...commentForm, rating: e.target.value })
                 }
-                placeholder="Auteur du commentaire"
+                placeholder="Évaluation"
                 required
               />
             </FormControl>
             <FormControl mb="4">
               <FormLabel>Commentaire</FormLabel>
               <Textarea
-                value={commentForm.content}
+                value={commentForm.comment}
                 onChange={(e) =>
-                  setCommentForm({ ...commentForm, content: e.target.value })
+                  setCommentForm({ ...commentForm, comment: e.target.value })
                 }
                 placeholder="Contenu du commentaire"
+                required
+              />
+            </FormControl>
+            <FormControl mb="4">
+              <FormLabel>Date</FormLabel>
+              <Input
+                value={commentForm.date}
+                onChange={(e) =>
+                  setCommentForm({ ...commentForm, date: e.target.value })
+                }
+                placeholder="Date"
+                required
+              />
+            </FormControl>
+            <FormControl mb="4">
+              <FormLabel>ID Utilisateur</FormLabel>
+              <Input
+                value={commentForm.id_Users}
+                onChange={(e) =>
+                  setCommentForm({ ...commentForm, id_Users: e.target.value })
+                }
+                placeholder="ID Utilisateur"
                 required
               />
             </FormControl>
@@ -521,7 +531,7 @@ function ContentManagementPage() {
           </form>
 
           <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
-            {comments.map((comment) => (
+            {reviews.map((comment) => (
               <Box
                 key={comment.id}
                 p="4"
@@ -530,19 +540,19 @@ function ContentManagementPage() {
                 bg="white"
               >
                 <Heading size="md" mb="2">
-                  {comment.author}
+                  {comment.id_Users}
                 </Heading>
-                <Text mb="2">{comment.content}</Text>
+                <Text mb="2">{comment.comment}</Text>
                 <Stack direction="row" spacing="4">
                   <Button
-                    onClick={() => handleCommentEdit(comment)}
+                    onClick={() => handleEditComment(comment)}
                     aria-label="Éditer"
                     colorScheme="blue"
                   >
                     Éditer
                   </Button>
                   <Button
-                    onClick={() => handleCommentDelete(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                     aria-label="Supprimer"
                     colorScheme="red"
                   >

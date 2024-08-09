@@ -3,18 +3,14 @@
 const bcrypt = require('bcrypt');
 const { User, Role } = require('../models/indexModels');
 
-// Fonction pour formater les dates au format dd/MM/yyyy
+// Fonction pour formater les dates au format yyyy-MM-dd
 const formatDate = (date) => {
     if (!date) return null;
     const d = new Date(date);
-    let day = d.getDate();
-    let month = d.getMonth() + 1;
+    const day = ('0' + d.getDate()).slice(-2);
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
     const year = d.getFullYear();
-
-    if (day < 10) day = '0' + day;
-    if (month < 10) month = '0' + month;
-
-    return `${day}/${month}/${year}`;
+    return `${year}-${month}-${day}`;
 };
 
 // Fonction pour convertir les dates du format dd/MM/yyyy au format yyyy-MM-dd
@@ -145,3 +141,4 @@ const usersControllers = {
 };
 
 module.exports = usersControllers;
+

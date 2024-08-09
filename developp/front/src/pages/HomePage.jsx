@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 // HomePage.jsx
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Box, Heading, Flex, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import Header from "../components/Header";
@@ -12,29 +12,11 @@ import Cartomancienne from "../components/TarotReaderCard";
 import { useParallax } from "../hooks/useParallax";
 import backgroundTexture from "../assets/img/backgroungtexture.jpg";
 import footerBanner from "../assets/img/footer-banner.jpg";
-import CardList from "../components/CardList"; // Importation du composant CardList
-import { fetchCards } from "../api/cardsApi"; // Importation de l'appel API
 
 const MotionBox = motion(Box);
 
 function Homepage() {
-  const [cards, setCards] = useState([]);
-  const [error, setError] = useState(null);
   const y = useParallax([0, 300], [0, 50]);
-
-  useEffect(() => {
-    const fetchCardsData = async () => {
-      try {
-        const data = await fetchCards();
-        setCards(data);
-      } catch (error) {
-        console.error('Erreur de récupération des cartes:', error);
-        setError('Erreur de récupération des cartes. Veuillez réessayer plus tard.');
-      }
-    };
-
-    fetchCardsData();
-  }, []);
 
   return (
     <Box>
@@ -48,11 +30,6 @@ function Homepage() {
           TOUS NOS TIRAGES
         </Heading>
         <CardsMenu />
-        {error ? (
-          <Box color="red.500">{error}</Box>
-        ) : (
-          <CardList cards={cards} /> // Intégration du composant CardList
-        )}
         <Box position="relative" textAlign="center" mt={8}>
           <MotionBox
             position="absolute"
@@ -110,3 +87,4 @@ function Homepage() {
 }
 
 export default Homepage;
+

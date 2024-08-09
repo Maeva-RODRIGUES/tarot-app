@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     birthday: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: false,
       get() {
         const rawValue = this.getDataValue('birthday');
@@ -106,3 +106,4 @@ module.exports = (sequelize, DataTypes) => {
 
   return User;
 };
+

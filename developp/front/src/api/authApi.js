@@ -30,3 +30,12 @@ export const getUserData = async (userId) => {
   console.log("Données utilisateur récupérées :", response.data);
   return response.data;
 };
+
+
+// Mettre à jour les informations d'un utilisateur existant
+export const updateUserData = async (userId, userData) => {
+  console.log(`Tentative de mise à jour des données utilisateur pour l'ID : ${userId} avec les données :`, userData);
+  const response = await api.put(`${USERS_ENDPOINT}/${userId}`, userData);
+  console.log("Données utilisateur mises à jour :", response.data);
+  return response.data;
+};

@@ -1,33 +1,40 @@
-// src/pages/LoveTarotPage.jsx
+// src/pages/TarotDrawPage.jsx : pour afficher les tirages en fonction du thème sélectionné
 
 import React, { useState, useEffect } from "react";
 import { Box, Heading, Text, Icon } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
 import { TbCardsFilled } from "react-icons/tb";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import TarotDeck from "../components/TarotDeck";
 import CommentSection from "../components/CommentSection.jsx";
-import { fetchCards } from "../api/cardsApi"; 
-import { useAuth } from "../components/context/AuthContext"; 
+import { fetchCards } from "../api/cardsApi"; // Importation de l'appel API
 
-function LoveTarotPage() {
-  const { user } = useAuth();
+function TarotDrawPage() {
+  const { theme } = useParams();
   const [cards, setCards] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCardsData = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("Token not found");
+        }
+
         const data = await fetchCards();
         setCards(data);
       } catch (error) {
-        console.error('Erreur de récupération des cartes:', error);
-        setError('Erreur de récupération des cartes. Veuillez réessayer plus tard.');
+        console.error("Erreur de récupération des cartes:", error);
+        setError(
+          "Erreur de récupération des cartes. Veuillez réessayer plus tard.",
+        );
       }
     };
 
     fetchCardsData();
-  }, []);
+  }, [theme]);
 
   return (
     <>
@@ -40,7 +47,7 @@ function LoveTarotPage() {
         />
         <Box p={4} textAlign="center">
           <Heading as="h1" size="xl" mb={10}>
-            VOTRE TIRAGE AMOUR
+            VOTRE TIRAGE {theme.toUpperCase()}
           </Heading>
           <Text fontSize="lg" mb={8}>
             <Icon as={TbCardsFilled} mr={2} />
@@ -54,7 +61,7 @@ function LoveTarotPage() {
           {error ? (
             <Box color="red.500">{error}</Box>
           ) : (
-            <TarotDeck cards={cards} userId={user?.id} />
+            <TarotDeck cards={cards} />
           )}
           <CommentSection />
         </Box>
@@ -68,4 +75,4 @@ function LoveTarotPage() {
   );
 }
 
-export default LoveTarotPage;
+export default TarotDrawPage;

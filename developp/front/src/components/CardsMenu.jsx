@@ -11,7 +11,7 @@ function ImageRow() {
   return (
     <Box as="main" p={20}>
       <Flex justify="center" align="center">
-        <Link to="/love">
+        <Link to="/tarot-draw/amour">
           <MotionBox
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -20,7 +20,7 @@ function ImageRow() {
             <Image src="/src/assets/icons/cardiconlove.png" alt="Love" boxSize="400px" objectFit="cover" />
           </MotionBox>
         </Link>
-        <Link to="/work">
+        <Link to="/tarot-draw/carriere">
           <MotionBox
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -29,7 +29,7 @@ function ImageRow() {
             <Image src="/src/assets/icons/cardiconwork.png" alt="Work" boxSize="400px" objectFit="cover" />
           </MotionBox>
         </Link>
-        <Link to="/spirit">
+        <Link to="/tarot-draw/spiritualite">
           <MotionBox
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}

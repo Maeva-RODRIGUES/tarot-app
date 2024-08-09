@@ -23,7 +23,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
-import { getUserData, updateUserData } from "../api/usersApi";
+import { getUserData, updateUser } from "../api/usersApi"; // Remplacer updateUserData par updateUser
 import { uploadFile } from "../api/uploadApi";
 
 function UserSettingPage() {
@@ -43,8 +43,9 @@ function UserSettingPage() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (user) {
+      if (user && user.userId) {
         try {
+          console.log("Fetching user data for userId:", user.userId);
           const data = await getUserData(user.userId);
           setUserData(data);
         } catch (error) {
@@ -96,7 +97,9 @@ function UserSettingPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await updateUserData(user.userId, userData);
+      console.log("Tentative de mise à jour avec les données :", userData);
+      const response = await updateUser(user.userId, userData); // Utiliser updateUser
+      console.log("Réponse de l'API après mise à jour :", response);
       toast({
         title: "Informations mises à jour.",
         description: "Vos informations ont été mises à jour avec succès.",
@@ -105,6 +108,7 @@ function UserSettingPage() {
         isClosable: true,
       });
     } catch (error) {
+      console.error("Erreur lors de la mise à jour :", error);
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour les informations.",
@@ -138,7 +142,6 @@ function UserSettingPage() {
         boxShadow="md"
       >
         <VStack align="start" spacing="4" w="full">
-          {/* Début de la mise à jour */}
           <RouterLink
             to={`/profile/${user?.userId}`}
             style={{ textDecoration: "none", color: "white" }}
@@ -166,7 +169,6 @@ function UserSettingPage() {
               <Text>Paramètres</Text>
             </HStack>
           </RouterLink>
-          {/* Fin de la mise à jour */}
 
           <Spacer />
 
@@ -192,11 +194,7 @@ function UserSettingPage() {
           <FormControl id="avatar" mt="4">
             <FormLabel>Mettre à jour l'avatar</FormLabel>
             <Input type="file" onChange={handleAvatarChange} />
-            <Button
-              mt="2"
-              colorScheme="blue"
-              onClick={handleAvatarUpload}
-            >
+            <Button mt="2" colorScheme="blue" onClick={handleAvatarUpload}>
               Télécharger
             </Button>
           </FormControl>
@@ -204,7 +202,7 @@ function UserSettingPage() {
         {/* Fin de la section ajoutée pour l'avatar */}
         <form onSubmit={handleSubmit}>
           <Stack spacing="4">
-            <FormControl id="last-name" isRequired>
+            <FormControl id="last-name">
               <FormLabel>Nom</FormLabel>
               <Input
                 placeholder="Votre nom"
@@ -215,7 +213,7 @@ function UserSettingPage() {
               />
             </FormControl>
 
-            <FormControl id="first-name" isRequired>
+            <FormControl id="first-name">
               <FormLabel>Prénom</FormLabel>
               <Input
                 placeholder="Votre prénom"
@@ -226,7 +224,7 @@ function UserSettingPage() {
               />
             </FormControl>
 
-            <FormControl id="email" isRequired>
+            <FormControl id="email">
               <FormLabel>Email</FormLabel>
               <Input
                 type="email"
@@ -238,7 +236,7 @@ function UserSettingPage() {
               />
             </FormControl>
 
-            <FormControl id="birthdate" isRequired>
+            <FormControl id="birthdate">
               <FormLabel>Date de naissance</FormLabel>
               <Input
                 type="date"
@@ -250,7 +248,7 @@ function UserSettingPage() {
               />
             </FormControl>
 
-            <FormControl id="birthplace" isRequired>
+            <FormControl id="birthplace">
               <FormLabel>Ville de naissance</FormLabel>
               <Input
                 placeholder="Votre ville de naissance"
@@ -261,7 +259,7 @@ function UserSettingPage() {
               />
             </FormControl>
 
-            <FormControl id="birthtime" isRequired>
+            <FormControl id="birthtime">
               <FormLabel>Heure de naissance</FormLabel>
               <Input
                 type="time"
@@ -275,7 +273,13 @@ function UserSettingPage() {
 
             <FormControl id="password">
               <FormLabel>Mot de passe</FormLabel>
-              <Input type="password" placeholder="Votre mot de passe" />
+              <Input
+                type="password"
+                placeholder="Votre mot de passe"
+                onChange={(e) =>
+                  setUserData({ ...userData, password: e.target.value })
+                }
+              />
             </FormControl>
 
             <FormControl id="confirm-password">
@@ -283,6 +287,9 @@ function UserSettingPage() {
               <Input
                 type="password"
                 placeholder="Confirmez votre mot de passe"
+                onChange={(e) =>
+                  setUserData({ ...userData, confirmPassword: e.target.value })
+                }
               />
             </FormControl>
 
@@ -306,4 +313,3 @@ function UserSettingPage() {
 }
 
 export default UserSettingPage;
-

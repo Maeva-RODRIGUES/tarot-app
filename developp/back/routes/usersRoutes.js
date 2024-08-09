@@ -48,7 +48,6 @@ router.post('/',
 // Route pour mettre à jour un utilisateur par son ID (accessible uniquement aux admins)
 router.put('/:id',
     protect,
-    authorize(['Admin']),
     param('id').isInt().withMessage('ID doit être un entier'),
     body('name').optional().notEmpty().withMessage('Le nom ne peut pas être vide'),
     body('surname').optional().notEmpty().withMessage('Le prénom ne peut pas être vide'),
@@ -58,9 +57,17 @@ router.put('/:id',
     body('time_of_birth').optional().matches(/\d{2}:\d{2}/).withMessage('L\'heure de naissance doit être au format HH:MM'),
     body('password').optional().isLength({ min: 6 }).withMessage('Le mot de passe doit contenir au moins 6 caractères'),
     validate,
+    (req, res, next) => {
+      // Permet à l'utilisateur de mettre à jour ses propres informations
+      if (req.user.id === parseInt(req.params.id, 10) || req.user.role.role_name === 'Admin') {
+        next();
+      } else {
+        return res.status(403).json({ message: 'Accès interdit' });
+      }
+    },
     usersController.updateUser
-);
-
+  );
+  
 // Route pour supprimer un utilisateur par son ID (accessible uniquement aux admins)
 router.delete('/:id',
     protect,

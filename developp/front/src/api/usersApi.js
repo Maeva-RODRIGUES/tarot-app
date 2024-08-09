@@ -19,7 +19,9 @@ export const createUser = async (userData) => {
 
 // Mettre à jour un utilisateur existant
 export const updateUser = async (id, userData) => {
+  console.log("Mise à jour des données utilisateur pour ID:", id, "avec les données:", userData);
   const response = await api.put(`${USERS_ENDPOINT}/${id}`, userData);
+  console.log("Réponse de l'API après mise à jour:", response.data);
   return response.data;
 };
 
@@ -34,8 +36,3 @@ export const getUserData = async (id) => {
   return response.data;
 };
 
-// Mettre à jour les données d'un utilisateur spécifique
-export const updateUserData = async (id, userData) => {
-  const response = await api.put(`${USERS_ENDPOINT}/${id}`, userData);
-  return response.data;
-};

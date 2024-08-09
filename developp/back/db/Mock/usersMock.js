@@ -1,6 +1,15 @@
-// Importation des bibliothèques : 
+// Importation des bibliothèques :
 const faker = require('faker'); // Faker est utilisé pour générer des données fictives.
 const bcrypt = require('bcrypt'); // Bcrypt est utilisé pour hacher les mots de passe.
+
+// Fonction pour formater les dates au format yyyy-MM-dd
+const formatDate = (date) => {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const day = d.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 // Définition d'une fonction asynchrone pour générer un tableau d'utilisateurs fictifs
 const generateUsers = async (numberOfUsers) => {
@@ -18,10 +27,10 @@ const generateUsers = async (numberOfUsers) => {
       name: faker.name.firstName(), // Prénom fictif
       surname: faker.name.lastName(), // Nom de famille fictif
       email: faker.internet.email(), // Email fictif
-      birthday: faker.date.past(30, new Date('2000-01-01')), // Date de naissance fictive
+      birthday: formatDate(faker.date.past(30, new Date('2000-01-01'))), // Date de naissance fictive formatée
       city_of_birth: faker.address.city(), // Ville de naissance fictive
       // Heure de naissance fictive, formatée en HH:MM
-      time_of_birth: `${faker.datatype.number({ min: 0, max: 23 })}:${faker.datatype.number({ min: 0, max: 59 })}`,
+      time_of_birth: `${faker.datatype.number({ min: 0, max: 23 }).toString().padStart(2, '0')}:${faker.datatype.number({ min: 0, max: 59 }).toString().padStart(2, '0')}`,
       password: hashedPassword, // Mot de passe haché
       id_Roles: faker.datatype.number({ min: 1, max: 5 }) // ID de rôle fictif
     };
@@ -36,6 +45,7 @@ const generateUsers = async (numberOfUsers) => {
 
 // Exportation de la fonction generateUsers pour une utilisation dans d'autres fichiers
 module.exports = generateUsers;
+
 
 
 
