@@ -42,17 +42,27 @@ const reviewsControllers = {
     },
 
     // Créer un avis pour un utilisateur spécifique
-    createReviewForUser: async (req, res) => {
-        const userId = req.params.userId;
-        console.log(`Requête reçue pour créer un avis pour l'utilisateur avec l'ID: ${userId}`);
-        try {
-            const newReview = await Review.create({ ...req.body, id_Users: userId });
-            res.status(201).json(newReview);
-        } catch (error) {
-            res.status(400).json({ message: 'Erreur lors de la création de l\'avis', error });
-        }
-    },
-
+createReviewForUser: async (req, res) => {
+    const { userId } = req.params;
+    const { rating, comment, date } = req.body;
+  
+    if (!rating || !comment || !date) {
+      return res.status(400).json({ message: "Les champs rating, comment et date sont obligatoires." });
+    }
+  
+    try {
+      const newReview = await Review.create({
+        rating,
+        comment,
+        date,
+        id_Users: userId,
+      });
+      res.status(201).json(newReview);
+    } catch (error) {
+      res.status(400).json({ message: "Erreur lors de la création de l'avis", error });
+    }
+  },
+  
     // Créer un nouvel avis
     createReview: async (req, res) => {
         console.log("Requête reçue pour créer un nouvel avis :", req.body);

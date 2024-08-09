@@ -68,11 +68,8 @@ function UserSettingPage() {
           setUserData(data);
 
           // Récupérer les commentaires de l'utilisateur
-          const userReviews = await fetchReviews();
-          const userSpecificReviews = userReviews.filter(
-            (review) => review.id_Users === user.userId
-          );
-          setReviews(userSpecificReviews);
+          const userReviews = await fetchReviews(user.userId);
+          setReviews(userReviews);
         } catch (error) {
           toast({
             title: "Erreur",
@@ -177,7 +174,7 @@ function UserSettingPage() {
           isClosable: true,
         });
       } else {
-        await createReview({ ...newReview, id_Users: user.userId });
+        await createReview(user.userId, { ...newReview, date: new Date() });
         toast({
           title: "Commentaire ajouté",
           description: "Votre commentaire a été ajouté avec succès.",
@@ -186,11 +183,8 @@ function UserSettingPage() {
           isClosable: true,
         });
       }
-      const updatedReviews = await fetchReviews();
-      const userSpecificReviews = updatedReviews.filter(
-        (review) => review.id_Users === user.userId
-      );
-      setReviews(userSpecificReviews);
+      const updatedReviews = await fetchReviews(user.userId);
+      setReviews(updatedReviews);
       setNewReview({ rating: 0, comment: "" });
       setEditingReview(null);
     } catch (error) {
@@ -219,11 +213,8 @@ function UserSettingPage() {
         duration: 5000,
         isClosable: true,
       });
-      const updatedReviews = await fetchReviews();
-      const userSpecificReviews = updatedReviews.filter(
-        (review) => review.id_Users === user.userId
-      );
-      setReviews(userSpecificReviews);
+      const updatedReviews = await fetchReviews(user.userId);
+      setReviews(updatedReviews);
     } catch (error) {
       toast({
         title: "Erreur",

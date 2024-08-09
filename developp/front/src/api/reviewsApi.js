@@ -5,15 +5,16 @@ import { REVIEWS_ENDPOINT } from "./apiEndpoints";
 
 // Récupérer tous les commentaires
 export const fetchReviews = async (userId) => {
-  const response = await api.get(REVIEWS_ENDPOINT, {
-    params: { userId }, // Ajoutez les paramètres si nécessaire
-  });
+  const response = await api.get(`${REVIEWS_ENDPOINT}/user/${userId}`);
   return response.data;
 };
 
-// Créer un nouveau commentaire
-export const createReview = async (reviewData) => {
-  const response = await api.post(REVIEWS_ENDPOINT, reviewData);
+// Créer un nouveau commentaire pour un utilisateur spécifique
+export const createReview = async (userId, reviewData) => {
+  const response = await api.post(
+    `${REVIEWS_ENDPOINT}/user/${userId}`,
+    reviewData
+  );
   return response.data;
 };
 
