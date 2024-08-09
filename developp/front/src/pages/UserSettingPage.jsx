@@ -23,7 +23,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
-import { getUserData, updateUser } from "../api/usersApi"; // Remplacer updateUserData par updateUser
+import { getUserData, updateUser } from "../api/usersApi";
 import { uploadFile } from "../api/uploadApi";
 
 function UserSettingPage() {
@@ -39,6 +39,7 @@ function UserSettingPage() {
     time_of_birth: "",
     avatarUrl: "", // Ajouté pour stocker l'URL de l'avatar
   });
+ 
   const [avatarFile, setAvatarFile] = useState(null); // Ajouté pour gérer le fichier d'avatar
 
   useEffect(() => {
@@ -68,7 +69,7 @@ function UserSettingPage() {
   };
 
   const handleAvatarUpload = async () => {
-    if (avatarFile) {
+    if (avatarFile && user && user.userId) {
       try {
         const formData = new FormData();
         formData.append("image", avatarFile);
@@ -96,22 +97,33 @@ function UserSettingPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      console.log("Tentative de mise à jour avec les données :", userData);
-      const response = await updateUser(user.userId, userData); // Utiliser updateUser
-      console.log("Réponse de l'API après mise à jour :", response);
-      toast({
-        title: "Informations mises à jour.",
-        description: "Vos informations ont été mises à jour avec succès.",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
-    } catch (error) {
-      console.error("Erreur lors de la mise à jour :", error);
+    if (user && user.userId) {
+      try {
+        console.log("Tentative de mise à jour avec les données :", userData);
+        const response = await updateUser(user.userId, userData);
+        console.log("Réponse de l'API après mise à jour :", response);
+        toast({
+          title: "Informations mises à jour.",
+          description: "Vos informations ont été mises à jour avec succès.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour :", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de mettre à jour les informations.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } else {
+      console.error("Erreur: l'utilisateur ou l'ID utilisateur n'est pas défini.");
       toast({
         title: "Erreur",
-        description: "Impossible de mettre à jour les informations.",
+        description: "L'utilisateur n'est pas connecté ou l'ID utilisateur est introuvable.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -188,7 +200,6 @@ function UserSettingPage() {
 
       <Box ml="250px" p="8" flex="1">
         <Heading mb="4">Paramètres du Profil</Heading>
-        {/* Début de la section ajoutée pour l'avatar */}
         <VStack mb="8" align="center">
           <Avatar size="xl" src={userData.avatarUrl} />
           <FormControl id="avatar" mt="4">
@@ -199,7 +210,6 @@ function UserSettingPage() {
             </Button>
           </FormControl>
         </VStack>
-        {/* Fin de la section ajoutée pour l'avatar */}
         <form onSubmit={handleSubmit}>
           <Stack spacing="4">
             <FormControl id="last-name">
@@ -295,11 +305,11 @@ function UserSettingPage() {
 
             <Button
               type="submit"
-              bg="#191970" // Bleu nuit
+              bg="#191970"
               color="white"
-              _hover={{ bg: "#0f1a4c" }} // Couleur de survol
-              width="200px" // Définir la largeur du bouton
-              alignSelf="center" // Centrer le bouton horizontalement
+              _hover={{ bg: "#0f1a4c" }}
+              width="200px"
+              alignSelf="center"
             >
               Mettre à jour
             </Button>
