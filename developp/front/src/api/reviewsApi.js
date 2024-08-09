@@ -3,12 +3,11 @@
 import api from "./configAxios";
 import { REVIEWS_ENDPOINT } from "./apiEndpoints";
 
-// Récupérer tous les commentaires ou les commentaires d'un utilisateur spécifique
-export const fetchReviews = async (userId = null) => {
-  const url = userId
-    ? `${REVIEWS_ENDPOINT}?userId=${userId}`
-    : REVIEWS_ENDPOINT;
-  const response = await api.get(url);
+// Récupérer tous les commentaires
+export const fetchReviews = async (userId) => {
+  const response = await api.get(REVIEWS_ENDPOINT, {
+    params: { userId }, // Ajoutez les paramètres si nécessaire
+  });
   return response.data;
 };
 

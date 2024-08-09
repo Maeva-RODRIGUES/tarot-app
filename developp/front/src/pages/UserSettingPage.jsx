@@ -1,7 +1,5 @@
 // src/pages/UserSettingPage.jsx
 
-// src/pages/UserSettingPage.jsx
-
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -34,7 +32,7 @@ import {
   createReview,
   updateReview,
   deleteReview,
-} from "../api/reviewsApi"; // Importation corrigée
+} from "../api/reviewsApi"; // Importation des fonctions pour les commentaires
 
 function UserSettingPage() {
   const toast = useToast();
@@ -70,8 +68,11 @@ function UserSettingPage() {
           setUserData(data);
 
           // Récupérer les commentaires de l'utilisateur
-          const userReviews = await fetchReviews(user.userId);
-          setReviews(userReviews);
+          const userReviews = await fetchReviews();
+          const userSpecificReviews = userReviews.filter(
+            (review) => review.id_Users === user.userId
+          );
+          setReviews(userSpecificReviews);
         } catch (error) {
           toast({
             title: "Erreur",
@@ -185,8 +186,11 @@ function UserSettingPage() {
           isClosable: true,
         });
       }
-      const updatedReviews = await getReviews(user.userId);
-      setReviews(updatedReviews);
+      const updatedReviews = await fetchReviews();
+      const userSpecificReviews = updatedReviews.filter(
+        (review) => review.id_Users === user.userId
+      );
+      setReviews(userSpecificReviews);
       setNewReview({ rating: 0, comment: "" });
       setEditingReview(null);
     } catch (error) {
@@ -201,7 +205,7 @@ function UserSettingPage() {
   };
 
   const handleEditReview = (review) => {
-    setNewReview(review);
+    setNewReview({ rating: review.rating, comment: review.comment });
     setEditingReview(review);
   };
 
@@ -215,8 +219,11 @@ function UserSettingPage() {
         duration: 5000,
         isClosable: true,
       });
-      const updatedReviews = await getReviews(user.userId);
-      setReviews(updatedReviews);
+      const updatedReviews = await fetchReviews();
+      const userSpecificReviews = updatedReviews.filter(
+        (review) => review.id_Users === user.userId
+      );
+      setReviews(userSpecificReviews);
     } catch (error) {
       toast({
         title: "Erreur",
@@ -395,7 +402,10 @@ function UserSettingPage() {
                 type="password"
                 placeholder="Confirmez votre mot de passe"
                 onChange={(e) =>
-                  setUserData({ ...userData, confirmPassword: e.target.value })
+                  setUserData({
+                    ...userData,
+                    confirmPassword: e.target.value,
+                  })
                 }
               />
             </FormControl>
@@ -476,3 +486,4 @@ function UserSettingPage() {
 }
 
 export default UserSettingPage;
+

@@ -10,6 +10,13 @@ router.get('/', reviewsControllers.getAllReviews);
 // Route pour récupérer un avis spécifique par son ID
 router.get('/:id', reviewsControllers.getReviewById);
 
+// Route pour récupérer tous les avis d'un utilisateur spécifique
+router.get('/user/:userId', reviewsControllers.getReviewsByUser);
+
+// Route pour créer un avis pour un utilisateur spécifique
+router.post('/user/:userId', reviewsControllers.createReviewForUser);
+
+
 // Route pour créer un nouvel avis
 router.post('/', reviewsControllers.createReview);
 
