@@ -32,6 +32,7 @@ import {
   FaFileAlt,
 } from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { parse, format, isValid } from "date-fns";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
@@ -72,7 +73,8 @@ function AdminUserManagementPage() {
       } catch (error) {
         toast({
           title: "Erreur",
-          description: "Erreur lors de la récupération des utilisateurs ou des rôles",
+          description:
+            "Erreur lors de la récupération des utilisateurs ou des rôles",
           status: "error",
           duration: 5000,
           isClosable: true,
@@ -89,20 +91,30 @@ function AdminUserManagementPage() {
     navigate("/"); // Redirige vers la page d'accueil après la déconnexion
   };
 
-  // Fonction pour vérifier si une date est valide
-  const isValidDate = (date) => {
-    const dateObject = new Date(date);
-    return dateObject instanceof Date && !isNaN(dateObject);
-  };
-
   // Gestion de la mise à jour d'un utilisateur
   const handleUpdate = (user) => {
     setEditingUserId(user.id);
 
-    // Vérifier si la date est valide avant de la formater
-    let formattedBirthday = '';
-    if (isValidDate(user.birthday)) {
-      formattedBirthday = user.birthday.split('/').reverse().join('-');
+    let formattedBirthday = "";
+    if (user.birthday) {
+      let parsedDate;
+
+      // Essayer de parser la date au format ISO (yyyy-MM-dd)
+      if (isValid(parse(user.birthday, "yyyy-MM-dd", new Date()))) {
+        parsedDate = parse(user.birthday, "yyyy-MM-dd", new Date());
+      }
+      // Si le premier parsing échoue, essayer le format dd/MM/yyyy
+      else if (isValid(parse(user.birthday, "dd/MM/yyyy", new Date()))) {
+        parsedDate = parse(user.birthday, "dd/MM/yyyy", new Date());
+      }
+
+      // Si la date est valide, formater au format yyyy-MM-dd
+      if (parsedDate && isValid(parsedDate)) {
+        formattedBirthday = format(parsedDate, "yyyy-MM-dd");
+      } else {
+        // Vous pouvez décider de ne pas inclure de date ou de définir une valeur par défaut ici
+        formattedBirthday = ""; // Ou toute autre valeur par défaut acceptable
+      }
     }
 
     setEditFormData({
@@ -148,12 +160,19 @@ function AdminUserManagementPage() {
       delete cleanedData.confirmPassword;
     }
 
+    // Effacer le champ birthday s'il est vide
+    if (!cleanedData.birthday) {
+      delete cleanedData.birthday;
+    }
+
     // Convertir la date au format yyyy-MM-dd
     if (cleanedData.birthday) {
-      const dateParts = cleanedData.birthday.split('-');
-      if (dateParts.length === 3) {
-        const [year, month, day] = dateParts;
-        cleanedData.birthday = `${year}-${month}-${day}`;
+      const parsedDate = parse(cleanedData.birthday, "yyyy-MM-dd", new Date());
+      if (isValid(parsedDate)) {
+        cleanedData.birthday = format(parsedDate, "yyyy-MM-dd");
+      } else {
+        console.error("Date de naissance invalide:", cleanedData.birthday);
+        cleanedData.birthday = "";
       }
     }
 
@@ -163,7 +182,11 @@ function AdminUserManagementPage() {
   // Soumission du formulaire de mise à jour
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    if (editFormData.password && editFormData.password !== editFormData.confirmPassword) {
+
+    if (
+      editFormData.password &&
+      editFormData.password !== editFormData.confirmPassword
+    ) {
       toast({
         title: "Erreur",
         description: "Les mots de passe ne correspondent pas",
@@ -182,12 +205,13 @@ function AdminUserManagementPage() {
       await updateUser(editingUserId, updatedData);
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.id === editingUserId ? { ...user, ...updatedData } : user
-        )
+          user.id === editingUserId ? { ...user, ...updatedData } : user,
+        ),
       );
       toast({
         title: "Utilisateur mis à jour",
-        description: "Les informations de l'utilisateur ont été mises à jour avec succès",
+        description:
+          "Les informations de l'utilisateur ont été mises à jour avec succès",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -195,13 +219,25 @@ function AdminUserManagementPage() {
       handleCancelUpdate();
     } catch (error) {
       console.error("Erreur lors de la mise à jour de l'utilisateur:", error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la mise à jour de l'utilisateur",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+
+      if (error.response && error.response.data) {
+        // Affiche un message d'erreur spécifique s'il est disponible
+        toast({
+          title: "Erreur",
+          description: `Erreur lors de la mise à jour de l'utilisateur: ${error.response.data.message || error.message}`,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Erreur",
+          description: "Erreur lors de la mise à jour de l'utilisateur",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     }
   };
 
@@ -209,7 +245,7 @@ function AdminUserManagementPage() {
   const handleDelete = async (userId) => {
     try {
       await deleteUser(userId);
-      setUsers(users.filter(user => user.id !== userId));
+      setUsers(users.filter((user) => user.id !== userId));
       toast({
         title: "Utilisateur supprimé",
         description: "L'utilisateur a été supprimé avec succès",
@@ -312,13 +348,13 @@ function AdminUserManagementPage() {
                   <Td>{roles[user.id_Roles]}</Td>
                   <Td>
                     <HStack spacing="2">
-                      <Link
-                        color="blue.500"
-                        onClick={() => handleUpdate(user)}
-                      >
+                      <Link color="blue.500" onClick={() => handleUpdate(user)}>
                         Mettre à jour
                       </Link>
-                      <Link color="red.500" onClick={() => handleDelete(user.id)}>
+                      <Link
+                        color="red.500"
+                        onClick={() => handleDelete(user.id)}
+                      >
                         Supprimer
                       </Link>
                     </HStack>

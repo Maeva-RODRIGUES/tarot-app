@@ -65,6 +65,7 @@ function ContentManagementPage() {
   const [selectedContent, setSelectedContent] = useState(null);
   const [form, setForm] = useState({ title_theme: "", meaning_theme: "" });
   const [editing, setEditing] = useState(false);
+  const [setSelectedCard] = useState(false);
 
  
   const [cardForm, setCardForm] = useState({

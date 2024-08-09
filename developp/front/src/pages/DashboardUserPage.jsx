@@ -103,6 +103,18 @@ function DashboardUserPage() {
     );
   }
 
+  // Formater la date et l'heure pour l'affichage
+  const formattedDate = userData.recentActivity?.date
+    ? new Date(userData.recentActivity.date).toLocaleDateString("fr-FR")
+    : "Aucune activité récente";
+
+  const formattedTime = userData.recentActivity?.date
+    ? new Date(userData.recentActivity.date).toLocaleTimeString("fr-FR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "Aucune activité récente";
+
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <HeaderDashboard />
@@ -120,7 +132,6 @@ function DashboardUserPage() {
         boxShadow="md"
       >
         <VStack align="start" spacing="4" w="full">
-          {/* Début de la mise à jour */}
           <RouterLink
             to={`/profile/${userId}`}
             style={{ textDecoration: "none", color: "white" }}
@@ -148,7 +159,6 @@ function DashboardUserPage() {
               <Text>Paramètres</Text>
             </HStack>
           </RouterLink>
-          {/* Fin de la mise à jour */}
 
           <Spacer />
 
@@ -183,17 +193,11 @@ function DashboardUserPage() {
           </Heading>
           <HStack spacing="4" mb="4">
             <CalendarIcon boxSize="6" color="customBlue" />
-            <Text fontSize="lg">
-              Date :{" "}
-              {userData.recentActivity?.date || "Aucune activité récente"}
-            </Text>
+            <Text fontSize="lg">Date : {formattedDate}</Text>
           </HStack>
           <HStack spacing="4">
             <TimeIcon boxSize="6" color="customBlue" />
-            <Text fontSize="lg">
-              Heure :{" "}
-              {userData.recentActivity?.time || "Aucune activité récente"}
-            </Text>
+            <Text fontSize="lg">Heure : {formattedTime}</Text>
           </HStack>
         </Box>
         {/* Dernier Tirage */}

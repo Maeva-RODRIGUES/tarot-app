@@ -1,5 +1,4 @@
 // src/pages/TarotHistoryPage.jsx
-
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -18,7 +17,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
-import { fetchUserDrawings } from "../api/drawApi"; // Import de la fonction pour récupérer les tirages d'un utilisateur
+import { fetchUserDrawings } from "../api/drawApi";
 
 function TarotHistoryPage() {
   const [drawings, setDrawings] = useState([]);
@@ -29,7 +28,7 @@ function TarotHistoryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchUserDrawings(user.userId); // Appel de l'API pour récupérer les tirages de l'utilisateur
+        const data = await fetchUserDrawings(user.userId);
         setDrawings(data);
       } catch (error) {
         console.error("Erreur lors de la récupération des tirages :", error);
@@ -111,15 +110,12 @@ function TarotHistoryPage() {
       </Flex>
 
       <Box ml="250px" p="8" pt="8" flex="1">
-        <Heading mb="4">Historique des Tirages de Tarot</Heading>
+        <Heading mb="4">Historique des tirages de tarot</Heading>
         {loading ? (
           <Text>Chargement...</Text>
         ) : (
           drawings.map((draw, index) => {
-            const cardsArray =
-              typeof draw.cards === "string"
-                ? JSON.parse(draw.cards).cards
-                : draw.cards;
+            const cardsArray = typeof draw.cards === "string" ? JSON.parse(draw.cards).cards : draw.cards;
 
             return (
               <Box
@@ -133,7 +129,7 @@ function TarotHistoryPage() {
                 boxShadow="md"
               >
                 <Heading size="md" mb="4">
-                  Tirage {index + 1}
+                  Tirage {index + 1} - {new Date(draw.date).toLocaleDateString("fr-FR")}
                 </Heading>
                 <Text fontSize="lg" mb="4" fontWeight="bold">
                   Thème : {draw.Theme.title_theme}
@@ -152,11 +148,9 @@ function TarotHistoryPage() {
                     </Box>
                   ))}
                   <Box mt="4">
-                    <Heading size="sm">Interprétation Générale :</Heading>
+                    <Heading size="sm">Interprétation générale :</Heading>
                     <Text fontSize="md" mt="2">
-                      {typeof draw.cards === "string"
-                        ? JSON.parse(draw.cards).interpretation
-                        : draw.cards.interpretation}
+                      {typeof draw.cards === "string" ? JSON.parse(draw.cards).interpretation : draw.cards.interpretation}
                     </Text>
                   </Box>
                 </VStack>
@@ -172,3 +166,4 @@ function TarotHistoryPage() {
 }
 
 export default TarotHistoryPage;
+
