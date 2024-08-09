@@ -1,5 +1,7 @@
 // src/pages/UserSettingPage.jsx
 
+// src/pages/UserSettingPage.jsx
+
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -17,15 +19,22 @@ import {
   Spacer,
   Text,
   Avatar,
+  Textarea,
 } from "@chakra-ui/react";
 import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { parse, format, isValid } from "date-fns";
 import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData, updateUser } from "../api/usersApi";
 import { uploadFile } from "../api/uploadApi";
-import { parse, format, isValid } from "date-fns";
+import {
+  fetchReviews,
+  createReview,
+  updateReview,
+  deleteReview,
+} from "../api/reviewsApi"; // Importation corrigée
 
 function UserSettingPage() {
   const toast = useToast();
@@ -38,27 +47,31 @@ function UserSettingPage() {
     birthday: "",
     city_of_birth: "",
     time_of_birth: "",
-    avatarUrl: "", // Ajouté pour stocker l'URL de l'avatar
+    avatarUrl: "",
   });
-
-  const [avatarFile, setAvatarFile] = useState(null); // Ajouté pour gérer le fichier d'avatar
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
+  const [editingReview, setEditingReview] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (user && user.userId) {
         try {
-          console.log("Fetching user data for userId:", user.userId);
           const data = await getUserData(user.userId);
-          // Si la date de naissance est présente, la formater correctement
           if (data.birthday) {
             const parsedDate = parse(data.birthday, "yyyy-MM-dd", new Date());
             if (isValid(parsedDate)) {
               data.birthday = format(parsedDate, "yyyy-MM-dd");
             } else {
-              data.birthday = ""; // Ou toute autre valeur par défaut appropriée
+              data.birthday = "";
             }
           }
           setUserData(data);
+
+          // Récupérer les commentaires de l'utilisateur
+          const userReviews = await fetchReviews(user.userId);
+          setReviews(userReviews);
         } catch (error) {
           toast({
             title: "Erreur",
@@ -83,7 +96,7 @@ function UserSettingPage() {
       try {
         const formData = new FormData();
         formData.append("image", avatarFile);
-        formData.append("id", user.userId); // Ajout de l'ID de l'utilisateur
+        formData.append("id", user.userId);
         const response = await uploadFile(formData);
         setUserData({ ...userData, avatarUrl: response.avatarUrl });
         toast({
@@ -108,11 +121,12 @@ function UserSettingPage() {
   const cleanAndFormatData = (data) => {
     const cleanedData = { ...data };
 
-    // Effacer le champ birthday s'il est vide ou invalide
-    if (!cleanedData.birthday || isNaN(new Date(cleanedData.birthday).getTime())) {
+    if (
+      !cleanedData.birthday ||
+      isNaN(new Date(cleanedData.birthday).getTime())
+    ) {
       delete cleanedData.birthday;
     } else {
-      // Si la date est valide, la formater au format ISO (yyyy-MM-dd)
       const parsedDate = parse(cleanedData.birthday, "yyyy-MM-dd", new Date());
       if (isValid(parsedDate)) {
         cleanedData.birthday = format(parsedDate, "yyyy-MM-dd");
@@ -129,9 +143,7 @@ function UserSettingPage() {
     if (user && user.userId) {
       try {
         const cleanedData = cleanAndFormatData(userData);
-        console.log("Tentative de mise à jour avec les données :", cleanedData);
-        const response = await updateUser(user.userId, cleanedData);
-        console.log("Réponse de l'API après mise à jour :", response);
+        await updateUser(user.userId, cleanedData);
         toast({
           title: "Informations mises à jour.",
           description: "Vos informations ont été mises à jour avec succès.",
@@ -140,7 +152,6 @@ function UserSettingPage() {
           isClosable: true,
         });
       } catch (error) {
-        console.error("Erreur lors de la mise à jour :", error);
         toast({
           title: "Erreur",
           description: "Impossible de mettre à jour les informations.",
@@ -149,11 +160,67 @@ function UserSettingPage() {
           isClosable: true,
         });
       }
-    } else {
-      console.error("Erreur: l'utilisateur ou l'ID utilisateur n'est pas défini.");
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editingReview) {
+        await updateReview(editingReview.id, newReview);
+        toast({
+          title: "Commentaire mis à jour",
+          description: "Votre commentaire a été mis à jour avec succès.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        await createReview({ ...newReview, id_Users: user.userId });
+        toast({
+          title: "Commentaire ajouté",
+          description: "Votre commentaire a été ajouté avec succès.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+      const updatedReviews = await getReviews(user.userId);
+      setReviews(updatedReviews);
+      setNewReview({ rating: 0, comment: "" });
+      setEditingReview(null);
+    } catch (error) {
       toast({
         title: "Erreur",
-        description: "L'utilisateur n'est pas connecté ou l'ID utilisateur est introuvable.",
+        description: "Impossible d'ajouter ou de mettre à jour le commentaire.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleEditReview = (review) => {
+    setNewReview(review);
+    setEditingReview(review);
+  };
+
+  const handleDeleteReview = async (id) => {
+    try {
+      await deleteReview(id);
+      toast({
+        title: "Commentaire supprimé",
+        description: "Votre commentaire a été supprimé avec succès.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      const updatedReviews = await getReviews(user.userId);
+      setReviews(updatedReviews);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer le commentaire.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -345,6 +412,62 @@ function UserSettingPage() {
             </Button>
           </Stack>
         </form>
+
+        {/* Section de gestion des commentaires */}
+        <Box mt="8">
+          <Heading size="md" mb="4">
+            Mes Commentaires
+          </Heading>
+          {reviews.map((review) => (
+            <Box key={review.id} p="4" shadow="md" borderWidth="1px" mb="4">
+              <Text>
+                <strong>Note :</strong> {review.rating}
+              </Text>
+              <Text>
+                <strong>Commentaire :</strong> {review.comment}
+              </Text>
+              <HStack mt="2">
+                <Button size="sm" onClick={() => handleEditReview(review)}>
+                  Modifier
+                </Button>
+                <Button
+                  size="sm"
+                  colorScheme="red"
+                  onClick={() => handleDeleteReview(review.id)}
+                >
+                  Supprimer
+                </Button>
+              </HStack>
+            </Box>
+          ))}
+
+          <form onSubmit={handleReviewSubmit}>
+            <FormControl id="rating" mt="4">
+              <FormLabel>Note</FormLabel>
+              <Input
+                type="number"
+                min="1"
+                max="5"
+                value={newReview.rating}
+                onChange={(e) =>
+                  setNewReview({ ...newReview, rating: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl id="comment" mt="4">
+              <FormLabel>Commentaire</FormLabel>
+              <Textarea
+                value={newReview.comment}
+                onChange={(e) =>
+                  setNewReview({ ...newReview, comment: e.target.value })
+                }
+              />
+            </FormControl>
+            <Button type="submit" mt="4" colorScheme="blue">
+              {editingReview ? "Mettre à jour" : "Ajouter"} Commentaire
+            </Button>
+          </form>
+        </Box>
       </Box>
 
       <Footer />
