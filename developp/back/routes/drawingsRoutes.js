@@ -8,6 +8,10 @@ const drawingsControllers = require('../controllers/drawingsControllers');
 // Route pour récupérer tous les tirages de tarot
 router.get('/', drawingsControllers.getAllDrawings);
 
+// Route pour récupérer les tirages d'un utilisateur spécifique
+router.get('/user/:userId', drawingsControllers.getDrawingsByUserId);
+
+
 // Route pour créer un tirage aléatoire basé sur le thème choisi
 router.post('/random/:theme', drawingsControllers.createRandomDrawingByTheme);
 

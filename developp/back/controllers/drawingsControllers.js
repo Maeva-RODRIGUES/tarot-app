@@ -22,6 +22,24 @@ exports.getAllDrawings = async (req, res) => {
     }
 };
 
+// Récupérer tous les tirages de tarot pour un utilisateur spécifique
+exports.getDrawingsByUserId = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const drawings = await Drawing.findAll({
+            where: { id_Users: userId },
+            include: [Card, Theme],  // Inclure les associations nécessaires
+        });
+        if (!drawings.length) {
+            return res.status(404).json({ message: "Aucun tirage trouvé pour cet utilisateur" });
+        }
+        res.json(drawings);
+    } catch (error) {
+        res.status(500).json({ message: 'Erreur lors de la récupération des tirages de tarot', error });
+    }
+};
+
+
 // Créer un tirage aléatoire de 3 cartes basé sur le thème choisi
 exports.createRandomDrawingByTheme = async (req, res) => {
     try {

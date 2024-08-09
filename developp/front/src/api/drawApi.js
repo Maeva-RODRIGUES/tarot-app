@@ -9,6 +9,12 @@ export const fetchDrawings = async () => {
   return response.data;
 };
 
+// Récupérer les tirages d'un utilisateur spécifique
+export const fetchUserDrawings = async (userId) => {
+  const response = await api.get(`${DRAWINGS_ENDPOINT}/user/${userId}`);
+  return response.data;
+};
+
 // Créer un nouveau tirage
 export const createDrawing = async (drawingData) => {
   const response = await api.post(DRAWINGS_ENDPOINT, drawingData);
