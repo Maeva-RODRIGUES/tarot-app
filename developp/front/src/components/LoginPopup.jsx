@@ -1,6 +1,6 @@
-// src/components/LoginPopup.jsx
+// LoginPopup.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   FormControl,
@@ -20,9 +20,9 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom"; // Importez useNavigate
-import { usePopup } from "./context/PopupContext"; // Assurez-vous que le chemin est correct
-import { useAuth } from "./context/AuthContext"; // Assurez-vous que le chemin est correct
+import { useNavigate, useLocation } from "react-router-dom"; // Importe useLocation
+import { usePopup } from "./context/PopupContext";
+import { useAuth } from "./context/AuthContext";
 
 function LoginPopup() {
   const { popupType, closePopup } = usePopup();
@@ -32,20 +32,27 @@ function LoginPopup() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const toast = useToast();
-  const navigate = useNavigate(); // Initialisez useNavigate
+  const navigate = useNavigate();
+  const location = useLocation(); // Pour obtenir le chemin d'origine
 
-  // Affiche le popup uniquement si popupType est 'login'
+  const [redirectPath, setRedirectPath] = useState("/");
+
+  useEffect(() => {
+    // Conserve la page d'origine pour rediriger après la connexion
+    if (location.state?.from) {
+      setRedirectPath(location.state.from.pathname);
+    }
+  }, [location]);
+
   if (popupType !== "login") return null;
 
   const handleLogin = async () => {
-    setError(""); // Réinitialise l'erreur avant de tenter la connexion
+    setError("");
     try {
       const credentials = { email, password };
-      console.log("Tentative de connexion avec les identifiants :", credentials);
       const response = await login(credentials);
-      console.log("Réponse de l'API de connexion :", response);
 
-      closePopup(); // Ferme la popup après une connexion réussie
+      closePopup();
       toast({
         title: "Connexion réussie",
         description: "Vous êtes maintenant connecté.",
@@ -54,13 +61,14 @@ function LoginPopup() {
         isClosable: true,
       });
 
+      // ---------------- Mise à jour : Redirige l'utilisateur après la connexion ----------------
       if (response.role === "Admin") {
         navigate("/admin");
       } else {
-        navigate(`/profile/${response.userId}`);
+        navigate(`/profile/${response.userId}`); // Redirige vers le DashboardUserPage du user connecté
       }
+      // -----------------------------------------------------------------------------------------
     } catch (err) {
-      console.error("Erreur lors de la tentative de connexion :", err);
       setError("Erreur de connexion. Veuillez vérifier vos identifiants.");
       toast({
         title: "Erreur de connexion",
@@ -80,7 +88,6 @@ function LoginPopup() {
     <Modal isOpen={popupType === "login"} onClose={closePopup}>
       <ModalOverlay />
       <ModalContent maxWidth="600px">
-        {/* Définit une largeur personnalisée */}
         <ModalHeader>
           <Box textAlign="center" w="100%">
             <Heading as="h2" size="lg">
@@ -126,18 +133,13 @@ function LoginPopup() {
         </ModalBody>
 
         <ModalFooter>
-          <Button
-            bg="#191970" // Bleu nuit
-            color="white" // Texte en blanc pour le contraste
-            mr={3}
-            onClick={handleLogin}
-          >
+          <Button bg="#191970" color="white" mr={3} onClick={handleLogin}>
             Se connecter
           </Button>
           <Button
             variant="outline"
-            borderColor="#191970" // Bordure du bouton en bleu nuit
-            color="#191970" // Texte du bouton en bleu nuit
+            borderColor="#191970"
+            color="#191970"
             onClick={closePopup}
           >
             Annuler
