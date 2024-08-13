@@ -8,12 +8,19 @@ import useCards from "../hooks/useCards"; // Gestion des données des cartes
 import useAnimations from "../hooks/useAnimations"; // Animations
 
 function TarotDeck() {
-  const { cards, isLoading, isError, error, mutateDeleteCard } = useCards();
-  const { shuffleCards } = useTarotDeck(); // Fonction de mélange des cartes
-  const { animateProps, triggerRiffleShuffle, triggerCutAnimation, setAnimateProps } = useAnimations();
+  const { cards, isLoading, isError, error } = useCards();
+  const { shuffleCards, backImage } = useTarotDeck(); // Fonction de mélange des cartes et image du dos
+  const {
+    animateProps,
+    triggerRiffleShuffle,
+    triggerCutAnimation,
+    setAnimateProps,
+  } = useAnimations();
 
   const [buttonText, setButtonText] = useState("Mélangez");
-  const [flippedCards, setFlippedCards] = useState(Array(cards?.length || 0).fill(false));
+  const [flippedCards, setFlippedCards] = useState(
+    Array(cards?.length || 0).fill(false),
+  );
   const [selectedCards, setSelectedCards] = useState([]);
   const [isCutting, setIsCutting] = useState(false);
   const [canSelectCards, setCanSelectCards] = useState(false);
@@ -58,10 +65,6 @@ function TarotDeck() {
     }
   };
 
-  const handleDelete = (id) => {
-    mutateDeleteCard(id);
-  };
-
   useEffect(() => {
     console.log("Updated animateProps:", animateProps);
   }, [animateProps]);
@@ -75,10 +78,9 @@ function TarotDeck() {
         {cards.map((card, index) => (
           <Box key={card.id} onClick={() => handleClick(index)}>
             <TarotCard
+              card={card}
               frontColor={card.keyword1}
-              backImage={card.image_url}
-              height="150px"
-              width="100px"
+              backImage={backImage} // Passez ici l'image du dos du deck depuis useTarotDeck
               animateProps={animateProps[index]}
               isFlipped={flippedCards[index]}
             />
@@ -99,16 +101,15 @@ function TarotDeck() {
       {selectedCards.length === 3 && (
         <Box mt={10} textAlign="center">
           <Text fontSize="xl" fontWeight="bold">
-            VOTRE AVENIR EN DETAIL
+            VOTRE AVENIR EN DÉTAIL
           </Text>
           <SimpleGrid columns={3} spacing={10} mt={5}>
             {selectedCards.map((card, index) => (
               <Box key={card.id}>
                 <TarotCard
-                  backImage={card.image_url}
+                  card={card}
+                  backImage={backImage} // Affiche aussi le dos du deck pour les cartes sélectionnées
                   frontColor={card.keyword1}
-                  height="150px"
-                  width="100px"
                   isFlipped
                 />
                 <Text mt={2}>Interprétation de la carte {index + 1}</Text>
