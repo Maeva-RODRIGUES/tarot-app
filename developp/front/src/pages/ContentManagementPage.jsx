@@ -46,6 +46,7 @@ function ContentManagementPage() {
     mutateCreateCard,
     mutateUpdateCard,
     mutateDeleteCard,
+    mutateUploadCardImage,
   } = useCards();
   const {
     themes,
@@ -65,9 +66,8 @@ function ContentManagementPage() {
   const [selectedContent, setSelectedContent] = useState(null);
   const [form, setForm] = useState({ title_theme: "", meaning_theme: "" });
   const [editing, setEditing] = useState(false);
-  const [setSelectedCard] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
 
- 
   const [cardForm, setCardForm] = useState({
     id: "",
     name_card: "",
@@ -76,6 +76,7 @@ function ContentManagementPage() {
     keyword3: "",
     image_url: "",
   });
+  const [cardImage, setCardImage] = useState(null); // Nouvelle state pour gérer l'image
   const [editingCard, setEditingCard] = useState(false);
 
   const [selectedComment, setSelectedComment] = useState(null);
@@ -123,7 +124,7 @@ function ContentManagementPage() {
 
   // Gestion des cartes
   const handleEditCard = (card) => {
-    setSelectedCard(card);
+    setSelectedCard(card); // Utilisation correcte de setSelectedCard
     setCardForm({
       id: card.id,
       name_card: card.name_card,
@@ -139,9 +140,13 @@ function ContentManagementPage() {
     mutateDeleteCard(id);
   };
 
-  //-----------------------------------------------------------------------------------------
+  const handleCardImageChange = (e) => {
+    setCardImage(e.target.files[0]);
+  };
+
   const handleSubmitCard = (e) => {
     e.preventDefault();
+
     const cardData = {
       name_card: cardForm.name_card,
       keyword1: cardForm.keyword1,
@@ -149,19 +154,22 @@ function ContentManagementPage() {
       keyword3: cardForm.keyword3,
       image_url: cardForm.image_url,
     };
-    if (editingCard) {
-      if (cardForm.id) {
-        console.log(
-          `Mise à jour de la carte avec ID: ${cardForm.id}`,
-          cardData,
-        );
-        mutateUpdateCard(cardForm.id, cardData);
+
+    if (editingCard && cardForm.id) {
+      if (cardImage) {
+        const formData = new FormData();
+        formData.append("id", cardForm.id);
+        formData.append("image", cardImage);
+
+        const filename = cardForm.image_url.split("/").pop();
+        mutateUploadCardImage({ filename, formData });
       } else {
-        console.error("ID de la carte sélectionnée est invalide");
+        mutateUpdateCard(cardForm.id, cardData);
       }
     } else {
       mutateCreateCard(cardData);
     }
+
     setCardForm({
       id: "",
       name_card: "",
@@ -170,10 +178,9 @@ function ContentManagementPage() {
       keyword3: "",
       image_url: "",
     });
+    setCardImage(null);
     setEditingCard(false);
   };
-
-  //----------------------------------------------------------------------------------------------------
 
   // Gestion des commentaires
   const handleEditComment = (comment) => {
@@ -414,8 +421,11 @@ function ContentManagementPage() {
                   setCardForm({ ...cardForm, image_url: e.target.value })
                 }
                 placeholder="URL de l'image"
-                required
               />
+            </FormControl>
+            <FormControl mb="4">
+              <FormLabel>Télécharger une image</FormLabel>
+              <Input type="file" onChange={handleCardImageChange} />
             </FormControl>
             <Button
               bg="customBlue"
@@ -436,13 +446,15 @@ function ContentManagementPage() {
                 borderRadius="md"
                 bg="white"
               >
+                {/* Affichage de l'image avec le chemin complet */}
                 <Image
-                  src={card.image_url}
+                  src={`http://localhost:8000/uploads/tarot/${card.image_url}`}
                   alt={card.name_card}
                   boxSize="150px"
                   objectFit="cover"
                   mb="4"
                 />
+
                 <Heading size="md" mb="2">
                   {card.name_card}
                 </Heading>

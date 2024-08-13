@@ -4,6 +4,7 @@ require('dotenv').config();
 
 
 const { sequelize } = require('./models/indexModels');
+const path = require('path');
 
 const express = require('express');
 const cors = require('cors');
@@ -22,10 +23,33 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 
 // Middleware pour sécuriser l'application Express
-app.use(helmet()); // Utilisation de Helmet pour configurer divers en-têtes HTTP sécurisés
+app.use(helmet.contentSecurityPolicy({
+    directives: {
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", "http://localhost:8000"],
+        // Ajoutez d'autres directives selon vos besoins
+    }
+})); // Utilisation de Helmet pour configurer divers en-têtes HTTP sécurisés
 app.use(express.json()); // Middleware pour parser les données JSON des requêtes
 app.use(morgan('dev')); // Logging détaillé des requêtes HTTP dans la console (environnement de développement)
 app.use(cookieParser()); // Middleware pour parser les cookies des requêtes
+
+app.use((req, res, next) => {
+    res.set('X-Content-Type-Options', 'nosniff');
+    res.set('X-Frame-Options', 'ALLOWALL'); // Désactiver X-Frame-Options (uniquement pour test)
+    next();
+});
+
+
+
+
+// Servir le dossier uploads de manière statique
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+    setHeaders: function (res, path, stat) {
+        res.set('Access-Control-Allow-Origin', 'http://localhost:5173');
+    }
+}));
+
 
 // Configuration des options CORS
 const corsOptions = {

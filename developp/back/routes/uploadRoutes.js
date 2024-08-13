@@ -14,7 +14,7 @@ router.get('/files', uploadController.listFiles);
 // Route pour récupérer un fichier spécifique
 router.get('/files/:filename', uploadController.getFile);
 
-// Route pour mettre à jour un fichier existant
+// Route pour mettre à jour un fichier existant (patch)
 router.patch('/:filename', upload.single('image'), uploadController.updateFile);
 
 // Route pour supprimer un fichier

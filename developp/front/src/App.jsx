@@ -58,15 +58,6 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
 
             <Route
-              path="/love"
-              element={
-                <PrivateRoute>
-                  <LoveTarotPage />
-                </PrivateRoute>
-              }
-            />
-
-            <Route
               path="/profile/:userId"
               element={
                 <PrivateRoute>

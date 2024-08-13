@@ -1,7 +1,7 @@
 /// src/api/cardsApi.js
 
 import api from "./configAxios";
-import { CARDS_ENDPOINT } from "./apiEndpoints";
+import { CARDS_ENDPOINT, UPLOAD_ENDPOINT } from "./apiEndpoints";
 
 // Récupérer toutes les cartes
 export const fetchCards = async () => {
@@ -19,7 +19,6 @@ export const createCard = async (cardData) => {
 export const updateCard = async (id, cardData) => {
   try {
     const response = await api.put(`${CARDS_ENDPOINT}/${id}`, cardData);
-    console.log(`URL de mise à jour: ${CARDS_ENDPOINT}/${id}`, response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -33,4 +32,26 @@ export const updateCard = async (id, cardData) => {
 // Supprimer une carte
 export const deleteCard = async (id) => {
   await api.delete(`${CARDS_ENDPOINT}/${id}`);
+};
+
+// Télécharger une image pour une carte (PATCH)
+export const uploadCardImage = async (filename, formData) => {
+  try {
+    const response = await api.patch(
+      `${UPLOAD_ENDPOINT}/${filename}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Erreur lors de la mise à jour de l'image pour le fichier: ${filename}`,
+      error,
+    );
+    throw error;
+  }
 };

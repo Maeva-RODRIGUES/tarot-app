@@ -10,10 +10,29 @@ import TarotDeck from "../components/TarotDeck";
 import CommentSection from "../components/CommentSection.jsx";
 import { fetchCards } from "../api/cardsApi"; // Importation de l'appel API
 
+const themeImages = {
+  love: {
+    header: "../../src/assets/img/LoveTarotPageBanner.jpg",
+    footer: "../../src/assets/img/footerlovebanner.jpg",
+  },
+  career: {
+    header: "../../src/assets/img/careerheaderbanner.jpg",
+    footer: "../../src/assets/img/careerfooterbanner.jpg",
+  },
+  spiritual: {
+    header: "../../src/assets/img/spiritheaderbanner.jpg",
+    footer: "../../src/assets/img/spiritfooterbanner.jpg",
+  },
+};
+
+
+
 function TarotDrawPage() {
   const { theme } = useParams();
   const [cards, setCards] = useState([]);
   const [error, setError] = useState(null);
+
+  const images = themeImages[theme] || themeImages["default"]; // Utiliser des images par défaut si le thème n'existe pas
 
   useEffect(() => {
     const fetchCardsData = async () => {
@@ -40,8 +59,8 @@ function TarotDrawPage() {
     <>
       <Box>
         <Header
-          bannerSrc="../../src/assets/img/LoveTarotPageBanner.jpg"
-          bannerAlt="Bannière d'accueil"
+          bannerSrc={images.header}
+          bannerAlt={`Bannière d'accueil pour le thème ${theme}`}
           bannerHeight="300px"
           backgroundPosition="50% 20%" // Exemple de positionnement
         />
@@ -67,9 +86,10 @@ function TarotDrawPage() {
         </Box>
       </Box>
       <Footer
-        bannerSrc="../../src/assets/img/footerlovebanner.jpg"
-        bannerAlt="Bannière de pied de page"
+        bannerSrc={images.footer}
+        bannerAlt={`Bannière de pied de page pour le thème ${theme}`}
         bannerHeight="300px"
+        footerStyle={{ backgroundColor: "#f8f9fa" }} // Exemple de style supplémentaire pour le footer
       />
     </>
   );

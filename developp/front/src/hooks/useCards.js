@@ -6,6 +6,7 @@ import {
   createCard,
   updateCard,
   deleteCard,
+  uploadCardImage,
 } from "../api/cardsApi";
 
 const useCards = () => {
@@ -42,6 +43,13 @@ const useCards = () => {
     },
   });
 
+  const { mutate: mutateUploadCardImage } = useMutation({
+    mutationFn: ({ filename, formData }) => uploadCardImage(filename, formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["cards"]);
+    },
+  });
+
   return {
     cards,
     isLoading,
@@ -50,6 +58,7 @@ const useCards = () => {
     mutateCreateCard,
     mutateUpdateCard,
     mutateDeleteCard,
+    mutateUploadCardImage,
   };
 };
 

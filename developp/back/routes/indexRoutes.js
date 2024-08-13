@@ -8,9 +8,9 @@ const cookieParser = require('cookie-parser');
 const { protect, authorize } = require('../middlewares/auth'); // Importer les middlewares protect et authorize
 const errorHandler = require('../middlewares/errorHandler'); // Importer le middleware errorHandler
 
+
 // Utiliser les routes de téléchargement
 router.use('/upload', uploadRoutes);
-
 
 // Utiliser le middleware cookie-parser pour gérer les cookies
 router.use(cookieParser());
