@@ -3,20 +3,23 @@
 import React from "react";
 import { Box, Flex, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { useAuth } from "./context/AuthContext"; // Importation du contexte d'authentification
-import { usePopup } from "./context/PopupContext"; // Importation du contexte de popup
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
+import { usePopup } from "./context/PopupContext";
 
 const MotionBox = motion(Box);
 
 function CardsMenu() {
-  const { isAuthenticated } = useAuth(); // Vérifier si l'utilisateur est authentifié
-  const { openPopup } = usePopup(); // Accéder à la fonction pour ouvrir la popup
+  const { isAuthenticated } = useAuth();
+  const { openPopup } = usePopup();
+  const navigate = useNavigate();
 
-  const handleNavigation = (path) => {
+  const handleNavigation = (path, theme) => {
     if (isAuthenticated()) {
-      window.location.href = path; // Redirection vers la page de tirage si l'utilisateur est connecté
+      navigate(path);
     } else {
-      openPopup("login"); // Ouvrir la popup de connexion si l'utilisateur n'est pas connecté
+      localStorage.setItem("selectedTheme", theme); // Sauvegarde le thème sélectionné
+      openPopup("login"); // Ouvre la popup de connexion
     }
   };
 
@@ -27,7 +30,7 @@ function CardsMenu() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           m={2}
-          onClick={() => handleNavigation("/tarot-draw/love")}
+          onClick={() => handleNavigation("/tarot-draw/love", "love")}
         >
           <Image
             src="/src/assets/icons/cardiconlove.png"
@@ -41,7 +44,7 @@ function CardsMenu() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           m={2}
-          onClick={() => handleNavigation("/tarot-draw/career")}
+          onClick={() => handleNavigation("/tarot-draw/career", "career")}
         >
           <Image
             src="/src/assets/icons/cardiconwork.png"
@@ -55,7 +58,7 @@ function CardsMenu() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           m={2}
-          onClick={() => handleNavigation("/tarot-draw/spiritual")}
+          onClick={() => handleNavigation("/tarot-draw/spiritual", "spiritual")}
         >
           <Image
             src="/src/assets/icons/cardiconspirituel.png"

@@ -1,6 +1,6 @@
 // LoginPopup.jsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Button,
   FormControl,
@@ -20,7 +20,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { useNavigate, useLocation } from "react-router-dom"; // Importe useLocation
+import { useNavigate } from "react-router-dom";
 import { usePopup } from "./context/PopupContext";
 import { useAuth } from "./context/AuthContext";
 
@@ -33,16 +33,6 @@ function LoginPopup() {
   const [error, setError] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
-  const location = useLocation(); // Pour obtenir le chemin d'origine
-
-  const [redirectPath, setRedirectPath] = useState("/");
-
-  useEffect(() => {
-    // Conserve la page d'origine pour rediriger après la connexion
-    if (location.state?.from) {
-      setRedirectPath(location.state.from.pathname);
-    }
-  }, [location]);
 
   if (popupType !== "login") return null;
 
@@ -52,7 +42,7 @@ function LoginPopup() {
       const credentials = { email, password };
       const response = await login(credentials);
 
-      closePopup();
+      closePopup(); // Ferme la popup après une connexion réussie
       toast({
         title: "Connexion réussie",
         description: "Vous êtes maintenant connecté.",
@@ -61,13 +51,17 @@ function LoginPopup() {
         isClosable: true,
       });
 
-      // ---------------- Mise à jour : Redirige l'utilisateur après la connexion ----------------
+      // ---------------- Mise à jour : Redirige en fonction du thème sélectionné si présent ----------------
+      const selectedTheme = localStorage.getItem("selectedTheme");
       if (response.role === "Admin") {
         navigate("/admin");
+      } else if (selectedTheme) {
+        localStorage.removeItem("selectedTheme"); // Supprime le thème après redirection
+        navigate(`/tarot-draw/${selectedTheme}`);
       } else {
         navigate(`/profile/${response.userId}`); // Redirige vers le DashboardUserPage du user connecté
       }
-      // -----------------------------------------------------------------------------------------
+      // ----------------------------------------------------------------------------------------------------
     } catch (err) {
       setError("Erreur de connexion. Veuillez vérifier vos identifiants.");
       toast({

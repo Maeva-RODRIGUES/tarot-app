@@ -4,9 +4,8 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Homepage from "./pages/HomePage.jsx";
-import TarotThemesPage from './pages/TarotThemesPage.jsx';
-import TarotDrawPage from './pages/TarotDrawPage.jsx';
-import LoveTarotPage from "./pages/LoveTarotPage.jsx";
+import TarotThemesPage from "./pages/TarotThemesPage.jsx";
+import TarotDrawPage from "./pages/TarotDrawPage.jsx"; // gèr eles tirages de cartes par thème
 import LegalMentionsPage from "./pages/LegalMentionsPage.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
@@ -31,8 +30,7 @@ function App() {
         <PopupProvider>
           <Routes>
             <Route path="/" element={<Homepage />} />
-           
-           
+
             {/* Route pour sélectionner les thèmes de tirage */}
             <Route
               path="/themes"
@@ -42,7 +40,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            
+
             {/* Route pour afficher les tirages en fonction du thème sélectionné */}
             <Route
               path="/tarot-draw/:theme"
@@ -52,7 +50,34 @@ function App() {
                 </PrivateRoute>
               }
             />
-            
+
+            {/* Routes de redirection après connexion pour chaque thème */}
+            <Route
+              path="/redirect-to-love"
+              element={
+                <PrivateRoute>
+                  <TarotDrawPage theme="love" />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/redirect-to-career"
+              element={
+                <PrivateRoute>
+                  <TarotDrawPage theme="career" />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/redirect-to-spiritual"
+              element={
+                <PrivateRoute>
+                  <TarotDrawPage theme="spiritual" />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Pages statiques */}
             <Route path="/legal-mentions" element={<LegalMentionsPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/about" element={<AboutPage />} />
