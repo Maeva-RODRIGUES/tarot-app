@@ -25,8 +25,6 @@ const themeImages = {
   },
 };
 
-
-
 function TarotDrawPage() {
   const { theme } = useParams();
   const [cards, setCards] = useState([]);
@@ -80,7 +78,7 @@ function TarotDrawPage() {
           {error ? (
             <Box color="red.500">{error}</Box>
           ) : (
-            <TarotDeck cards={cards} />
+            <TarotDeck cards={cards} theme={theme} /> // Passer le thème à TarotDeck
           )}
           <CommentSection />
         </Box>
@@ -96,3 +94,4 @@ function TarotDrawPage() {
 }
 
 export default TarotDrawPage;
+
