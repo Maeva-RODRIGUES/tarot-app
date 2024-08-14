@@ -11,15 +11,15 @@ import CommentSection from "../components/CommentSection.jsx";
 import { fetchCards } from "../api/cardsApi"; // Importation de l'appel API
 
 const themeImages = {
-  love: {
+  amour: {
     header: "../../src/assets/img/LoveTarotPageBanner.jpg",
     footer: "../../src/assets/img/footerlovebanner.jpg",
   },
-  career: {
+  carrière: {
     header: "../../src/assets/img/careerheaderbanner.jpg",
     footer: "../../src/assets/img/careerfooterbanner.jpg",
   },
-  spiritual: {
+  spiritualité: {
     header: "../../src/assets/img/spiritheaderbanner.jpg",
     footer: "../../src/assets/img/spiritfooterbanner.jpg",
   },
@@ -30,7 +30,15 @@ function TarotDrawPage() {
   const [cards, setCards] = useState([]);
   const [error, setError] = useState(null);
 
-  const images = themeImages[theme] || themeImages["default"]; // Utiliser des images par défaut si le thème n'existe pas
+  // Remplace le thème par une version française si nécessaire
+  const themeMap = {
+    love: "amour",
+    career: "carrière",
+    spiritual: "spiritualité",
+  };
+  const frenchTheme = themeMap[theme] || theme;
+
+  const images = themeImages[frenchTheme] || themeImages.default; // Utiliser des images par défaut si le thème n'existe pas
 
   useEffect(() => {
     const fetchCardsData = async () => {
@@ -64,7 +72,7 @@ function TarotDrawPage() {
         />
         <Box p={4} textAlign="center">
           <Heading as="h1" size="xl" mb={10}>
-            VOTRE TIRAGE {theme.toUpperCase()}
+            VOTRE TIRAGE {frenchTheme.toUpperCase()}
           </Heading>
           <Text fontSize="lg" mb={8}>
             <Icon as={TbCardsFilled} mr={2} />
@@ -94,4 +102,3 @@ function TarotDrawPage() {
 }
 
 export default TarotDrawPage;
-
