@@ -2,8 +2,11 @@
 
 import React from "react";
 import { Box, Heading, Flex, Image, Text, Button } from "@chakra-ui/react";
+import { usePopup } from "./context/PopupContext"; // Assurez-vous que le chemin est correct
 
 function Cartomancienne() {
+  const { openPopup } = usePopup();
+
   return (
     <Box mt={500} mb={20} textAlign="center" position="relative" zIndex="1">
       <Heading as="h3" mb={70}>
@@ -14,10 +17,10 @@ function Cartomancienne() {
         borderWidth="1px"
         borderRadius="lg"
         overflow="hidden"
-        borderColor="black" // Couleur de la bordure noire
-        boxShadow="lg" // Effet ombré
-        maxWidth="600px" // Limite la largeur de la Box
-        mx="auto" // Centre la Box horizontalement
+        borderColor="black"
+        boxShadow="lg"
+        maxWidth="600px"
+        mx="auto"
       >
         <Flex align="left">
           <Image
@@ -47,6 +50,7 @@ function Cartomancienne() {
           bottom="-80px"
           left="50%"
           transform="translateX(-50%)"
+          onClick={() => openPopup("contact")} // Ouvre la popup
         >
           Prendre RDV
         </Button>
