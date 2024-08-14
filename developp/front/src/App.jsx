@@ -21,6 +21,7 @@ import TarotHistoryPage from "./pages/TarotHistoryPage.jsx";
 import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
 import AdminUserManagementPage from "./pages/AdminUserManagementPage.jsx";
 import ContentManagementPage from "./pages/ContentManagementPage.jsx";
+import SettingsAdminPage from "./pages/SettingsAdminPage.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
 function App() {
@@ -128,6 +129,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <ContentManagementPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <PrivateRoute>
+                  <SettingsAdminPage />
                 </PrivateRoute>
               }
             />

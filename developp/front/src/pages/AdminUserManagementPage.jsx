@@ -301,7 +301,7 @@ function AdminUserManagementPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/settings"
+            to="/admin/settings"
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>

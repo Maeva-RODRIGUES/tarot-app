@@ -66,7 +66,7 @@ function TarotHistoryPage() {
       >
         <VStack align="start" spacing="4" w="full">
           <RouterLink
-            to="/profile"
+            to={`/profile/${user?.userId}`}
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
@@ -84,7 +84,7 @@ function TarotHistoryPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/settings"
+            to={`/profile/${user?.userId}/settings`}
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
@@ -115,7 +115,10 @@ function TarotHistoryPage() {
           <Text>Chargement...</Text>
         ) : (
           drawings.map((draw, index) => {
-            const cardsArray = typeof draw.cards === "string" ? JSON.parse(draw.cards).cards : draw.cards;
+            const cardsArray =
+              typeof draw.cards === "string"
+                ? JSON.parse(draw.cards).cards
+                : draw.cards;
 
             return (
               <Box
@@ -129,7 +132,8 @@ function TarotHistoryPage() {
                 boxShadow="md"
               >
                 <Heading size="md" mb="4">
-                  Tirage {index + 1} - {new Date(draw.date).toLocaleDateString("fr-FR")}
+                  Tirage {index + 1} -{" "}
+                  {new Date(draw.date).toLocaleDateString("fr-FR")}
                 </Heading>
                 <Text fontSize="lg" mb="4" fontWeight="bold">
                   Thème : {draw.Theme.title_theme}
@@ -150,7 +154,9 @@ function TarotHistoryPage() {
                   <Box mt="4">
                     <Heading size="sm">Interprétation générale :</Heading>
                     <Text fontSize="md" mt="2">
-                      {typeof draw.cards === "string" ? JSON.parse(draw.cards).interpretation : draw.cards.interpretation}
+                      {typeof draw.cards === "string"
+                        ? JSON.parse(draw.cards).interpretation
+                        : draw.cards.interpretation}
                     </Text>
                   </Box>
                 </VStack>
@@ -166,4 +172,3 @@ function TarotHistoryPage() {
 }
 
 export default TarotHistoryPage;
-
