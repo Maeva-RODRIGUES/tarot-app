@@ -4,9 +4,10 @@ import { Box, Text, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
 // Définition de la base URL pour les images des cartes
-const IMAGE_BASE_URL = "http://localhost:8000/uploads/tarot/";
+const IMAGE_BASE_URL = "http://localhost:8000";
 
-function TarotCard({ card, isFlipped, animateProps, backImage }) { // Mise à jour pour accepter backImage
+function TarotCard({ card, isFlipped, animateProps, backImage }) {
+  // Mise à jour pour accepter backImage
   console.log("animateProps:", animateProps);
 
   return (
@@ -28,17 +29,13 @@ function TarotCard({ card, isFlipped, animateProps, backImage }) { // Mise à jo
           justifyContent="center"
           padding="4"
         >
-          <Text fontSize={["sm", "md", "lg"]} fontWeight="bold" mb={2}>
-            {card.name_card || "Carte Inconnue"} {/* Ajout de fallback pour card.name_card */}
-          </Text>
           <Image
             src={`${IMAGE_BASE_URL}${card.image_url}`} // Utilisation de la base URL pour l'image
             alt={card.name_card || "Carte Inconnue"} // Ajout de fallback pour alt
-            boxSize="80%"
+            boxSize="110%"
+            border="2px solid black" // Ajout de la bordure noire
+            borderRadius="md" // Optionnel: Garder les coins arrondis
           />
-          <Text mt={2} fontSize={["xs", "sm", "md"]}>
-            {card.keyword1}, {card.keyword2}, {card.keyword3}
-          </Text>
         </Box>
       ) : (
         // Si la carte n'est pas retournée

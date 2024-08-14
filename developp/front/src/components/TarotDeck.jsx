@@ -8,7 +8,8 @@ import useCards from "../hooks/useCards"; // Gestion des données des cartes
 import useAnimations from "../hooks/useAnimations"; // Animations
 import { fetchThemes } from "../api/themesApi"; // Importer l'API pour récupérer les thèmes
 
-function TarotDeck({ theme }) { // Recevoir le thème en tant que prop
+function TarotDeck({ theme }) {
+  // Recevoir le thème en tant que prop
   const { cards, isLoading, isError, error } = useCards();
   const { shuffleCards, backImage } = useTarotDeck(); // Fonction de mélange des cartes et image du dos
   const {
@@ -86,19 +87,25 @@ function TarotDeck({ theme }) { // Recevoir le thème en tant que prop
           const selectedThemeTitle = themeMap[theme.toLowerCase()];
 
           const selectedTheme = themes.find(
-            (t) => t.title_theme === selectedThemeTitle
+            (t) => t.title_theme === selectedThemeTitle,
           );
           console.log("Thème sélectionné :", selectedTheme);
 
           if (selectedTheme) {
             const interpretations = JSON.parse(selectedTheme.meaning_theme);
-            const randomInterpretation = getRandomInterpretation(interpretations);
-            setThemeInterpretation(randomInterpretation || "Interprétation indisponible");
+            const randomInterpretation =
+              getRandomInterpretation(interpretations);
+            setThemeInterpretation(
+              randomInterpretation || "Interprétation indisponible",
+            );
           } else {
             console.error(`Thème ${theme} non trouvé.`);
           }
         } catch (error) {
-          console.error("Erreur lors de la récupération de l'interprétation du thème", error);
+          console.error(
+            "Erreur lors de la récupération de l'interprétation du thème",
+            error,
+          );
         }
       }
     }
@@ -144,19 +151,38 @@ function TarotDeck({ theme }) { // Recevoir le thème en tant que prop
           </Text>
           <SimpleGrid columns={3} spacing={10} mt={5}>
             {selectedCards.map((card, index) => (
-              <Box key={card.id}>
-                <TarotCard
-                  card={card}
-                  backImage={backImage} // Affiche aussi le dos du deck pour les cartes sélectionnées
-                  frontColor={card.keyword1}
-                  isFlipped
-                />
-                <Text mt={2}>Interprétation de la carte {index + 1}</Text>
+              <Box key={card.id} textAlign="center" position="relative">
+                {/* Conteneur flex pour centrer l'image par rapport aux keywords */}
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  height="200px" // Ajustez la hauteur en fonction de vos besoins
+                  position="relative"
+              
+                >
+                  <TarotCard card={card} backImage={backImage} isFlipped />
+                </Box>
+                {/* Keywords restent en place */}
+                <Text
+                  mt={2}
+                  position="absolute"
+                  bottom="-10"
+                  left="50%"
+                  transform="translateX(-50%)"
+                >
+                  {card.keyword1}, {card.keyword2}, {card.keyword3}
+                </Text>
               </Box>
             ))}
           </SimpleGrid>
-          <Box mt={10}>
-            <Text fontSize="lg" fontWeight="bold">
+
+          {/* Ajouter un espacement supplémentaire ici pour abaisser la section */}
+          <Box mb={5} mt={20}>
+            {" "}
+            {/* Augmenter la valeur de 'mt' pour abaisser davantage */}
+            <Text fontSize="lg" fontWeight="bold" mb={5}>
               Interprétation Générale
             </Text>
             <Text>{themeInterpretation}</Text>

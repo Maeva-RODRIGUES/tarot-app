@@ -31,7 +31,7 @@ function CommentSection() {
             </Button>
           </form>
         ) : (
-          <Box mb={4}>
+          <Box mb={14}>
             <Flex justifyContent="space-between" alignItems="center">
               <Text fontSize="2xl" color="#191970" fontWeight="bold">VOS COMMENTAIRES</Text>
               <Button onClick={handleAddComment} bg="#191970" color="white" borderRadius="full">
