@@ -35,6 +35,9 @@ import useCards from "../hooks/useCards";
 import useThemes from "../hooks/useThemes";
 import useReviews from "../hooks/useReviews";
 
+// Définition de la base URL pour les images des cartes
+const IMAGE_BASE_URL = "http://localhost:8000";
+
 function ContentManagementPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -256,7 +259,7 @@ function ContentManagementPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/settings"
+            to="/admin/settings"
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
@@ -448,9 +451,10 @@ function ContentManagementPage() {
               >
                 {/* Affichage de l'image avec le chemin complet */}
                 <Image
-                  src={`http://localhost:8000/uploads/tarot/${card.image_url}`}
+                  src={`${IMAGE_BASE_URL}${card.image_url}`}
                   alt={card.name_card}
-                  boxSize="150px"
+                  boxSize="200px"
+                  height="400px"
                   objectFit="cover"
                   mb="4"
                 />
