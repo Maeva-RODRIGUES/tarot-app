@@ -1,4 +1,4 @@
-//HeaderDashboard.jsx
+// HeaderDashboard.jsx
 
 import React from "react";
 import {
@@ -12,13 +12,14 @@ import {
 } from "@chakra-ui/react";
 import { FaUserCircle } from "react-icons/fa";
 import { Link as RouterLink } from "react-router-dom";
-import { useAuth } from "./context/AuthContext"; 
+import { useAuth } from "./context/AuthContext";
 
 function HeaderDashboard() {
   const { user } = useAuth(); // Supposer que vous avez un utilisateur dans votre contexte d'authentification
 
   // Déterminer le lien en fonction du type d'utilisateur
-  const profileLink = user?.role === "Admin" ? "/admin" : `/profile/${user?.id}`; // Modifiez selon vos routes
+  const profileLink =
+    user?.role === "Admin" ? "/admin" : `/profile/${user?.id}`; // Modifiez selon vos routes
 
   return (
     <Box

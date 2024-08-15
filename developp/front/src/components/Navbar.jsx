@@ -1,5 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable react/jsx-no-undef */
 // Navbar.jsx
 
 import React from "react";

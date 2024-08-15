@@ -1,4 +1,5 @@
 // src/pages/TarotHistoryPage.jsx
+
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -20,6 +21,7 @@ import { useAuth } from "../components/context/AuthContext";
 import { fetchUserDrawings } from "../api/drawApi";
 
 function TarotHistoryPage() {
+  // État pour stocker les tirages et l'état de chargement
   const [drawings, setDrawings] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ function TarotHistoryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Appel API pour récupérer les tirages de l'utilisateur
         const data = await fetchUserDrawings(user.userId);
         setDrawings(data);
       } catch (error) {
@@ -75,7 +78,7 @@ function TarotHistoryPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/drawingsstory"
+            to={`/profile/${user?.userId}/drawingsstory`}
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
@@ -114,12 +117,14 @@ function TarotHistoryPage() {
         {loading ? (
           <Text>Chargement...</Text>
         ) : (
+          // ---------------------------------
+          // Début de la partie mise à jour
           drawings.map((draw, index) => {
+            // Analyse des cartes pour chaque tirage
             const cardsArray =
               typeof draw.cards === "string"
                 ? JSON.parse(draw.cards).cards
                 : draw.cards;
-
             return (
               <Box
                 key={index}
@@ -136,13 +141,14 @@ function TarotHistoryPage() {
                   {new Date(draw.date).toLocaleDateString("fr-FR")}
                 </Heading>
                 <Text fontSize="lg" mb="4" fontWeight="bold">
-                  Thème : {draw.Theme.title_theme}
+                  Thème : {draw.Theme.title_theme} {/* Affichage du thème */}
                 </Text>
                 <VStack spacing="4" align="start">
+                  {/* Affichage des cartes */}
                   {cardsArray.map((card, cardIndex) => (
                     <Box key={cardIndex} mb="4">
                       <Image
-                        src={card.image_url}
+                        src={`http://localhost:8000/${card.image_url}`}
                         alt={`Card ${cardIndex + 1}`}
                         boxSize="100px"
                         objectFit="contain"
@@ -154,6 +160,7 @@ function TarotHistoryPage() {
                   <Box mt="4">
                     <Heading size="sm">Interprétation générale :</Heading>
                     <Text fontSize="md" mt="2">
+                      {/* Affichage de l'interprétation */}
                       {typeof draw.cards === "string"
                         ? JSON.parse(draw.cards).interpretation
                         : draw.cards.interpretation}
@@ -163,6 +170,8 @@ function TarotHistoryPage() {
               </Box>
             );
           })
+          // Fin de la partie mise à jour
+          // -------------------
         )}
       </Box>
 

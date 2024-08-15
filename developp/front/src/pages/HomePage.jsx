@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 // HomePage.jsx
 
 import React from "react";
@@ -87,4 +86,3 @@ function Homepage() {
 }
 
 export default Homepage;
-

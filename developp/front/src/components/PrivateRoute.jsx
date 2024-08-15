@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useLocation, Outlet } from "react-router-dom";
-import { useAuth } from "./context/AuthContext"; 
+import { useAuth } from "./context/AuthContext";
 import { usePopup } from "./context/PopupContext"; // Importation du contexte de la popup
 
 function PrivateRoute({ children }) {

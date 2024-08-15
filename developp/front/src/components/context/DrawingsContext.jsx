@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/jsx-no-constructed-context-values */
 // src/components/context/DrawingsContext.jsx
 
 import React, { createContext, useContext, useState } from "react";
 import {
   fetchDrawings,
-  createDrawing,
+  createDrawingForUser,
   updateDrawing,
   deleteDrawing,
 } from "../../api/drawApi";
@@ -27,11 +29,23 @@ export function DrawingsProvider({ children }) {
     }
   };
 
-  const addDrawing = async (drawingData) => {
+  // Fonction pour ajouter un tirage
+  const addDrawing = async (theme, userId, selectedCards) => {
     try {
-      const newDrawing = await createDrawing(drawingData);
+      // Appel à la fonction API pour créer un nouveau tirage pour un utilisateur spécifique avec un thème et des cartes sélectionnées.
+      const newDrawing = await createDrawingForUser(
+        userId,
+        theme,
+        selectedCards,
+      );
+
+      // Mise à jour de l'état `drawings` avec le nouveau tirage ajouté.
       setDrawings([...drawings, newDrawing]);
     } catch (err) {
+      // Si une erreur survient lors de la création du tirage, elle est capturée ici.
+      console.error("Erreur de création du tirage:", err);
+
+      // Mise à jour de l'état `error` pour indiquer qu'une erreur s'est produite.
       setError("Erreur de création du tirage.");
     }
   };

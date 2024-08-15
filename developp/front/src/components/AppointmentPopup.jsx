@@ -1,4 +1,4 @@
-//AppointmentPopup.jsx
+// AppointmentPopup.jsx
 
 import React from "react";
 import {
@@ -18,24 +18,29 @@ import {
   Flex,
   Image,
   Heading,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import { usePopup } from "./context/PopupContext.jsx"; // Assure-toi que le chemin est correct
 
 function AppointmentPopup() {
   const { popupType, closePopup } = usePopup();
 
-  if (popupType !== 'contact') return null; // Affiche le popup uniquement si popupType est 'contact'
+  if (popupType !== "contact") return null; // Affiche le popup uniquement si popupType est 'contact'
 
   return (
-    <Modal isOpen={popupType === 'contact'} onClose={closePopup}>
+    <Modal isOpen={popupType === "contact"} onClose={closePopup}>
       <ModalOverlay />
-      <ModalContent maxWidth="1200px"> {/* Définit une largeur personnalisée */}
+      <ModalContent maxWidth="1200px">
+        {" "}
+        {/* Définit une largeur personnalisée */}
         <ModalHeader>
           <Box textAlign="center" w="100%">
-            <Heading as="h2" size="lg" p={3}>Contactez-nous</Heading>
+            <Heading as="h2" size="lg" p={3}>
+              Contactez-nous
+            </Heading>
             <Text mt={2} fontSize="md">
-              Vous souhaitez prendre une consultation avec notre cartomancienne ? Prenez RDV !
+              Vous souhaitez prendre une consultation avec notre cartomancienne
+              ? Prenez RDV !
             </Text>
           </Box>
         </ModalHeader>
@@ -77,7 +82,6 @@ function AppointmentPopup() {
             </Box>
           </Flex>
         </ModalBody>
-
         <ModalFooter>
           <Button
             bg="#191970" // Bleu nuit

@@ -10,7 +10,7 @@ function TarotThemesPage() {
   return (
     <Box>
       <Heading as="h1" size="xl" textAlign="center" my={8}>
-        Sélectionnez un thème 
+        Sélectionnez un thème
       </Heading>
       <CardsMenu />
     </Box>

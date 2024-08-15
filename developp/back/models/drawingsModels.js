@@ -12,10 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false
     },
-    cards: {
-      type: DataTypes.STRING(255),
-      allowNull: false
-    },
+  
     id_Themes: {
       type: DataTypes.INTEGER,
       references: {

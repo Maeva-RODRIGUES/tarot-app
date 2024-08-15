@@ -13,7 +13,7 @@ export const fetchReviews = async (userId) => {
 export const createReview = async (userId, reviewData) => {
   const response = await api.post(
     `${REVIEWS_ENDPOINT}/user/${userId}`,
-    reviewData
+    reviewData,
   );
   return response.data;
 };

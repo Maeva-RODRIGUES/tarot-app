@@ -7,7 +7,7 @@ import { AUTH_ENDPOINT, USERS_ENDPOINT } from "./apiEndpoints";
 export const login = async (credentials) => {
   console.log("Tentative de connexion avec les identifiants :", credentials);
   const response = await api.post(AUTH_ENDPOINT.LOGIN, credentials);
-  
+
   // Extraction des données de la réponse
   const { token, userId, role } = response.data;
 

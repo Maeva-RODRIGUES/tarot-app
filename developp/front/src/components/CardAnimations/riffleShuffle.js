@@ -12,7 +12,7 @@ const riffleShuffleAnimation = (cardCount) => {
     y: Math.cos((index / cardCount) * 2 * Math.PI) * 100, // Réduit l'amplitude
     rotate: Math.random() * 180 - 90, // Réduit l'angle de rotation
     opacity: 1, // Opacité normale
-    transition: { duration: 1 } // Durée de l'animation
+    transition: { duration: 1 }, // Durée de l'animation
   }));
 };
 

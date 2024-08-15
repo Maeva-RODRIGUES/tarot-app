@@ -51,8 +51,12 @@ Review.belongsTo(User, { foreignKey: 'id_Users' });
 Drawing.belongsToMany(Card, { through: 'to_compose', foreignKey: 'id_Drawings', otherKey: 'id' });
 Card.belongsToMany(Drawing, { through: 'to_compose', foreignKey: 'id', otherKey: 'id_Drawings' });
 
+
 Card.belongsToMany(Theme, { through: 'to_have', foreignKey: 'id', otherKey: 'id_Themes' });
 Theme.belongsToMany(Card, { through: 'to_have', foreignKey: 'id_Themes', otherKey: 'id' });
+
+// Log de vérification
+console.log('Relation Drawing <-> Card configurée via to_compose');
 
 // Synchronisation de Sequelize avec la base de données
 sequelize.sync() 

@@ -1,6 +1,6 @@
 // PopupContext.jsx
 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
 const PopupContext = createContext();
 
@@ -22,4 +22,3 @@ export function PopupProvider({ children }) {
 export function usePopup() {
   return useContext(PopupContext);
 }
-

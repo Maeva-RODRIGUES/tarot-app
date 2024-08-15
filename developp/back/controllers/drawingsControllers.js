@@ -2,7 +2,6 @@
 
 const { Drawing, Card, Theme } = require('../models/indexModels');
 
-
 // Fonction pour mélanger un tableau (algorithme Fisher-Yates)
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -28,7 +27,13 @@ exports.getDrawingsByUserId = async (req, res) => {
         const userId = req.params.userId;
         const drawings = await Drawing.findAll({
             where: { id_Users: userId },
-            include: [Card, Theme],  // Inclure les associations nécessaires
+            include: [
+                {
+                    model: Card,
+                    through: { attributes: [] } // Inclure les cartes associées sans les attributs de la table de jointure
+                },
+                Theme // Inclure également les thèmes associés
+            ]
         });
         if (!drawings.length) {
             return res.status(404).json({ message: "Aucun tirage trouvé pour cet utilisateur" });
@@ -39,66 +44,84 @@ exports.getDrawingsByUserId = async (req, res) => {
     }
 };
 
+// Créer un tirage pour un utilisateur spécifique basé sur le thème choisi
+exports.createDrawingForUser = async (req, res) => {
+    try {
+        const { userId, theme } = req.params;
+
+        // Récupérer le thème à partir de l'ID
+        const themeData = await Theme.findOne({ where: { id: theme } });
+        if (!themeData) {
+            return res.status(400).json({ message: "Thème invalide" });
+        }
+
+        // Récupérer les cartes disponibles et mélanger
+        const tarotDeck = await Card.findAll();
+        const shuffledDeck = shuffleArray(tarotDeck);
+
+        // Sélectionner les 3 premières cartes après le mélange
+        const selectedCards = shuffledDeck.slice(0, 3);
+
+        // Créer un nouveau tirage
+        const newDrawing = await Drawing.create({
+            date: new Date(),
+            id_Themes: themeData.id,
+            id_Users: userId,
+        });
+
+        // Associer les cartes au tirage via la table de jointure
+        await newDrawing.addCards(selectedCards);
+
+        res.status(201).json({
+            message: 'Tirage créé avec succès pour l\'utilisateur',
+            drawing: newDrawing
+        });
+    } catch (error) {
+        console.error('Erreur lors de la création du tirage :', error);
+        res.status(500).json({ message: 'Erreur lors de la création du tirage', error });
+    }
+};
 
 // Créer un tirage aléatoire de 3 cartes basé sur le thème choisi
 exports.createRandomDrawingByTheme = async (req, res) => {
     try {
-        console.log('Corps de la requête :', req.body);
-
         const themeName = req.params.theme;
-        console.log(`Recherche du thème : ${themeName}`);
 
         const theme = await Theme.findOne({ where: { title_theme: themeName } });
         if (!theme) {
-            console.error(`Thème non trouvé : ${themeName}`);
             return res.status(400).json({ message: "Thème invalide" });
         }
-        console.log(`Thème trouvé : ${theme.title_theme}`);
 
-        // Tirer toutes les cartes disponibles
+        // Tirer toutes les cartes disponibles et mélanger
         const tarotDeck = await Card.findAll();
-        console.log(`Nombre total de cartes disponibles : ${tarotDeck.length}`);
-
-        // Mélanger le deck
         const shuffledDeck = shuffleArray(tarotDeck);
 
         // Sélectionner les 3 premières cartes après le mélange
         const randomCards = shuffledDeck.slice(0, 3);
 
-        // Utiliser le champ 'meaning_theme' pour récupérer une interprétation aléatoire
-        const interpretations = JSON.parse(theme.meaning_theme);
-        const randomInterpretation = interpretations[Math.floor(Math.random() * interpretations.length)];
-
-        // Vérifiez que req.user est défini
         if (!req.user) {
             return res.status(401).json({ message: 'Utilisateur non authentifié' });
         }
 
-        // Créer le tirage en incluant l'interprétation dans le champ 'cards'
+        // Créer un nouveau tirage
         const newDrawing = await Drawing.create({
             date: new Date(),
-            cards: JSON.stringify({
-                cards: randomCards,
-                interpretation: randomInterpretation
-            }),
             id_Themes: theme.id,
-            id_Users: req.user.id
+            id_Users: req.user.id,
         });
 
-        // Associer les cartes au tirage
+        // Associer les cartes au tirage via la table de jointure
         await newDrawing.addCards(randomCards);
 
-        res.status(201).json({ 
-            message: 'Tirage aléatoire créé avec succès', 
-            drawing: newDrawing
+        res.status(201).json({
+            message: 'Tirage aléatoire créé avec succès',
+            drawing: newDrawing,
         });
     } catch (error) {
         console.error('Erreur lors de la création du tirage aléatoire :', error);
         res.status(500).json({ message: 'Erreur lors de la création du tirage aléatoire', error });
     }
 };
-
-
 
 // Supprimer un tirage spécifique par son ID
 exports.deleteDrawingById = async (req, res) => {
@@ -118,3 +141,5 @@ exports.deleteDrawingById = async (req, res) => {
 };
 
 module.exports.shuffleArray = shuffleArray;
+
+

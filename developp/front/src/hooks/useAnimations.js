@@ -11,7 +11,6 @@ import cutAnimation from "../components/CardAnimations/otherAnimations";
 const useAnimations = () => {
   const [animateProps, setAnimateProps] = useState([]);
 
-
   const triggerRiffleShuffle = (cardCount) => {
     // ---- Mise à jour : Ajout de logs pour vérifier les props d'animation ----
     const animationProps = riffleShuffleAnimation(cardCount);
@@ -26,9 +25,13 @@ const useAnimations = () => {
     console.log("Cut Animation Props:", animationProps); // Ajouté pour vérification
     setAnimateProps(animationProps);
   };
-  
 
-  return { animateProps, triggerRiffleShuffle, triggerCutAnimation, setAnimateProps };
+  return {
+    animateProps,
+    triggerRiffleShuffle,
+    triggerCutAnimation,
+    setAnimateProps,
+  };
 };
 
 export default useAnimations;

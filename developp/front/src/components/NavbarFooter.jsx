@@ -4,7 +4,7 @@ import React from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { usePopup } from "./context/PopupContext"; //importer le hook
+import { usePopup } from "./context/PopupContext"; // importer le hook
 
 function NavbarFooter({ logo }) {
   const { openPopup } = usePopup(); // Obtenir la fonction pour ouvrir la popup

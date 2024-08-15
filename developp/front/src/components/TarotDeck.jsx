@@ -1,15 +1,19 @@
+/* eslint-disable no-console */
+/* eslint-disable prettier/prettier */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-shadow */
 // src/components/TarotDeck.jsx
 
 import { Box, SimpleGrid, Button, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types"; // Ajout pour la validation des props
 import TarotCard from "./TarotCard";
 import useTarotDeck from "../hooks/useTarotDeck"; // Logique du jeu
 import useCards from "../hooks/useCards"; // Gestion des données des cartes
 import useAnimations from "../hooks/useAnimations"; // Animations
 import { fetchThemes } from "../api/themesApi"; // Importer l'API pour récupérer les thèmes
 
-function TarotDeck({ theme }) {
-  // Recevoir le thème en tant que prop
+function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
   const { cards, isLoading, isError, error } = useCards();
   const { shuffleCards, backImage } = useTarotDeck(); // Fonction de mélange des cartes et image du dos
   const {
@@ -24,7 +28,6 @@ function TarotDeck({ theme }) {
     Array(cards?.length || 0).fill(false),
   );
   const [selectedCards, setSelectedCards] = useState([]);
-  const [isCutting, setIsCutting] = useState(false);
   const [canSelectCards, setCanSelectCards] = useState(false);
   const [showButton, setShowButton] = useState(true);
   const [themeInterpretation, setThemeInterpretation] = useState(""); // État pour stocker l'interprétation du thème
@@ -49,11 +52,9 @@ function TarotDeck({ theme }) {
   };
 
   const handleCut = () => {
-    setIsCutting(true);
     triggerCutAnimation(cards.length); // Appel à l'animation de coupe personnalisée
     setTimeout(() => {
       resetState();
-      setIsCutting(false);
       setCanSelectCards(true);
       setShowButton(false);
     }, 2000);
@@ -98,6 +99,11 @@ function TarotDeck({ theme }) {
             setThemeInterpretation(
               randomInterpretation || "Interprétation indisponible",
             );
+
+            // Enregistrer le tirage via onDrawComplete
+            if (onDrawComplete) {
+              onDrawComplete(newSelectedCards); // Utilisez onDrawComplete pour enregistrer le tirage
+            }
           } else {
             console.error(`Thème ${theme} non trouvé.`);
           }
@@ -150,7 +156,7 @@ function TarotDeck({ theme }) {
             VOTRE AVENIR EN DÉTAIL
           </Text>
           <SimpleGrid columns={3} spacing={10} mt={5}>
-            {selectedCards.map((card, index) => (
+            {selectedCards.map((card) => (
               <Box key={card.id} textAlign="center" position="relative">
                 {/* Conteneur flex pour centrer l'image par rapport aux keywords */}
                 <Box
@@ -160,7 +166,6 @@ function TarotDeck({ theme }) {
                   justifyContent="center"
                   height="200px" // Ajustez la hauteur en fonction de vos besoins
                   position="relative"
-              
                 >
                   <TarotCard card={card} backImage={backImage} isFlipped />
                 </Box>
@@ -192,5 +197,11 @@ function TarotDeck({ theme }) {
     </Box>
   );
 }
+
+// Validation des props
+TarotDeck.propTypes = {
+  theme: PropTypes.string.isRequired,
+  onDrawComplete: PropTypes.func.isRequired,
+};
 
 export default TarotDeck;

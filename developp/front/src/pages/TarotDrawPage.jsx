@@ -1,14 +1,19 @@
-// src/pages/TarotDrawPage.jsx : pour afficher les tirages en fonction du thème sélectionné
+/* eslint-disable no-console */
+/* eslint-disable no-shadow */
+// src/pages/TarotDrawPage.jsx
 
 import React, { useState, useEffect } from "react";
 import { Box, Heading, Text, Icon } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { TbCardsFilled } from "react-icons/tb";
-import Header from "../components/Header.jsx";
-import Footer from "../components/Footer.jsx";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import TarotDeck from "../components/TarotDeck";
-import CommentSection from "../components/CommentSection.jsx";
-import { fetchCards } from "../api/cardsApi"; // Importation de l'appel API
+import CommentSection from "../components/CommentSection";
+import { fetchCards } from "../api/cardsApi";
+import { fetchThemes } from "../api/themesApi"; // Importation de l'API des thèmes
+import { useDrawings } from "../components/context/DrawingsContext";
+import { useAuth } from "../components/context/AuthContext";
 
 const themeImages = {
   amour: {
@@ -28,9 +33,11 @@ const themeImages = {
 function TarotDrawPage() {
   const { theme } = useParams();
   const [cards, setCards] = useState([]);
+  const [themes, setThemes] = useState([]); // État pour stocker les thèmes
   const [error, setError] = useState(null);
+  const { addDrawing } = useDrawings();
+  const { user } = useAuth();
 
-  // Remplace le thème par une version française si nécessaire
   const themeMap = {
     love: "amour",
     career: "carrière",
@@ -38,16 +45,11 @@ function TarotDrawPage() {
   };
   const frenchTheme = themeMap[theme] || theme;
 
-  const images = themeImages[frenchTheme] || themeImages.default; // Utiliser des images par défaut si le thème n'existe pas
+  const images = themeImages[frenchTheme] || themeImages.default;
 
   useEffect(() => {
     const fetchCardsData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Token not found");
-        }
-
         const data = await fetchCards();
         setCards(data);
       } catch (error) {
@@ -58,8 +60,57 @@ function TarotDrawPage() {
       }
     };
 
+    const fetchThemeData = async () => {
+      try {
+        const themeData = await fetchThemes(); // Récupération des thèmes via l'API
+        setThemes(themeData);
+      } catch (error) {
+        console.error("Erreur de récupération des thèmes:", error);
+        setError(
+          "Erreur de récupération des thèmes. Veuillez réessayer plus tard.",
+        );
+      }
+    };
+
     fetchCardsData();
+    fetchThemeData(); // Appeler la fonction pour charger les thèmes au montage du composant
   }, [theme]);
+
+  // Fonction pour convertir le nom du thème en ID
+  const getThemeIdByName = (themeName) => {
+    const theme = themes.find(
+      (t) => t.title_theme.toLowerCase() === themeName.toLowerCase(),
+    );
+    return theme ? theme.id : null; // Retourne l'ID si trouvé, sinon null
+  };
+
+  // Fonction pour gérer l'enregistrement du tirage après la sélection des cartes
+  const handleDrawComplete = async (selectedCards) => {
+    if (!user || !user.userId) {
+      console.error("User ID is undefined. Cannot create drawing.");
+      return;
+    }
+
+    const themeId = getThemeIdByName(frenchTheme); // Convertir le nom du thème en ID
+    if (!themeId) {
+      console.error("Invalid theme name. Cannot find theme ID.");
+      return;
+    }
+
+    console.log("handleDrawComplete called with cards:", selectedCards);
+
+    try {
+      console.log("User ID:", user.userId);
+      console.log("Theme ID:", themeId); // Utiliser l'ID du thème
+      console.log("Selected Cards:", selectedCards);
+
+      await addDrawing(themeId, user.userId, selectedCards); // Utiliser l'ID du thème ici
+
+      console.log("Tirage créé avec succès");
+    } catch (error) {
+      console.error("Erreur lors de la création du tirage:", error);
+    }
+  };
 
   return (
     <>
@@ -68,7 +119,7 @@ function TarotDrawPage() {
           bannerSrc={images.header}
           bannerAlt={`Bannière d'accueil pour le thème ${theme}`}
           bannerHeight="300px"
-          backgroundPosition="50% 20%" // Exemple de positionnement
+          backgroundPosition="50% 20%"
         />
         <Box p={4} textAlign="center">
           <Heading as="h1" size="xl" mb={10}>
@@ -81,12 +132,16 @@ function TarotDrawPage() {
             </Text>{" "}
             - Vous pouvez tirer plusieurs cartes simultanément.
             <br />
-            Il est important d'être au calme lors d'une séance.
+            Il est important d&#39;être au calme lors d&#39;une séance.
           </Text>
           {error ? (
             <Box color="red.500">{error}</Box>
           ) : (
-            <TarotDeck cards={cards} theme={theme} /> // Passer le thème à TarotDeck
+            <TarotDeck
+              cards={cards}
+              theme={theme}
+              onDrawComplete={handleDrawComplete}
+            />
           )}
           <CommentSection />
         </Box>
@@ -95,7 +150,7 @@ function TarotDrawPage() {
         bannerSrc={images.footer}
         bannerAlt={`Bannière de pied de page pour le thème ${theme}`}
         bannerHeight="300px"
-        footerStyle={{ backgroundColor: "#f8f9fa" }} // Exemple de style supplémentaire pour le footer
+        footerStyle={{ backgroundColor: "#f8f9fa" }}
       />
     </>
   );

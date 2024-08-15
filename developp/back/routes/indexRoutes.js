@@ -59,7 +59,6 @@ router.use('/themes', protect, themesRoutes);
 router.use('/drawings', protect, drawingsRoutes);
 router.use('/reviews', protect, reviewsRoutes);
 
-// === MISE À JOUR ===
 // Route pour créer un utilisateur sans authentification
 const usersControllers = require('../controllers/usersControllers');
 router.post('/users', usersControllers.createUser);
@@ -72,6 +71,6 @@ router.use('/roles', protect, authorize(['Admin']), rolesRoutes); // Ajouté la 
 
 // Routes d'authentification
 router.use('/auth', authRoutes);
-// === FIN DE MISE À JOUR ===
+
 
 module.exports = router;
