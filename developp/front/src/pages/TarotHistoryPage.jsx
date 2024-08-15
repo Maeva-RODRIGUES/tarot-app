@@ -21,6 +21,10 @@ import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { fetchUserDrawings } from "../api/drawApi";
 
+// Définition de la base URL pour les images des cartes
+const IMAGE_BASE_URL = "http://localhost:8000";
+
+
 function TarotHistoryPage() {
   const [drawings, setDrawings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -142,7 +146,7 @@ function TarotHistoryPage() {
                   {draw.cards.map((card, cardIndex) => (
                     <Box key={cardIndex} mb="4">
                       <Image
-                        src={`http://localhost:8000/${card.image_url}`} // URL de l'image de la carte
+                        src={`${IMAGE_BASE_URL}${card.image_url}`} // URL de l'image de la carte
                         alt={`Card ${cardIndex + 1}`}
                         boxSize="100px"
                         objectFit="contain"
@@ -152,8 +156,7 @@ function TarotHistoryPage() {
                         {card.name_card} {/* Nom de la carte */}
                       </Text>
                       <Text fontSize="sm">
-                        Keywords: {card.keyword1}, {card.keyword2},{" "}
-                        {card.keyword3}
+                        {card.keyword1}, {card.keyword2}, {card.keyword3}
                         {/* Affichage des keywords */}
                       </Text>
                     </Box>

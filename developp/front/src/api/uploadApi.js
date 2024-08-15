@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 // src/api/uploadApi.js
 
 import api from "./configAxios";
