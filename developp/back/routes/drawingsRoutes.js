@@ -10,6 +10,15 @@ router.get('/', drawingsControllers.getAllDrawings);
 // Route pour récupérer les tirages d'un utilisateur spécifique
 router.get('/user/:userId', drawingsControllers.getDrawingsByUserId);
 
+// Route pour récupérer le dernier tirage d'un utilisateur spécifique
+router.get('/last/:userId', drawingsControllers.getLastDrawingForUser);
+// router.get('/last/:userId', (req, res) => {
+//     console.log("Route hit");
+//     res.send("Route is working");
+// });
+
+
+
 // Route pour créer un tirage aléatoire basé sur le thème choisi
 router.post('/random/:theme', drawingsControllers.createRandomDrawingByTheme);
 

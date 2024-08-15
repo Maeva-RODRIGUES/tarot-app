@@ -1,4 +1,7 @@
 // drawingsController.js : logique métier des tirages de cartes
+console.log("drawingsController.js is loaded");
+
+
 
 const { Drawing, Card, Theme } = require('../models/indexModels');
 
@@ -50,6 +53,36 @@ exports.getDrawingsByUserId = async (req, res) => {
     }
 };
 
+
+// Récupérer le dernier tirage de tarot pour un utilisateur spécifique
+exports.getLastDrawingForUser = async (req, res) => {
+    console.log("getLastDrawingForUser called");
+    try {
+        const userId = req.params.userId;
+        console.log(`Fetching last drawing for user ID: ${userId}`);
+        const lastDrawing = await Drawing.findOne({
+            where: { id_Users: userId },
+            order: [['date', 'DESC']], // Trier par date décroissante pour obtenir le dernier tirage
+            include: [
+                {
+                    model: Card,
+                    attributes: ['id', 'name_card', 'image_url'],
+                    through: { attributes: [] } // Ne pas inclure d'attributs supplémentaires de la table de jointure
+                },
+            ],
+        });
+
+        if (!lastDrawing) {
+            console.log(`No drawing found for user ID: ${userId}`);
+            return res.status(404).json({ message: "Aucun tirage trouvé pour cet utilisateur" });
+        }
+
+        res.json(lastDrawing);
+    } catch (error) {
+        console.error('Erreur lors de la récupération du dernier tirage de tarot:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération du dernier tirage de tarot', error });
+    }
+};
 
 // Créer un tirage pour un utilisateur spécifique basé sur le thème choisi
 exports.createDrawingForUser = async (req, res) => {

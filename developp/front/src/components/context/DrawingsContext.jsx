@@ -5,6 +5,7 @@
 import React, { createContext, useContext, useState } from "react";
 import {
   fetchDrawings,
+  fetchLastDrawingForUser, // Import de la nouvelle fonction API
   createDrawingForUser,
   updateDrawing,
   deleteDrawing,
@@ -14,6 +15,7 @@ const DrawingsContext = createContext();
 
 export function DrawingsProvider({ children }) {
   const [drawings, setDrawings] = useState([]);
+  const [lastDrawing, setLastDrawing] = useState(null); // Nouvel état pour le dernier tirage
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -28,6 +30,20 @@ export function DrawingsProvider({ children }) {
       setLoading(false);
     }
   };
+  
+  // Fonction pour charger le dernier tirage d'un utilisateur
+  const loadLastDrawingForUser = async (userId) => {
+    setLoading(true);
+    try {
+      const data = await fetchLastDrawingForUser(userId);
+      setLastDrawing(data); // Mise à jour de l'état `lastDrawing`
+    } catch (err) {
+      setError("Erreur de récupération du dernier tirage.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   // Fonction pour ajouter un tirage
   const addDrawing = async (theme, userId, selectedCards) => {
@@ -72,9 +88,11 @@ export function DrawingsProvider({ children }) {
     <DrawingsContext.Provider
       value={{
         drawings,
+        lastDrawing,
         loading,
         error,
         loadDrawings,
+        loadLastDrawingForUser,
         addDrawing,
         editDrawing,
         removeDrawing,

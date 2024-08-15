@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/no-array-index-key */
 // src/pages/DashboardUserPage.jsx
 
 import React, { useEffect, useState } from "react";
@@ -27,6 +29,7 @@ import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData } from "../api/usersApi";
+import { fetchLastDrawingForUser } from "../api/drawApi";
 
 function DashboardUserPage() {
   const navigate = useNavigate();
@@ -35,12 +38,16 @@ function DashboardUserPage() {
   const toast = useToast();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lastDrawing, setLastDrawing] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getUserData(userId);
         setUserData(data);
+
+        const lastDrawingData = await fetchLastDrawingForUser(userId);
+        setLastDrawing(lastDrawingData);
       } catch (error) {
         toast({
           title: "Erreur",
@@ -104,12 +111,12 @@ function DashboardUserPage() {
   }
 
   // Formater la date et l'heure pour l'affichage
-  const formattedDate = userData.recentActivity?.date
-    ? new Date(userData.recentActivity.date).toLocaleDateString("fr-FR")
+  const formattedDate = lastDrawing?.date
+    ? new Date(lastDrawing.date).toLocaleDateString("fr-FR")
     : "Aucune activité récente";
 
-  const formattedTime = userData.recentActivity?.date
-    ? new Date(userData.recentActivity.date).toLocaleTimeString("fr-FR", {
+  const formattedTime = lastDrawing?.date
+    ? new Date(lastDrawing.date).toLocaleTimeString("fr-FR", {
         hour: "2-digit",
         minute: "2-digit",
       })
@@ -206,24 +213,25 @@ function DashboardUserPage() {
             VOTRE DERNIER TIRAGE
           </Heading>
           <Flex mb="7" justifyContent="center">
-            {userData.lastDraw?.map((src, index) => (
+            {lastDrawing?.Cards?.map((card, index) => (
               <Image
                 key={index}
-                src={src}
+                src={`http://localhost:8000${card.image_url}`}
                 alt={`Tarot Card ${index + 1}`}
                 width="120px"
                 height="180px"
                 borderRadius="10px"
                 mx="7"
+                border="2px solid black" 
                 transform={
                   index === 0
                     ? "rotate(-10deg)"
-                    : index === userData.lastDraw.length - 1
-                      ? "rotate(10deg)"
-                      : "none"
+                    : index === lastDrawing.Cards.length - 1
+                    ? "rotate(10deg)"
+                    : "none"
                 }
                 mt={
-                  index === Math.floor(userData.lastDraw.length / 2)
+                  index === Math.floor(lastDrawing.Cards.length / 2)
                     ? "-10px"
                     : "0"
                 }

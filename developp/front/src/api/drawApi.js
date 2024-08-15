@@ -21,6 +21,12 @@ export const fetchUserDrawings = async (userId) => {
   }));
 };
 
+// Récupérer le dernier tirage d'un utilisateur spécifique
+export const fetchLastDrawingForUser = async (userId) => {
+  const response = await api.get(`${DRAWINGS_ENDPOINT}/last/${userId}`);
+  return response.data; // Retourner directement la réponse du backend
+};
+
 // Créer un nouveau tirage pour un utilisateur et un thème spécifique
 export const createDrawingForUser = async (
   userId,

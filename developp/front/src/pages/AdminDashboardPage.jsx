@@ -77,7 +77,7 @@ function AdminDashboardPage() {
             </HStack>
           </RouterLink>
           <RouterLink
-            to="/admin/settings"
+            to="/settings"
             style={{ textDecoration: "none", color: "white" }}
           >
             <HStack>
