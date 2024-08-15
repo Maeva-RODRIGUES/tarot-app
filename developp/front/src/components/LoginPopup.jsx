@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // LoginPopup.jsx
 
 import React, { useState } from "react";
@@ -51,17 +52,22 @@ function LoginPopup() {
         isClosable: true,
       });
 
-      // ---------------- Mise à jour : Redirige en fonction du thème sélectionné si présent ----------------
+      // Récupérer le thème sélectionné, le cas échéant
       const selectedTheme = localStorage.getItem("selectedTheme");
-      if (response.role === "Admin") {
+
+      // Redirection en fonction du rôle utilisateur
+      console.log("Rôle de l'utilisateur :", response.role.role_name);
+      if (response.role.role_name === "Admin") {
+        console.log("Redirection vers le tableau de bord Admin");
         navigate("/admin");
       } else if (selectedTheme) {
-        localStorage.removeItem("selectedTheme"); // Supprime le thème après redirection
+        console.log("Redirection vers la page de tirage du thème sélectionné");
+        localStorage.removeItem("selectedTheme");
         navigate(`/tarot-draw/${selectedTheme}`);
       } else {
-        navigate(`/profile/${response.userId}`); // Redirige vers le DashboardUserPage du user connecté
+        console.log("Redirection vers le tableau de bord utilisateur");
+        navigate(`/profile/${response.userId}`);
       }
-      // ----------------------------------------------------------------------------------------------------
     } catch (err) {
       setError("Erreur de connexion. Veuillez vérifier vos identifiants.");
       toast({

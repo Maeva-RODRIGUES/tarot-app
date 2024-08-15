@@ -222,13 +222,13 @@ function DashboardUserPage() {
                 height="180px"
                 borderRadius="10px"
                 mx="7"
-                border="2px solid black" 
+                border="2px solid black"
                 transform={
                   index === 0
                     ? "rotate(-10deg)"
                     : index === lastDrawing.Cards.length - 1
-                    ? "rotate(10deg)"
-                    : "none"
+                      ? "rotate(10deg)"
+                      : "none"
                 }
                 mt={
                   index === Math.floor(lastDrawing.Cards.length / 2)
