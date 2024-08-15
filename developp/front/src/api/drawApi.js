@@ -1,3 +1,5 @@
+// drawApi.js
+
 import api from "./configAxios";
 import { DRAWINGS_ENDPOINT } from "./apiEndpoints";
 
@@ -11,19 +13,28 @@ export const fetchDrawings = async () => {
 export const fetchUserDrawings = async (userId) => {
   const response = await api.get(`${DRAWINGS_ENDPOINT}/user/${userId}`);
 
-  // S'assurer que la réponse contient bien les cartes associées via la table de jointure
+  // S'assurer que la réponse contient bien les cartes associées et l'interprétation sélectionnée via la table de jointure
   return response.data.map((drawing) => ({
     ...drawing,
     cards: drawing.Cards, // Utiliser le champ "Cards" qui est inclus dans la réponse du backend
+    selected_interpretation: drawing.selected_interpretation, // Inclure l'interprétation sélectionnée dans le retour
   }));
 };
 
 // Créer un nouveau tirage pour un utilisateur et un thème spécifique
-export const createDrawingForUser = async (userId, themeId, selectedCards) => {
+export const createDrawingForUser = async (
+  userId,
+  themeId,
+  selectedCards,
+  interpretation,
+) => {
   // Appel API pour créer un nouveau tirage pour un utilisateur avec des cartes sélectionnées
   const response = await api.post(
     `${DRAWINGS_ENDPOINT}/user/${userId}/${encodeURIComponent(themeId)}`, // Construit l'URL de l'API en utilisant l'ID utilisateur et le thème (encodé pour gérer les caractères spéciaux)
-    { cards: selectedCards }, // Passe les cartes sélectionnées au backend dans le corps de la requête sous la clé `cards`
+    {
+      cards: selectedCards,
+      selected_interpretation: interpretation, // Inclure l'interprétation sélectionnée dans le corps de la requête
+    },
   );
 
   // Retourne les données de la réponse (le nouveau tirage créé)

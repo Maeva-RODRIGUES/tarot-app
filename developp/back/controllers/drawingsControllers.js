@@ -30,11 +30,17 @@ exports.getDrawingsByUserId = async (req, res) => {
             include: [
                 {
                     model: Card,
-                    through: { attributes: [] } // Inclure les cartes associées sans les attributs de la table de jointure
+                    through: { attributes: [] }, // Inclure les cartes associées
+                    attributes: ['id', 'name_card', 'keyword1', 'keyword2', 'keyword3', 'image_url']
                 },
-                Theme // Inclure également les thèmes associés
-            ]
+                {
+                    model: Theme,
+                    attributes: ['id', 'title_theme'], // Pas besoin de `meaning_theme` ici
+                }
+            ],
+            attributes: ['id', 'date', 'selected_interpretation'] // Inclure `selected_interpretation`
         });
+
         if (!drawings.length) {
             return res.status(404).json({ message: "Aucun tirage trouvé pour cet utilisateur" });
         }
@@ -43,6 +49,7 @@ exports.getDrawingsByUserId = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la récupération des tirages de tarot', error });
     }
 };
+
 
 // Créer un tirage pour un utilisateur spécifique basé sur le thème choisi
 exports.createDrawingForUser = async (req, res) => {
@@ -62,11 +69,16 @@ exports.createDrawingForUser = async (req, res) => {
         // Sélectionner les 3 premières cartes après le mélange
         const selectedCards = shuffledDeck.slice(0, 3);
 
+        // Sélectionner une interprétation aléatoire
+        const interpretations = JSON.parse(themeData.meaning_theme);
+        const selectedInterpretation = interpretations[Math.floor(Math.random() * interpretations.length)];
+
         // Créer un nouveau tirage
         const newDrawing = await Drawing.create({
             date: new Date(),
             id_Themes: themeData.id,
             id_Users: userId,
+            selected_interpretation: selectedInterpretation // Enregistrer l'interprétation sélectionnée
         });
 
         // Associer les cartes au tirage via la table de jointure
@@ -81,6 +93,7 @@ exports.createDrawingForUser = async (req, res) => {
         res.status(500).json({ message: 'Erreur lors de la création du tirage', error });
     }
 };
+
 
 // Créer un tirage aléatoire de 3 cartes basé sur le thème choisi
 exports.createRandomDrawingByTheme = async (req, res) => {

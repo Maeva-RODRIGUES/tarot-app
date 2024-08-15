@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 // src/pages/TarotHistoryPage.jsx
 
 import React, { useState, useEffect } from "react";
@@ -21,7 +22,6 @@ import { useAuth } from "../components/context/AuthContext";
 import { fetchUserDrawings } from "../api/drawApi";
 
 function TarotHistoryPage() {
-  // État pour stocker les tirages et l'état de chargement
   const [drawings, setDrawings] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -54,6 +54,7 @@ function TarotHistoryPage() {
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
 
+      {/* Menu latéral pour la navigation dans le profil de l'utilisateur */}
       <Flex
         as="nav"
         p="4"
@@ -117,14 +118,7 @@ function TarotHistoryPage() {
         {loading ? (
           <Text>Chargement...</Text>
         ) : (
-          // ---------------------------------
-          // Début de la partie mise à jour
           drawings.map((draw, index) => {
-            // Analyse des cartes pour chaque tirage
-            const cardsArray =
-              typeof draw.cards === "string"
-                ? JSON.parse(draw.cards).cards
-                : draw.cards;
             return (
               <Box
                 key={index}
@@ -145,33 +139,37 @@ function TarotHistoryPage() {
                 </Text>
                 <VStack spacing="4" align="start">
                   {/* Affichage des cartes */}
-                  {cardsArray.map((card, cardIndex) => (
+                  {draw.cards.map((card, cardIndex) => (
                     <Box key={cardIndex} mb="4">
                       <Image
-                        src={`http://localhost:8000/${card.image_url}`}
+                        src={`http://localhost:8000/${card.image_url}`} // URL de l'image de la carte
                         alt={`Card ${cardIndex + 1}`}
                         boxSize="100px"
                         objectFit="contain"
                         mb="2"
                       />
-                      <Text fontSize="md">{card.name_card}</Text>
+                      <Text fontSize="md" fontWeight="bold">
+                        {card.name_card} {/* Nom de la carte */}
+                      </Text>
+                      <Text fontSize="sm">
+                        Keywords: {card.keyword1}, {card.keyword2},{" "}
+                        {card.keyword3}
+                        {/* Affichage des keywords */}
+                      </Text>
                     </Box>
                   ))}
                   <Box mt="4">
                     <Heading size="sm">Interprétation générale :</Heading>
                     <Text fontSize="md" mt="2">
-                      {/* Affichage de l'interprétation */}
-                      {typeof draw.cards === "string"
-                        ? JSON.parse(draw.cards).interpretation
-                        : draw.cards.interpretation}
+                      {/* Affichage de l'interprétation générale associée au tirage */}
+                      {draw.selected_interpretation ||
+                        "Interprétation non disponible"}
                     </Text>
                   </Box>
                 </VStack>
               </Box>
             );
           })
-          // Fin de la partie mise à jour
-          // -------------------
         )}
       </Box>
 

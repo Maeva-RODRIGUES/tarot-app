@@ -100,9 +100,9 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
               randomInterpretation || "Interprétation indisponible",
             );
 
-            // Enregistrer le tirage via onDrawComplete
-            if (onDrawComplete) {
-              onDrawComplete(newSelectedCards); // Utilisez onDrawComplete pour enregistrer le tirage
+           // Enregistrer le tirage via onDrawComplete en passant l'interprétation sélectionnée
+          if (onDrawComplete) {
+            onDrawComplete(newSelectedCards, randomInterpretation); // Passer les cartes sélectionnées et l'interprétation
             }
           } else {
             console.error(`Thème ${theme} non trouvé.`);

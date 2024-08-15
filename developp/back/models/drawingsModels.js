@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Users',
         key: 'id'
       }
+    },
+    selected_interpretation: { // Ajout de la nouvelle colonne
+      type: DataTypes.TEXT,
+      allowNull: true, // Peut être null si l'interprétation n'est pas toujours obligatoire
     }
   }, {
     timestamps: false

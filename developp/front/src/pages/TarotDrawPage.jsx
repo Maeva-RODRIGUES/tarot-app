@@ -85,7 +85,7 @@ function TarotDrawPage() {
   };
 
   // Fonction pour gérer l'enregistrement du tirage après la sélection des cartes
-  const handleDrawComplete = async (selectedCards) => {
+  const handleDrawComplete = async (selectedCards, interpretation) => {
     if (!user || !user.userId) {
       console.error("User ID is undefined. Cannot create drawing.");
       return;
@@ -103,8 +103,9 @@ function TarotDrawPage() {
       console.log("User ID:", user.userId);
       console.log("Theme ID:", themeId); // Utiliser l'ID du thème
       console.log("Selected Cards:", selectedCards);
+      console.log("Selected Interpretation:", interpretation);
 
-      await addDrawing(themeId, user.userId, selectedCards); // Utiliser l'ID du thème ici
+      await addDrawing(themeId, user.userId, selectedCards, interpretation); // Utiliser l'ID du thème ici
 
       console.log("Tirage créé avec succès");
     } catch (error) {
