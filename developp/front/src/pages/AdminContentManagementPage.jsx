@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-undef */
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
@@ -31,8 +33,16 @@ import {
   useToast,
   useTheme,
 } from "@chakra-ui/react";
-import { FaFileAlt, FaCog, FaSignOutAlt, FaUsers } from "react-icons/fa";
+import {
+  FaFileAlt,
+  FaCog,
+  FaSignOutAlt,
+  FaUsers,
+  FaStar,
+  FaStarHalfAlt,
+} from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import Rating from "react-rating"; // Importer le composant Rating
 import { useAuth } from "../components/context/AuthContext";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
@@ -525,8 +535,17 @@ function ContentManagementPage() {
               <Heading size="md" mb="2">
                 Utilisateur ID: {comment.id_Users}
               </Heading>
+              <Text mb="2">
+                <strong>Évaluation :</strong>{" "}
+                {/* Affichage des étoiles dans les commentaires  */}
+                <Rating
+                  readonly
+                  initialRating={comment.rating}
+                  emptySymbol={<FaStarHalfAlt color="gray" />}
+                  fullSymbol={<FaStar color="gold" />}
+                />
+              </Text>
               <Text mb="2">{comment.comment}</Text>
-              <Text mb="2">Évaluation: {comment.rating}</Text>
               <Stack direction="row" spacing="4">
                 <Button
                   onClick={() => handleDeleteComment(comment.id)}
