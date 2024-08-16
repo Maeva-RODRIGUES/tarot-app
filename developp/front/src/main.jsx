@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // src/main.jsx
 
 import React from "react";

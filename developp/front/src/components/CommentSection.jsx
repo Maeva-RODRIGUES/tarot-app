@@ -1,3 +1,6 @@
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable no-console */
+/* eslint-disable react/jsx-props-no-spreading */
 // CommentSection.jsx
 
 import React, { useState } from "react";
@@ -63,7 +66,7 @@ function CommentSection() {
             <Box key={index} mb={6} p={4} borderWidth="1px" borderRadius="lg">
               <Flex alignItems="center" mb={2}>
                 <Avatar size="sm" name="User" mr={2} />
-                <Text fontWeight="bold">Nom d'utilisateur</Text>
+                <Text fontWeight="bold">Nom d&#39;utilisateur</Text>
                 <Text ml={2} color="gray.500">
                   Date
                 </Text>
@@ -73,7 +76,7 @@ function CommentSection() {
                   <StarIcon key={i} color="yellow.400" />
                 ))}
               </Flex>
-              <Text>Bravo à l'équipe derrière ce merveilleux produit.</Text>
+              <Text>Bravo à l&#39;équipe derrière ce merveilleux produit.</Text>
             </Box>
           ))}
         </Box>

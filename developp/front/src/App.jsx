@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 // App.jsx
 
 import React from "react";
@@ -21,7 +22,7 @@ import UserSettingPage from "./pages/UserSettingPage.jsx";
 import TarotHistoryPage from "./pages/TarotHistoryPage.jsx";
 import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
 import AdminUserManagementPage from "./pages/AdminUserManagementPage.jsx";
-import ContentManagementPage from "./pages/ContentManagementPage.jsx";
+import ContentManagementPage from "./pages/AdminContentManagementPage.jsx";
 import SettingsAdminPage from "./pages/SettingsAdminPage.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 

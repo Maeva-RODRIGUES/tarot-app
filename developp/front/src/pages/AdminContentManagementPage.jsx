@@ -1,9 +1,10 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
 /* eslint-disable no-undef */
-// src/pages/ContentManagementPage.jsx
+// src/pages/AdminContentManagementPage.jsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Flex,
@@ -45,7 +46,7 @@ const IMAGE_BASE_URL = "http://localhost:8000";
 function ContentManagementPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const toast = useToast(); // ------ Ajout du hook `useToast` pour afficher les notifications ------
+  const toast = useToast();
   const theme = useTheme();
 
   const {
@@ -56,6 +57,7 @@ function ContentManagementPage() {
     mutateDeleteCard,
     mutateUploadCardImage,
   } = useCards();
+
   const {
     themes,
     isLoading: isLoadingThemes,
@@ -63,13 +65,12 @@ function ContentManagementPage() {
     mutateUpdateTheme,
     mutateDeleteTheme,
   } = useThemes();
+
   const {
     reviews,
     isLoading: isLoadingReviews,
-    mutateCreateReview,
-    mutateUpdateReview,
     mutateDeleteReview,
-  } = useReviews();
+  } = useReviews(); // Utilisation du hook useReviews pour gérer les commentaires
 
   const [selectedContent, setSelectedContent] = useState(null);
   const [form, setForm] = useState({ title_theme: "", meaning_theme: "" });
@@ -84,19 +85,9 @@ function ContentManagementPage() {
     keyword3: "",
     image_url: "",
   });
-  const [cardImage, setCardImage] = useState(null); // ------ Nouvelle state pour gérer l'image ------
+  const [cardImage, setCardImage] = useState(null);
   const [editingCard, setEditingCard] = useState(false);
 
-  const [selectedComment, setSelectedComment] = useState(null);
-  const [commentForm, setCommentForm] = useState({
-    rating: "",
-    comment: "",
-    date: "",
-    id_Users: "",
-  });
-  const [editingComment, setEditingComment] = useState(false);
-
-  // Fonction de déconnexion
   const handleLogout = () => {
     logout();
     navigate("/"); // Redirige vers la page d'accueil après la déconnexion
@@ -221,36 +212,15 @@ function ContentManagementPage() {
   // ------ Fin des fonctions de gestion des cartes ------
 
   // ------ Début des fonctions de gestion des commentaires ------
-  const handleEditComment = (comment) => {
-    setSelectedComment(comment);
-    setCommentForm({
-      rating: comment.rating,
-      comment: comment.comment,
-      date: comment.date,
-      id_Users: comment.id_Users,
-    });
-    setEditingComment(true);
-  };
-
   const handleDeleteComment = (id) => {
-    mutateDeleteReview(id);
-  };
-
-  const handleSubmitComment = (e) => {
-    e.preventDefault();
-    const commentData = {
-      rating: commentForm.rating,
-      comment: commentForm.comment,
-      date: commentForm.date,
-      id_Users: commentForm.id_Users,
-    };
-    if (editingComment) {
-      mutateUpdateReview({ id: selectedComment.id, commentData });
-    } else {
-      mutateCreateReview(commentData);
-    }
-    setCommentForm({ rating: "", comment: "", date: "", id_Users: "" });
-    setEditingComment(false);
+    mutateDeleteReview(id); // Supprimer le commentaire
+    toast({
+      title: "Commentaire supprimé",
+      description: "Le commentaire a été supprimé avec succès.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
   };
   // ------ Fin des fonctions de gestion des commentaires ------
 
@@ -543,95 +513,32 @@ function ContentManagementPage() {
           🖋Gestion des commentaires
         </Heading>
 
-        <Stack spacing="4">
-          <form onSubmit={handleSubmitComment}>
-            <FormControl mb="4">
-              <FormLabel>Évaluation</FormLabel>
-              <Input
-                value={commentForm.rating}
-                onChange={(e) =>
-                  setCommentForm({ ...commentForm, rating: e.target.value })
-                }
-                placeholder="Évaluation"
-                required
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Commentaire</FormLabel>
-              <Textarea
-                value={commentForm.comment}
-                onChange={(e) =>
-                  setCommentForm({ ...commentForm, comment: e.target.value })
-                }
-                placeholder="Contenu du commentaire"
-                required
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Date</FormLabel>
-              <Input
-                value={commentForm.date}
-                onChange={(e) =>
-                  setCommentForm({ ...commentForm, date: e.target.value })
-                }
-                placeholder="Date"
-                required
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>ID Utilisateur</FormLabel>
-              <Input
-                value={commentForm.id_Users}
-                onChange={(e) =>
-                  setCommentForm({ ...commentForm, id_Users: e.target.value })
-                }
-                placeholder="ID Utilisateur"
-                required
-              />
-            </FormControl>
-            <Button
-              bg="customBlue"
-              color="white"
-              _hover={{ bg: "blue.700" }}
-              type="submit"
+        <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
+          {reviews.map((comment) => (
+            <Box
+              key={comment.id}
+              p="4"
+              borderWidth="1px"
+              borderRadius="md"
+              bg="white"
             >
-              {editingComment ? "Sauvegarder" : "Ajouter"}
-            </Button>
-          </form>
-
-          <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
-            {reviews.map((comment) => (
-              <Box
-                key={comment.id}
-                p="4"
-                borderWidth="1px"
-                borderRadius="md"
-                bg="white"
-              >
-                <Heading size="md" mb="2">
-                  {comment.id_Users}
-                </Heading>
-                <Text mb="2">{comment.comment}</Text>
-                <Stack direction="row" spacing="4">
-                  <Button
-                    onClick={() => handleEditComment(comment)}
-                    aria-label="Éditer"
-                    colorScheme="blue"
-                  >
-                    Éditer
-                  </Button>
-                  <Button
-                    onClick={() => handleDeleteComment(comment.id)}
-                    aria-label="Supprimer"
-                    colorScheme="red"
-                  >
-                    Supprimer
-                  </Button>
-                </Stack>
-              </Box>
-            ))}
-          </Grid>
-        </Stack>
+              <Heading size="md" mb="2">
+                Utilisateur ID: {comment.id_Users}
+              </Heading>
+              <Text mb="2">{comment.comment}</Text>
+              <Text mb="2">Évaluation: {comment.rating}</Text>
+              <Stack direction="row" spacing="4">
+                <Button
+                  onClick={() => handleDeleteComment(comment.id)}
+                  aria-label="Supprimer"
+                  colorScheme="red"
+                >
+                  Supprimer
+                </Button>
+              </Stack>
+            </Box>
+          ))}
+        </Grid>
       </Box>
 
       <Footer />

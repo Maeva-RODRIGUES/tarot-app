@@ -1,9 +1,12 @@
+/* eslint-disable react/require-default-props */
+/* eslint-disable import/no-extraneous-dependencies */
 // BannerFooter.jsx
 
 import React from "react";
 import PropTypes from "prop-types";
 import { Box } from "@chakra-ui/react";
 
+// eslint-disable-next-line no-unused-vars
 function BannerFooter({ src, alt, height = "100px" }) {
   return (
     <Box
