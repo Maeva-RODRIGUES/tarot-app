@@ -1,3 +1,7 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-unused-vars */
 // src/pages/UserSettingPage.jsx
 
 import React, { useState, useEffect } from "react";
@@ -19,7 +23,15 @@ import {
   Avatar,
   Textarea,
 } from "@chakra-ui/react";
-import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
+import Rating from "react-rating"; // Importer le composant Rating pour les étoiles
+import {
+  FaUser,
+  FaRegFileAlt,
+  FaCog,
+  FaSignOutAlt,
+  FaStar,
+  FaStarHalfAlt,
+} from "react-icons/fa"; // Importer les icônes d'étoiles
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { parse, format, isValid } from "date-fns";
 import HeaderDashboard from "../components/HeaderDashboard";
@@ -417,12 +429,18 @@ function UserSettingPage() {
         {/* Section de gestion des commentaires */}
         <Box mt="8">
           <Heading size="md" mb="4">
-            Mes Commentaires
+            Mes commentaires
           </Heading>
           {reviews.map((review) => (
             <Box key={review.id} p="4" shadow="md" borderWidth="1px" mb="4">
               <Text>
-                <strong>Note :</strong> {review.rating}
+                <strong>Note :</strong>{" "}
+                <Rating
+                  readonly
+                  initialRating={review.rating}
+                  emptySymbol={<FaStarHalfAlt color="gray" />}
+                  fullSymbol={<FaStar color="gold" />}
+                />
               </Text>
               <Text>
                 <strong>Commentaire :</strong> {review.comment}
@@ -445,13 +463,12 @@ function UserSettingPage() {
           <form onSubmit={handleReviewSubmit}>
             <FormControl id="rating" mt="4">
               <FormLabel>Note</FormLabel>
-              <Input
-                type="number"
-                min="1"
-                max="5"
-                value={newReview.rating}
-                onChange={(e) =>
-                  setNewReview({ ...newReview, rating: e.target.value })
+              <Rating
+                initialRating={newReview.rating}
+                emptySymbol={<FaStarHalfAlt color="gray" />}
+                fullSymbol={<FaStar color="gold" />}
+                onChange={(value) =>
+                  setNewReview({ ...newReview, rating: value })
                 }
               />
             </FormControl>
