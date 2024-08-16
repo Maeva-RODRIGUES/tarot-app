@@ -1,9 +1,9 @@
-/* eslint-disable react/jsx-no-undef */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
 /* eslint-disable no-undef */
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-shadow */
+/* eslint-disable react/no-array-index-key */
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-unused-vars */
 // src/pages/AdminContentManagementPage.jsx
 
 import React, { useState } from "react";
@@ -17,21 +17,19 @@ import {
   Text,
   Button,
   Spacer,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
+  Grid,
   FormControl,
   FormLabel,
   Input,
   Textarea,
   Stack,
   Image,
-  Grid,
   useToast,
   useTheme,
+  Card,
+  CardBody,
+  CardHeader,
+  Collapse,
 } from "@chakra-ui/react";
 import {
   FaFileAlt,
@@ -40,17 +38,22 @@ import {
   FaUsers,
   FaStar,
   FaStarHalfAlt,
+  FaChevronDown,
+  FaChevronUp,
+  FaEdit,
+  FaTrash,
+  FaEye,
 } from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import Rating from "react-rating"; // Importer le composant Rating
+import Rating from "react-rating";
 import { useAuth } from "../components/context/AuthContext";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import useCards from "../hooks/useCards";
 import useThemes from "../hooks/useThemes";
 import useReviews from "../hooks/useReviews";
+import CommentModal from "../components/CommentModal";
 
-// Définition de la base URL pour les images des cartes
 const IMAGE_BASE_URL = "http://localhost:8000";
 
 function ContentManagementPage() {
@@ -80,13 +83,15 @@ function ContentManagementPage() {
     reviews,
     isLoading: isLoadingReviews,
     mutateDeleteReview,
-  } = useReviews(); // Utilisation du hook useReviews pour gérer les commentaires
+  } = useReviews();
+
+  const [selectedComment, setSelectedComment] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
 
   const [selectedContent, setSelectedContent] = useState(null);
   const [form, setForm] = useState({ title_theme: "", meaning_theme: "" });
   const [editing, setEditing] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
-
   const [cardForm, setCardForm] = useState({
     id: "",
     name_card: "",
@@ -97,13 +102,13 @@ function ContentManagementPage() {
   });
   const [cardImage, setCardImage] = useState(null);
   const [editingCard, setEditingCard] = useState(false);
+  const [selectedThemeId, setSelectedThemeId] = useState(null);
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // Redirige vers la page d'accueil après la déconnexion
+    navigate("/");
   };
 
-  // ------ Début des fonctions de gestion des thèmes ------
   const handleEditTheme = (theme) => {
     setSelectedContent(theme);
     setForm({
@@ -131,9 +136,7 @@ function ContentManagementPage() {
     setForm({ title_theme: "", meaning_theme: "" });
     setEditing(false);
   };
-  // ------ Fin des fonctions de gestion des thèmes ------
 
-  // ------ Début des fonctions de gestion des cartes ------
   const handleEditCard = (card) => {
     setSelectedCard(card);
     setCardForm({
@@ -154,8 +157,6 @@ function ContentManagementPage() {
   const handleCardImageChange = (e) => {
     const file = e.target.files[0];
     setCardImage(file);
-
-    // Si un fichier est sélectionné, créer une URL de prévisualisation temporaire
     if (file) {
       const previewURL = URL.createObjectURL(file);
       setCardForm({ ...cardForm, image_url: previewURL });
@@ -164,7 +165,6 @@ function ContentManagementPage() {
 
   const handleSubmitCard = async (e) => {
     e.preventDefault();
-
     const cardData = {
       name_card: cardForm.name_card,
       keyword1: cardForm.keyword1,
@@ -179,7 +179,6 @@ function ContentManagementPage() {
           const formData = new FormData();
           formData.append("id", cardForm.id);
           formData.append("image", cardImage);
-
           const filename = cardForm.image_url.split("/").pop();
           await mutateUploadCardImage({ filename, formData });
         } else {
@@ -188,8 +187,6 @@ function ContentManagementPage() {
       } else {
         await mutateCreateCard(cardData);
       }
-
-      // ------ Notification de succès ------
       toast({
         title: "Succès",
         description: "Carte mise à jour avec succès.",
@@ -198,7 +195,6 @@ function ContentManagementPage() {
         isClosable: true,
       });
     } catch (error) {
-      // ------ Notification d'erreur ------
       toast({
         title: "Erreur",
         description: "Erreur lors de la mise à jour de la carte.",
@@ -207,7 +203,6 @@ function ContentManagementPage() {
         isClosable: true,
       });
     }
-
     setCardForm({
       id: "",
       name_card: "",
@@ -219,11 +214,19 @@ function ContentManagementPage() {
     setCardImage(null);
     setEditingCard(false);
   };
-  // ------ Fin des fonctions de gestion des cartes ------
 
-  // ------ Début des fonctions de gestion des commentaires ------
+  const handleOpenModal = (comment) => {
+    setSelectedComment(comment);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedComment(null);
+    setModalOpen(false);
+  };
+
   const handleDeleteComment = (id) => {
-    mutateDeleteReview(id); // Supprimer le commentaire
+    mutateDeleteReview(id);
     toast({
       title: "Commentaire supprimé",
       description: "Le commentaire a été supprimé avec succès.",
@@ -231,8 +234,8 @@ function ContentManagementPage() {
       duration: 5000,
       isClosable: true,
     });
+    handleCloseModal();
   };
-  // ------ Fin des fonctions de gestion des commentaires ------
 
   if (isLoadingCards || isLoadingThemes || isLoadingReviews) {
     return <Text>Loading...</Text>;
@@ -300,267 +303,304 @@ function ContentManagementPage() {
         </VStack>
       </Flex>
 
-      <Box ml="250px" p="8" pt="2" flex="1">
-        <Heading mb="12">🔮Gestion des thèmes</Heading>
-
-        <Stack spacing="4">
-          <form onSubmit={handleSubmitTheme}>
-            <FormControl mb="4">
-              <FormLabel>Titre</FormLabel>
-              <Input
-                value={form.title_theme}
-                onChange={(e) =>
-                  setForm({ ...form, title_theme: e.target.value })
-                }
-                placeholder="Titre du thème"
-                required
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Description</FormLabel>
-              <Textarea
-                value={form.meaning_theme}
-                onChange={(e) =>
-                  setForm({ ...form, meaning_theme: e.target.value })
-                }
-                placeholder="Description du thème"
-                required
-              />
-            </FormControl>
-            <Button
-              bg="customBlue"
-              color="white"
-              _hover={{ bg: "blue.700" }}
-              type="submit"
-            >
-              {editing ? "Sauvegarder" : "Ajouter"}
-            </Button>
-          </form>
-
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th>Titre</Th>
-                <Th>Description</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {themes.map((theme) => (
-                <Tr key={theme.id}>
-                  <Td>{theme.title_theme}</Td>
-                  <Td>{theme.meaning_theme}</Td>
-                  <Td>
-                    <Stack direction="row" spacing="4">
-                      <Button
-                        onClick={() => handleEditTheme(theme)}
-                        aria-label="Éditer"
-                        colorScheme="blue"
-                      >
-                        Éditer
-                      </Button>
-                      <Button
-                        onClick={() => handleDeleteTheme(theme.id)}
-                        aria-label="Supprimer"
-                        colorScheme="red"
-                      >
-                        Supprimer
-                      </Button>
-                    </Stack>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Stack>
-
-        <Heading mt="12" mb="6">
-          🃏Gestion des cartes
-        </Heading>
-
-        <Stack spacing="4">
-          <form onSubmit={handleSubmitCard}>
-            <FormControl mb="4">
-              <FormLabel>ID</FormLabel>
-              <Input
-                value={cardForm.id}
-                readOnly
-                placeholder="ID de la carte"
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Nom</FormLabel>
-              <Input
-                value={cardForm.name_card}
-                onChange={(e) =>
-                  setCardForm({ ...cardForm, name_card: e.target.value })
-                }
-                placeholder="Nom de la carte"
-                required
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Mot-clé 1</FormLabel>
-              <Input
-                value={cardForm.keyword1}
-                onChange={(e) =>
-                  setCardForm({ ...cardForm, keyword1: e.target.value })
-                }
-                placeholder="Mot-clé 1"
-                required
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Mot-clé 2</FormLabel>
-              <Input
-                value={cardForm.keyword2}
-                onChange={(e) =>
-                  setCardForm({ ...cardForm, keyword2: e.target.value })
-                }
-                placeholder="Mot-clé 2"
-                required
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Mot-clé 3</FormLabel>
-              <Input
-                value={cardForm.keyword3}
-                onChange={(e) =>
-                  setCardForm({ ...cardForm, keyword3: e.target.value })
-                }
-                placeholder="Mot-clé 3"
-                required
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Image URL</FormLabel>
-              <Input
-                value={cardForm.image_url}
-                onChange={(e) =>
-                  setCardForm({ ...cardForm, image_url: e.target.value })
-                }
-                placeholder="URL de l'image"
-              />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Télécharger une image</FormLabel>
-              <Input type="file" onChange={handleCardImageChange} />
-            </FormControl>
-            <FormControl mb="4">
-              <FormLabel>Prévisualisation de l'image</FormLabel>
-              {cardForm.image_url && (
-                <Image
-                  src={
-                    cardForm.image_url.startsWith("blob")
-                      ? cardForm.image_url
-                      : `${IMAGE_BASE_URL}${cardForm.image_url}`
-                  }
-                  alt="Prévisualisation"
-                  boxSize="200px"
-                  height="400px"
-                  objectFit="cover"
-                  mb="4"
-                />
-              )}
-            </FormControl>
-            <Button
-              bg="customBlue"
-              color="white"
-              _hover={{ bg: "blue.700" }}
-              type="submit"
-            >
-              {editingCard ? "Sauvegarder" : "Ajouter"}
-            </Button>
-          </form>
-
-          <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
-            {cards.map((card) => (
-              <Box
-                key={card.id}
-                p="4"
-                borderWidth="1px"
-                borderRadius="md"
-                bg="white"
-              >
-                {/* Affichage de l'image avec le chemin complet */}
-                <Image
-                  src={`${IMAGE_BASE_URL}${card.image_url}`}
-                  alt={card.name_card}
-                  boxSize="200px"
-                  height="400px"
-                  objectFit="cover"
-                  mb="4"
-                />
-
-                <Heading size="md" mb="2">
-                  {card.name_card}
-                </Heading>
-                <Text mb="2">
-                  {card.keyword1}, {card.keyword2}, {card.keyword3}
-                </Text>
-                <Stack direction="row" spacing="4">
-                  <Button
-                    onClick={() => handleEditCard(card)}
-                    aria-label="Éditer"
-                    colorScheme="blue"
-                  >
-                    Éditer
-                  </Button>
-                  <Button
-                    onClick={() => handleDeleteCard(card.id)}
-                    aria-label="Supprimer"
-                    colorScheme="red"
-                  >
-                    Supprimer
-                  </Button>
-                </Stack>
-              </Box>
-            ))}
-          </Grid>
-        </Stack>
-
-        <Heading mt="12" mb="6">
-          🖋Gestion des commentaires
-        </Heading>
-
-        <Grid templateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={6}>
-          {reviews.map((comment) => (
-            <Box
-              key={comment.id}
-              p="4"
-              borderWidth="1px"
-              borderRadius="md"
-              bg="white"
-            >
-              <Heading size="md" mb="2">
-                Utilisateur ID: {comment.id_Users}
-              </Heading>
-              <Text mb="2">
-                <strong>Évaluation :</strong>{" "}
-                {/* Affichage des étoiles dans les commentaires  */}
-                <Rating
-                  readonly
-                  initialRating={comment.rating}
-                  emptySymbol={<FaStarHalfAlt color="gray" />}
-                  fullSymbol={<FaStar color="gold" />}
-                />
-              </Text>
-              <Text mb="2">{comment.comment}</Text>
-              <Stack direction="row" spacing="4">
+      <Box ml="250px" p="8" pt="8" flex="1">
+        {/* Gestion des Thèmes */}
+        <Grid templateColumns="1fr 2fr" gap={6} mb={12}>
+          <Card>
+            <CardHeader>
+              <Heading size="md">Gestion des thèmes</Heading>
+            </CardHeader>
+            <CardBody>
+              <form onSubmit={handleSubmitTheme}>
+                <FormControl mb="4">
+                  <FormLabel>Titre</FormLabel>
+                  <Input
+                    value={form.title_theme}
+                    onChange={(e) =>
+                      setForm({ ...form, title_theme: e.target.value })
+                    }
+                    placeholder="Titre du thème"
+                    required
+                  />
+                </FormControl>
+                <FormControl mb="4">
+                  <FormLabel>Description</FormLabel>
+                  <Textarea
+                    value={form.meaning_theme}
+                    onChange={(e) =>
+                      setForm({ ...form, meaning_theme: e.target.value })
+                    }
+                    placeholder="Description du thème"
+                    required
+                  />
+                </FormControl>
                 <Button
-                  onClick={() => handleDeleteComment(comment.id)}
-                  aria-label="Supprimer"
-                  colorScheme="red"
+                  bg="customBlue"
+                  color="white"
+                  _hover={{ bg: "blue.700" }}
+                  type="submit"
                 >
-                  Supprimer
+                  {editing ? "Sauvegarder" : "Ajouter"}
                 </Button>
-              </Stack>
+              </form>
+            </CardBody>
+          </Card>
+
+          <Card>
+            <CardBody>
+              {themes.map((theme) => (
+                <Box
+                  key={theme.id}
+                  mb={4}
+                  borderWidth="1px"
+                  borderRadius="md"
+                  overflow="hidden"
+                >
+                  <Flex
+                    alignItems="center"
+                    justifyContent="space-between"
+                    bg="gray.100"
+                    p={4}
+                    cursor="pointer"
+                    onClick={() =>
+                      setSelectedThemeId(
+                        selectedThemeId === theme.id ? null : theme.id,
+                      )
+                    }
+                  >
+                    <Text fontWeight="bold">{theme.title_theme}</Text>
+                    <Icon
+                      as={
+                        selectedThemeId === theme.id
+                          ? FaChevronUp
+                          : FaChevronDown
+                      }
+                    />
+                  </Flex>
+                  <Collapse in={selectedThemeId === theme.id}>
+                    <Box p={4}>
+                      <Text mb={4}>{theme.meaning_theme}</Text>
+                      <HStack spacing="4">
+                        <Button
+                          onClick={() => handleEditTheme(theme)}
+                          aria-label="Éditer"
+                          colorScheme="blue"
+                          leftIcon={<FaEdit />}
+                        >
+                          Éditer
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteTheme(theme.id)}
+                          aria-label="Supprimer"
+                          colorScheme="red"
+                          leftIcon={<FaTrash />}
+                        >
+                          Supprimer
+                        </Button>
+                      </HStack>
+                    </Box>
+                  </Collapse>
+                </Box>
+              ))}
+            </CardBody>
+          </Card>
+        </Grid>
+
+        {/* Section Gestion des Cartes */}
+        <Card mt="6">
+          <CardHeader>
+            <Heading size="md">Gestion des cartes</Heading>
+          </CardHeader>
+          <CardBody display="flex">
+            {/* Colonne gauche: Liste des vignettes */}
+            <Box width="30%" maxHeight="600px" overflowY="auto">
+              <Grid
+                templateColumns="repeat(auto-fill, minmax(100px, 1fr))"
+                gap={2}
+              >
+                {cards.map((card) => (
+                  <Box
+                    key={card.id}
+                    p="2"
+                    borderWidth="1px"
+                    borderRadius="md"
+                    bg="white"
+                    cursor="pointer"
+                    onClick={() => handleEditCard(card)}
+                  >
+                    <Image
+                      src={`${IMAGE_BASE_URL}${card.image_url}`}
+                      alt={card.name_card}
+                      boxSize="80px"
+                      height="150px"
+                      objectFit="cover"
+                      border={("solid", "2px")}
+                      borderRadius={15}
+                      mb="2"
+                    />
+                    <Text fontSize="sm" textAlign="center">
+                      {card.name_card}
+                    </Text>
+                  </Box>
+                ))}
+              </Grid>
             </Box>
-          ))}
+
+            {/* Colonne droite: Formulaire de modification */}
+            <Box width="70%" pl="8">
+              {selectedCard ? (
+                <form onSubmit={handleSubmitCard}>
+                  <FormControl mb="4">
+                    <FormLabel>ID</FormLabel>
+                    <Input
+                      value={cardForm.id}
+                      readOnly
+                      placeholder="ID de la carte"
+                    />
+                  </FormControl>
+                  <FormControl mb="4">
+                    <FormLabel>Nom</FormLabel>
+                    <Input
+                      value={cardForm.name_card}
+                      onChange={(e) =>
+                        setCardForm({ ...cardForm, name_card: e.target.value })
+                      }
+                      placeholder="Nom de la carte"
+                      required
+                    />
+                  </FormControl>
+                  <FormControl mb="4">
+                    <FormLabel>Mot-clé 1</FormLabel>
+                    <Input
+                      value={cardForm.keyword1}
+                      onChange={(e) =>
+                        setCardForm({ ...cardForm, keyword1: e.target.value })
+                      }
+                      placeholder="Mot-clé 1"
+                      required
+                    />
+                  </FormControl>
+                  <FormControl mb="4">
+                    <FormLabel>Mot-clé 2</FormLabel>
+                    <Input
+                      value={cardForm.keyword2}
+                      onChange={(e) =>
+                        setCardForm({ ...cardForm, keyword2: e.target.value })
+                      }
+                      placeholder="Mot-clé 2"
+                      required
+                    />
+                  </FormControl>
+                  <FormControl mb="4">
+                    <FormLabel>Mot-clé 3</FormLabel>
+                    <Input
+                      value={cardForm.keyword3}
+                      onChange={(e) =>
+                        setCardForm({ ...cardForm, keyword3: e.target.value })
+                      }
+                      placeholder="Mot-clé 3"
+                      required
+                    />
+                  </FormControl>
+                  <FormControl mb="4">
+                    <FormLabel>Image URL</FormLabel>
+                    <Input
+                      value={cardForm.image_url}
+                      onChange={(e) =>
+                        setCardForm({ ...cardForm, image_url: e.target.value })
+                      }
+                      placeholder="URL de l'image"
+                    />
+                  </FormControl>
+                  <FormControl mb="4">
+                    <FormLabel>Télécharger une image</FormLabel>
+                    <Input type="file" onChange={handleCardImageChange} />
+                  </FormControl>
+                  {cardForm.image_url && (
+                    <FormControl mb="4">
+                      <FormLabel>Prévisualisation de l'image</FormLabel>
+                      <Image
+                        src={
+                          cardForm.image_url.startsWith("blob")
+                            ? cardForm.image_url
+                            : `${IMAGE_BASE_URL}${cardForm.image_url}`
+                        }
+                        alt="Prévisualisation"
+                        boxSize="200px"
+                        objectFit="cover"
+                        mb="4"
+                        height={350}
+                        border={("solid", "2px")}
+                        borderRadius={15}
+                      />
+                    </FormControl>
+                  )}
+                  <Button
+                    bg="customBlue"
+                    color="white"
+                    _hover={{ bg: "blue.700" }}
+                    type="submit"
+                  >
+                    {editingCard ? "Sauvegarder" : "Ajouter"}
+                  </Button>
+                </form>
+              ) : (
+                <Text>Sélectionnez une carte pour la modifier.</Text>
+              )}
+            </Box>
+          </CardBody>
+        </Card>
+
+        {/* Gestion des Commentaires */}
+        <Grid templateColumns="1fr" gap={6} mb={12}>
+          <Card>
+            <CardHeader>
+              <Heading size="md">Gestion des commentaires</Heading>
+            </CardHeader>
+            <CardBody>
+              <Grid
+                templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
+                gap={6}
+              >
+                {reviews.map((comment) => (
+                  <Box
+                    key={comment.id}
+                    p="4"
+                    borderWidth="1px"
+                    borderRadius="md"
+                    bg="white"
+                  >
+                    <Heading size="sm" mb="2">
+                      Utilisateur ID: {comment.id_Users}
+                    </Heading>
+                    <Text isTruncated>{comment.comment}</Text>
+                    <HStack mt="4" spacing="4">
+                      <Button
+                        leftIcon={<FaEye />}
+                        colorScheme="blue"
+                        onClick={() => handleOpenModal(comment)}
+                      >
+                        Détails
+                      </Button>
+                    </HStack>
+                  </Box>
+                ))}
+              </Grid>
+            </CardBody>
+          </Card>
         </Grid>
       </Box>
 
       <Footer />
+
+      {selectedComment && (
+        <CommentModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          comment={selectedComment}
+          onDelete={handleDeleteComment}
+        />
+      )}
     </Box>
   );
 }

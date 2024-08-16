@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 // src/pages/AdminUserManagementPage.jsx
 
 import React, { useEffect, useState } from "react";
