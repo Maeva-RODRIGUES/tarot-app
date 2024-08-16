@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
+/* eslint-disable no-undef */
 // src/pages/ContentManagementPage.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -24,6 +27,7 @@ import {
   Stack,
   Image,
   Grid,
+  useToast,
   useTheme,
 } from "@chakra-ui/react";
 import { FaFileAlt, FaCog, FaSignOutAlt, FaUsers } from "react-icons/fa";
@@ -41,6 +45,7 @@ const IMAGE_BASE_URL = "http://localhost:8000";
 function ContentManagementPage() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const toast = useToast(); // ------ Ajout du hook `useToast` pour afficher les notifications ------
   const theme = useTheme();
 
   const {
@@ -79,7 +84,7 @@ function ContentManagementPage() {
     keyword3: "",
     image_url: "",
   });
-  const [cardImage, setCardImage] = useState(null); // Nouvelle state pour gérer l'image
+  const [cardImage, setCardImage] = useState(null); // ------ Nouvelle state pour gérer l'image ------
   const [editingCard, setEditingCard] = useState(false);
 
   const [selectedComment, setSelectedComment] = useState(null);
@@ -91,12 +96,13 @@ function ContentManagementPage() {
   });
   const [editingComment, setEditingComment] = useState(false);
 
+  // Fonction de déconnexion
   const handleLogout = () => {
     logout();
     navigate("/"); // Redirige vers la page d'accueil après la déconnexion
   };
 
-  // Gestion des thèmes
+  // ------ Début des fonctions de gestion des thèmes ------
   const handleEditTheme = (theme) => {
     setSelectedContent(theme);
     setForm({
@@ -124,10 +130,11 @@ function ContentManagementPage() {
     setForm({ title_theme: "", meaning_theme: "" });
     setEditing(false);
   };
+  // ------ Fin des fonctions de gestion des thèmes ------
 
-  // Gestion des cartes
+  // ------ Début des fonctions de gestion des cartes ------
   const handleEditCard = (card) => {
-    setSelectedCard(card); // Utilisation correcte de setSelectedCard
+    setSelectedCard(card);
     setCardForm({
       id: card.id,
       name_card: card.name_card,
@@ -144,10 +151,17 @@ function ContentManagementPage() {
   };
 
   const handleCardImageChange = (e) => {
-    setCardImage(e.target.files[0]);
+    const file = e.target.files[0];
+    setCardImage(file);
+
+    // Si un fichier est sélectionné, créer une URL de prévisualisation temporaire
+    if (file) {
+      const previewURL = URL.createObjectURL(file);
+      setCardForm({ ...cardForm, image_url: previewURL });
+    }
   };
 
-  const handleSubmitCard = (e) => {
+  const handleSubmitCard = async (e) => {
     e.preventDefault();
 
     const cardData = {
@@ -158,19 +172,39 @@ function ContentManagementPage() {
       image_url: cardForm.image_url,
     };
 
-    if (editingCard && cardForm.id) {
-      if (cardImage) {
-        const formData = new FormData();
-        formData.append("id", cardForm.id);
-        formData.append("image", cardImage);
+    try {
+      if (editingCard && cardForm.id) {
+        if (cardImage) {
+          const formData = new FormData();
+          formData.append("id", cardForm.id);
+          formData.append("image", cardImage);
 
-        const filename = cardForm.image_url.split("/").pop();
-        mutateUploadCardImage({ filename, formData });
+          const filename = cardForm.image_url.split("/").pop();
+          await mutateUploadCardImage({ filename, formData });
+        } else {
+          await mutateUpdateCard(cardForm.id, cardData);
+        }
       } else {
-        mutateUpdateCard(cardForm.id, cardData);
+        await mutateCreateCard(cardData);
       }
-    } else {
-      mutateCreateCard(cardData);
+
+      // ------ Notification de succès ------
+      toast({
+        title: "Succès",
+        description: "Carte mise à jour avec succès.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      // ------ Notification d'erreur ------
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la mise à jour de la carte.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
 
     setCardForm({
@@ -184,8 +218,9 @@ function ContentManagementPage() {
     setCardImage(null);
     setEditingCard(false);
   };
+  // ------ Fin des fonctions de gestion des cartes ------
 
-  // Gestion des commentaires
+  // ------ Début des fonctions de gestion des commentaires ------
   const handleEditComment = (comment) => {
     setSelectedComment(comment);
     setCommentForm({
@@ -217,6 +252,7 @@ function ContentManagementPage() {
     setCommentForm({ rating: "", comment: "", date: "", id_Users: "" });
     setEditingComment(false);
   };
+  // ------ Fin des fonctions de gestion des commentaires ------
 
   if (isLoadingCards || isLoadingThemes || isLoadingReviews) {
     return <Text>Loading...</Text>;
@@ -430,6 +466,23 @@ function ContentManagementPage() {
               <FormLabel>Télécharger une image</FormLabel>
               <Input type="file" onChange={handleCardImageChange} />
             </FormControl>
+            <FormControl mb="4">
+              <FormLabel>Prévisualisation de l'image</FormLabel>
+              {cardForm.image_url && (
+                <Image
+                  src={
+                    cardForm.image_url.startsWith("blob")
+                      ? cardForm.image_url
+                      : `${IMAGE_BASE_URL}${cardForm.image_url}`
+                  }
+                  alt="Prévisualisation"
+                  boxSize="200px"
+                  height="400px"
+                  objectFit="cover"
+                  mb="4"
+                />
+              )}
+            </FormControl>
             <Button
               bg="customBlue"
               color="white"
@@ -463,8 +516,7 @@ function ContentManagementPage() {
                   {card.name_card}
                 </Heading>
                 <Text mb="2">
-                  <strong>Interprétation:</strong> {card.keyword1},{" "}
-                  {card.keyword2}, {card.keyword3}
+                  {card.keyword1}, {card.keyword2}, {card.keyword3}
                 </Text>
                 <Stack direction="row" spacing="4">
                   <Button

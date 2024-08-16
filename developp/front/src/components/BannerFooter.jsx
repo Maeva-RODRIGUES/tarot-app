@@ -14,7 +14,6 @@ function BannerFooter({ src, alt, height = "100px" }) {
       backgroundPosition="center"
       position="relative"
       m={0}
-      border="1px solid blue" // Temporary border to check visibility
     >
       <Box
         position="absolute"
