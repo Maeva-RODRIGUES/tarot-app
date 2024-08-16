@@ -57,7 +57,7 @@ router.use(errorHandler);
 router.use('/cards', protect, cardsRoutes);
 router.use('/themes', protect, themesRoutes);
 router.use('/drawings', protect, drawingsRoutes);
-router.use('/reviews', protect, reviewsRoutes);
+router.use('/reviews', reviewsRoutes);
 
 // Route pour créer un utilisateur sans authentification
 const usersControllers = require('../controllers/usersControllers');

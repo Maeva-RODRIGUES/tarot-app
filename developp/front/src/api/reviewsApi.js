@@ -3,10 +3,14 @@
 import api from "./configAxios";
 import { REVIEWS_ENDPOINT } from "./apiEndpoints";
 
-// Récupérer tous les commentaires
+// Récupérer tous les commentaires sans authentification
 export const fetchAllReviews = async () => {
-  const response = await api.get(REVIEWS_ENDPOINT);
-  return response.data;
+  const response = await fetch("http://localhost:8000/api/tarot/reviews");
+  if (!response.ok) {
+    throw new Error("Erreur lors de la récupération des avis");
+  }
+  const data = await response.json();
+  return data;
 };
 
 // Récupérer les commentaires d'un utilisateur spécifique
