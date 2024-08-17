@@ -4,7 +4,12 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 // AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { login as apiLogin, getUserData } from "../../api/authApi";
+import {
+  login as apiLogin,
+  getUserData,
+  forgotPassword,
+  resetPassword,
+} from "../../api/authApi";
 
 const AuthContext = createContext();
 
@@ -57,10 +62,43 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
   };
 
+  const requestPasswordReset = async (email) => {
+    try {
+      const response = await forgotPassword(email);
+      return response;
+    } catch (error) {
+      console.error("Erreur lors de la demande de réinitialisation :", error);
+      throw error;
+    }
+  };
+
+  const resetUserPassword = async (token, newPassword) => {
+    try {
+      const response = await resetPassword(token, newPassword);
+      logout(); // Déconnexion après la réinitialisation du mot de passe
+      return response;
+    } catch (error) {
+      console.error(
+        "Erreur lors de la réinitialisation du mot de passe :",
+        error,
+      );
+      throw error;
+    }
+  };
+
   const isAuthenticated = () => !!user;
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        logout,
+        isAuthenticated,
+        requestPasswordReset,
+        resetUserPassword,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

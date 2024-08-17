@@ -18,6 +18,10 @@ module.exports = {
     rolesControllers,
     themesControllers,
     usersControllers,
-    authControllers,
+    authControllers: {
+        ...authControllers,
+        forgotPassword: authControllers.forgotPassword,
+        resetPassword: authControllers.resetPassword,
+    },
     uploadControllers,
 };

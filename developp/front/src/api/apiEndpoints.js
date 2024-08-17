@@ -22,6 +22,8 @@ export const USERS_ENDPOINT = "/users";
 export const AUTH_ENDPOINT = {
   LOGIN: "/auth/login",
   SIGNUP: "/users",
+  FORGOT_PASSWORD: "/auth/forgot-password",
+  RESET_PASSWORD: "/auth/reset-password",
 };
 
 // Endpoints pour les téléchargements

@@ -39,6 +39,36 @@ export const signup = async (userData) => {
   return response.data;
 };
 
+// Demande de réinitialisation de mot de passe
+export const forgotPassword = async (email) => {
+  console.log(
+    "Tentative de demande de réinitialisation de mot de passe pour :",
+    email,
+  );
+  const response = await api.post(AUTH_ENDPOINT.FORGOT_PASSWORD, { email });
+  console.log(
+    "Réponse de l'API pour la demande de réinitialisation :",
+    response.data,
+  );
+  return response.data;
+};
+
+// Réinitialisation de mot de passe
+export const resetPassword = async (token, newPassword) => {
+  console.log(
+    "Tentative de réinitialisation de mot de passe avec le token :",
+    token,
+  );
+  const response = await api.put(`${AUTH_ENDPOINT.RESET_PASSWORD}/${token}`, {
+    password: newPassword,
+  });
+  console.log(
+    "Réponse de l'API pour la réinitialisation de mot de passe :",
+    response.data,
+  );
+  return response.data;
+};
+
 // Récupérer les données d'un utilisateur spécifique
 export const getUserData = async (userId) => {
   console.log(

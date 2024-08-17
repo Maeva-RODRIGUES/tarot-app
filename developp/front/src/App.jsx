@@ -6,13 +6,13 @@ import { Route, Routes } from "react-router-dom";
 
 import Homepage from "./pages/HomePage.jsx";
 import TarotThemesPage from "./pages/TarotThemesPage.jsx";
-import TarotDrawPage from "./pages/TarotDrawPage.jsx"; // gèr eles tirages de cartes par thème
+import TarotDrawPage from "./pages/TarotDrawPage.jsx";
 import LegalMentionsPage from "./pages/LegalMentionsPage.jsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.jsx";
 import AboutPage from "./pages/AboutPage.jsx";
 import ChakraProviderWrapper from "./ChakraProviderWrapper";
 import { PopupProvider } from "./components/context/PopupContext";
-import { DrawingsProvider } from "./components/context/DrawingsContext"; // Import du contexte pour les tirages
+import { DrawingsProvider } from "./components/context/DrawingsContext";
 import AppointmentPopup from "./components/AppointmentPopup.jsx";
 import LoginPopup from "./components/LoginPopup";
 import SignupPopup from "./components/SignupPopup";
@@ -25,6 +25,8 @@ import AdminUserManagementPage from "./pages/AdminUserManagementPage.jsx";
 import ContentManagementPage from "./pages/AdminContentManagementPage.jsx";
 import SettingsAdminPage from "./pages/SettingsAdminPage.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 function App() {
   return (
@@ -144,6 +146,13 @@ function App() {
                     <SettingsAdminPage />
                   </PrivateRoute>
                 }
+              />
+
+              {/* Routes pour la réinitialisation du mot de passe */}
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route
+                path="/reset-password/:token"
+                element={<ResetPasswordPage />}
               />
             </Routes>
           </DrawingsProvider>{" "}
