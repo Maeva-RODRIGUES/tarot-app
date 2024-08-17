@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // useTarotDeck.js : gère l'état et la logique du jeu de tarot.
 import { useState, useEffect } from "react";
 import useCards from "./useCards"; // Importer le hook pour récupérer les cartes

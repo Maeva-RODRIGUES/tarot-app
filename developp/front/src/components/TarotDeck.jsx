@@ -1,27 +1,26 @@
-/* eslint-disable no-console */
-/* eslint-disable prettier/prettier */
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-undef */
 /* eslint-disable no-shadow */
+/* eslint-disable no-console */
 // src/components/TarotDeck.jsx
 
 import { Box, SimpleGrid, Button, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import PropTypes from "prop-types"; // Ajout pour la validation des props
+import PropTypes from "prop-types";
 import TarotCard from "./TarotCard";
-import useTarotDeck from "../hooks/useTarotDeck"; // Logique du jeu
-import useCards from "../hooks/useCards"; // Gestion des données des cartes
-import useAnimations from "../hooks/useAnimations"; // Animations
-import { fetchThemes } from "../api/themesApi"; // Importer l'API pour récupérer les thèmes
+import useTarotDeck from "../hooks/useTarotDeck";
+import useCards from "../hooks/useCards";
+import { shuffleAnimation, cutAnimation } from "../animations/animations";
+import { fetchThemes } from "../api/themesApi";
 
-function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
+// Fonction utilitaire pour sélectionner une interprétation aléatoire
+const getRandomInterpretation = (interpretations) => {
+  const randomIndex = Math.floor(Math.random() * interpretations.length);
+  return interpretations[randomIndex];
+};
+
+function TarotDeck({ theme, onDrawComplete }) {
   const { cards, isLoading, isError, error } = useCards();
-  const { shuffleCards, backImage } = useTarotDeck(); // Fonction de mélange des cartes et image du dos
-  const {
-    animateProps,
-    triggerRiffleShuffle,
-    triggerCutAnimation,
-    setAnimateProps,
-  } = useAnimations();
+  const { shuffleCards, backImage } = useTarotDeck();
 
   const [buttonText, setButtonText] = useState("Mélangez");
   const [flippedCards, setFlippedCards] = useState(
@@ -30,39 +29,25 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
   const [selectedCards, setSelectedCards] = useState([]);
   const [canSelectCards, setCanSelectCards] = useState(false);
   const [showButton, setShowButton] = useState(true);
-  const [themeInterpretation, setThemeInterpretation] = useState(""); // État pour stocker l'interprétation du thème
-
-  const resetState = () => {
-    const defaultProps = Array(cards.length).fill({
-      x: 0,
-      y: 0,
-      rotate: 0,
-      opacity: 1,
-    });
-    setAnimateProps(defaultProps);
-  };
+  const [themeInterpretation, setThemeInterpretation] = useState("");
 
   const handleShuffle = () => {
-    shuffleCards(); // Mélange les cartes via useTarotDeck
-    triggerRiffleShuffle(cards.length);
+    shuffleCards();
+    shuffleAnimation(".play-card");
     setTimeout(() => {
-      resetState();
       setButtonText("Coupez");
     }, 1000);
   };
 
   const handleCut = () => {
-    triggerCutAnimation(cards.length); // Appel à l'animation de coupe personnalisée
+    console.log("Déclenchement de l'animation de coupe");
+    cutAnimation(".play-card");
+
     setTimeout(() => {
-      resetState();
+      console.log("Réinitialisation de l'état des cartes");
       setCanSelectCards(true);
       setShowButton(false);
     }, 2000);
-  };
-
-  const getRandomInterpretation = (interpretations) => {
-    const randomIndex = Math.floor(Math.random() * interpretations.length);
-    return interpretations[randomIndex];
   };
 
   const handleClick = async (index) => {
@@ -75,10 +60,9 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
 
       if (newSelectedCards.length === 3) {
         try {
-          const themes = await fetchThemes(); // Récupérer les thèmes
+          const themes = await fetchThemes();
           console.log("Thèmes récupérés :", themes);
 
-          // Correspondance entre les noms dans l'URL et les titres des thèmes dans la base de données
           const themeMap = {
             love: "Amour",
             career: "Carrière",
@@ -100,9 +84,8 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
               randomInterpretation || "Interprétation indisponible",
             );
 
-           // Enregistrer le tirage via onDrawComplete en passant l'interprétation sélectionnée
-          if (onDrawComplete) {
-            onDrawComplete(newSelectedCards, randomInterpretation); // Passer les cartes sélectionnées et l'interprétation
+            if (onDrawComplete) {
+              onDrawComplete(newSelectedCards, randomInterpretation);
             }
           } else {
             console.error(`Thème ${theme} non trouvé.`);
@@ -118,8 +101,8 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
   };
 
   useEffect(() => {
-    console.log("Updated animateProps:", animateProps);
-  }, [animateProps]);
+    console.log("Cartes mises à jour pour l'animation.");
+  }, [cards]);
 
   if (isLoading) return <Text>Loading...</Text>;
   if (isError) return <Text>Error: {error.message}</Text>;
@@ -128,12 +111,15 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
     <Box display="flex" flexDirection="column" alignItems="center">
       <SimpleGrid columns={[2, null, 11]} spacingX="2px" spacingY="10px">
         {cards.map((card, index) => (
-          <Box key={card.id} onClick={() => handleClick(index)}>
+          <Box
+            key={card.id}
+            className="play-card"
+            onClick={() => handleClick(index)}
+          >
             <TarotCard
               card={card}
               frontColor={card.keyword1}
-              backImage={backImage} // Passez ici l'image du dos du deck depuis useTarotDeck
-              animateProps={animateProps[index]}
+              backImage={backImage}
               isFlipped={flippedCards[index]}
             />
           </Box>
@@ -158,18 +144,16 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
           <SimpleGrid columns={3} spacing={10} mt={5}>
             {selectedCards.map((card) => (
               <Box key={card.id} textAlign="center" position="relative">
-                {/* Conteneur flex pour centrer l'image par rapport aux keywords */}
                 <Box
                   display="flex"
                   flexDirection="column"
                   alignItems="center"
                   justifyContent="center"
-                  height="200px" // Ajustez la hauteur en fonction de vos besoins
+                  height="200px"
                   position="relative"
                 >
                   <TarotCard card={card} backImage={backImage} isFlipped />
                 </Box>
-                {/* Keywords restent en place */}
                 <Text
                   mt={2}
                   position="absolute"
@@ -183,10 +167,7 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
             ))}
           </SimpleGrid>
 
-          {/* Ajouter un espacement supplémentaire ici pour abaisser la section */}
           <Box mb={5} mt={20}>
-            {" "}
-            {/* Augmenter la valeur de 'mt' pour abaisser davantage */}
             <Text fontSize="lg" fontWeight="bold" mb={5}>
               Interprétation Générale
             </Text>
@@ -198,7 +179,6 @@ function TarotDeck({ theme, onDrawComplete }) { // Ajout de onDrawComplete
   );
 }
 
-// Validation des props
 TarotDeck.propTypes = {
   theme: PropTypes.string.isRequired,
   onDrawComplete: PropTypes.func.isRequired,

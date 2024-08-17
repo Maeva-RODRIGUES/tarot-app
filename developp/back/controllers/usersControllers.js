@@ -68,7 +68,7 @@ const usersControllers = {
 
     // Créer un nouvel utilisateur
     createUser: async (req, res) => {
-        const { name, surname, email, birthday, city_of_birth, time_of_birth, password, role } = req.body;
+        const { name, surname, email, birthday, city_of_birth, time_of_birth, password, role_id } = req.body;
 
         try {
             const existingUser = await User.findOne({ where: { email } });
@@ -86,7 +86,7 @@ const usersControllers = {
                 city_of_birth,
                 time_of_birth,
                 password: hashedPassword,
-                id_Roles: role
+                id_Roles: role_id,
             });
 
             res.status(201).json({ message: 'Utilisateur créé avec succès', user: newUser });

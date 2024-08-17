@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // src/hooks/useCards.js
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

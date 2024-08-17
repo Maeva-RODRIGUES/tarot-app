@@ -35,10 +35,11 @@ function Cartomancienne() {
               Eva Capri
             </Heading>
             <Text mb={8} whiteSpace="normal" textAlign="left">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
+              Avec des années d’expérience, elle guide ses clients à travers les
+              mystères de leur avenir, offrant des conseils éclairés et des
+              perspectives uniques. Que vous cherchiez des réponses à des
+              questions précises ou une vision globale de votre chemin de vie,
+              Eva est là pour vous accompagner avec bienveillance et expertise.
             </Text>
           </Box>
         </Flex>

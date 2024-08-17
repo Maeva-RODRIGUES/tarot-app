@@ -1,20 +1,20 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-console */
 // TarotCard.jsx
 
-import { Box, Text, Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 
 // Définition de la base URL pour les images des cartes
 const IMAGE_BASE_URL = "http://localhost:8000";
 
-function TarotCard({ card, isFlipped, animateProps, backImage }) {
-  // Mise à jour pour accepter backImage
-  console.log("animateProps:", animateProps);
-
+function TarotCard({ card, isFlipped, backImage }) {
   return (
     <Box
       as={motion.div} // Utilisation de motion.div pour animer la carte
-      animate={animateProps} // Propriétés d'animation
       style={{ position: "relative" }} // Styles de base
+      animate={{ x: 100 }} // Animation simple pour tester le mouvement
       height={["120px", "150px", "200px"]} // Tailles réactives pour la hauteur
       width={["80px", "100px", "130px"]} // Tailles réactives pour la largeur
     >

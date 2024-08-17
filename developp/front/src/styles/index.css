@@ -50,4 +50,9 @@ font-family: 'Urbanist';
 font-size: 20;
 }
 
+.card-container {
+  position: absolute;  /* ou relative */
+  transition: transform 0.8s ease-in-out;
+  z-index: 10;  /* Assurez-vous que les cartes sont au-dessus des autres éléments */
+}
 
