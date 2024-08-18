@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { Card } = require('../models/indexModels');
+const { Card, User } = require('../models/indexModels');
 
 // Fonction pour télécharger un fichier et mettre à jour l'URL de l'image dans la table cards
 const uploadFile = async (req, res) => {
@@ -107,10 +107,47 @@ const deleteFile = (req, res) => {
   });
 };
 
+// Fonction pour télécharger et mettre à jour l'avatar de l'utilisateur
+const uploadAvatar = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    console.log("ID de l'utilisateur:", userId);
+    console.log("Fichier téléchargé:", req.file);
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Aucun fichier n'a été téléchargé." });
+    }
+
+    const avatarUrl = `/uploads/avatars/${req.file.filename}`; // Stockage des avatars
+
+    const user = await User.findByPk(userId);
+    if (user) {
+      const oldAvatarPath = path.join(__dirname, '..', user.avatar_url);
+      if (user.avatar_url && fs.existsSync(oldAvatarPath)) {
+        console.log("Suppression de l'ancien avatar:", oldAvatarPath);
+        fs.unlinkSync(oldAvatarPath);
+      }
+
+      user.avatar_url = avatarUrl;
+      await user.save();
+      console.log("URL de l'avatar mise à jour dans la base de données:", user.avatar_url);
+      res.json({ message: 'Avatar téléchargé avec succès', avatarUrl });
+    } else {
+      console.log("Utilisateur non trouvé pour l'ID:", userId);
+      res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+  } catch (error) {
+    console.error("Erreur lors du téléchargement de l'avatar:", error);
+    res.status(500).json({ message: 'Erreur lors du téléchargement de l\'avatar', error });
+  }
+};
+
+
 module.exports = {
   uploadFile,
   listFiles,
   getFile,
   updateFile,
   deleteFile,
+  uploadAvatar
 };

@@ -53,13 +53,18 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+   
     id_Roles: {
       type: DataTypes.INTEGER,
       references: {
         model: 'Roles',
         key: 'id'
       }
-    }
+    },
+    avatar_url: {
+      type: DataTypes.STRING,
+      allowNull: true, // Le champ avatar_url peut être null
+    },
   }, {
     timestamps: true,
     hooks: {

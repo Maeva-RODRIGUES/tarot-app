@@ -331,13 +331,6 @@ function SettingsAdminPage() {
   // Fonction pour gérer la déconnexion
   const handleLogout = () => {
     logout();
-    toast({
-      title: "Déconnexion réussie",
-      description: "Vous vous êtes déconnecté avec succès.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
     navigate("/");
   };
 

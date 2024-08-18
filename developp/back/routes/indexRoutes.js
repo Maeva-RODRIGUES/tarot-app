@@ -9,8 +9,9 @@ const { protect, authorize } = require('../middlewares/auth'); // Importer les m
 const errorHandler = require('../middlewares/errorHandler'); // Importer le middleware errorHandler
 
 
-// Utiliser les routes de téléchargement
+// Utiliser les routes de téléchargement + avatar
 router.use('/upload', uploadRoutes);
+
 
 // Utiliser le middleware cookie-parser pour gérer les cookies
 router.use(cookieParser());
@@ -61,6 +62,7 @@ router.use('/reviews', reviewsRoutes);
 
 // Route pour créer un utilisateur sans authentification
 const usersControllers = require('../controllers/usersControllers');
+const { uploadAvatar } = require('../controllers/uploadControllers');
 router.post('/users', usersControllers.createUser);
 
 // Routes des utilisateurs (protégées)

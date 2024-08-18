@@ -14,27 +14,27 @@ import {
   Button,
   Spacer,
   SimpleGrid,
+  Collapse,
 } from "@chakra-ui/react";
-import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt, FaChevronDown, FaChevronRight } from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { fetchUserDrawings } from "../api/drawApi";
 
-// Définition de la base URL pour les images des cartes
 const IMAGE_BASE_URL = "http://localhost:8000";
 
 function TarotHistoryPage() {
   const [drawings, setDrawings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [collapsedSections, setCollapsedSections] = useState({});
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Appel API pour récupérer les tirages de l'utilisateur
         const data = await fetchUserDrawings(user.userId);
         setDrawings(data);
       } catch (error) {
@@ -51,14 +51,20 @@ function TarotHistoryPage() {
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // Redirige vers la page d'accueil après la déconnexion
+    navigate("/");
+  };
+
+  const toggleSection = (month) => {
+    setCollapsedSections((prev) => ({
+      ...prev,
+      [month]: !prev[month],
+    }));
   };
 
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
 
-      {/* Menu latéral pour la navigation dans le profil de l'utilisateur */}
       <Flex
         as="nav"
         p="4"
@@ -122,67 +128,87 @@ function TarotHistoryPage() {
         {loading ? (
           <Text>Chargement...</Text>
         ) : (
-          drawings.map((draw, index) => {
-            return (
-              <Box
-                key={index}
-                mb="8"
-                p="4"
-                borderWidth="1px"
-                borderRadius="md"
-                borderColor="gray.200"
-                bg="white"
-                boxShadow="md"
+          Object.entries(
+            drawings.reduce((acc, draw) => {
+              const month = new Date(draw.date).toLocaleString("fr-FR", {
+                month: "long",
+                year: "numeric",
+              });
+              acc[month] = acc[month] || [];
+              acc[month].push(draw);
+              return acc;
+            }, {})
+          ).map(([month, draws]) => (
+            <Box key={month} mb="8">
+              <HStack
+                onClick={() => toggleSection(month)}
+                cursor="pointer"
+                _hover={{ color: "blue.500" }}
               >
-                <VStack spacing="6" align="start">
-                  <Heading size="md" mb="4">
-                    Tirage {index + 1} -{" "}
-                    {new Date(draw.date).toLocaleDateString("fr-FR")}
-                  </Heading>
-                  <Text fontSize="lg" mb="4" fontWeight="bold">
-                    Thème : {draw.Theme.title_theme}
-                  </Text>
+                <Icon as={collapsedSections[month] ? FaChevronRight : FaChevronDown} />
+                <Heading size="md">{month}</Heading>
+              </HStack>
+              <Collapse in={!collapsedSections[month]}>
+                {draws.map((draw, index) => (
+                  <Box
+                    key={index}
+                    mb="8"
+                    p="4"
+                    borderWidth="1px"
+                    borderRadius="md"
+                    borderColor="gray.200"
+                    bg="white"
+                    boxShadow="md"
+                  >
+                    <VStack spacing="6" align="start">
+                      <Heading size="md" mb="4">
+                        Tirage {index + 1} -{" "}
+                        {new Date(draw.date).toLocaleDateString("fr-FR")}
+                      </Heading>
+                      <Text fontSize="lg" mb="4" fontWeight="bold">
+                        Thème : {draw.Theme.title_theme}
+                      </Text>
 
-                  {/* Utiliser un Flex pour centrer les cartes */}
-                  <Flex justifyContent="center">
-                    <SimpleGrid columns={[1, 2, 3]} spacing={10} mb={8}>
-                      {draw.cards.map((card, cardIndex) => (
-                        <Box key={cardIndex} textAlign="center">
-                          <Image
-                            src={`${IMAGE_BASE_URL}${card.image_url}`}
-                            alt={`Card ${cardIndex + 1}`}
-                            boxSize="200px" // Ajustez la hauteur ici
-                            height="350px"
-                            objectFit="cover"
-                            mb="2"
-                            border="2px solid black"
-                            borderRadius="15px"
+                      <Flex justifyContent="center">
+                        <SimpleGrid columns={[1, 2, 3]} spacing={10} mb={8}>
+                          {draw.cards.map((card, cardIndex) => (
+                            <Box key={cardIndex} textAlign="center">
+                              <Image
+                                src={`${IMAGE_BASE_URL}${card.image_url}`}
+                                alt={`Card ${cardIndex + 1}`}
+                                boxSize="200px"
+                                height="350px"
+                                objectFit="cover"
+                                mb="2"
+                                border="2px solid black"
+                                borderRadius="15px"
+                              />
+                              <Text fontSize="md" fontWeight="bold">
+                                {card.name_card}
+                              </Text>
+                              <Text fontSize="sm">
+                                {card.keyword1}, {card.keyword2}, {card.keyword3}
+                              </Text>
+                            </Box>
+                          ))}
+                        </SimpleGrid>
+                      </Flex>
 
-                          />
-                          <Text fontSize="md" fontWeight="bold">
-                            {card.name_card}
-                          </Text>
-                          <Text fontSize="sm">
-                            {card.keyword1}, {card.keyword2}, {card.keyword3}
-                          </Text>
-                        </Box>
-                      ))}
-                    </SimpleGrid>
-                  </Flex>
-
-                  <Box mt="4">
-                    <Heading size="sm" color="purple.700">
-                      Interprétation générale :
-                    </Heading>
-                    <Text fontSize="md" mt="2">
-                      {draw.selected_interpretation ||
-                        "Interprétation non disponible"}
-                    </Text>
+                      <Box mt="4">
+                        <Heading size="sm" color="purple.700">
+                          Interprétation générale :
+                        </Heading>
+                        <Text fontSize="md" mt="2">
+                          {draw.selected_interpretation ||
+                            "Interprétation non disponible"}
+                        </Text>
+                      </Box>
+                    </VStack>
                   </Box>
-                </VStack>
-              </Box>
-            );
-          })
+                ))}
+              </Collapse>
+            </Box>
+          ))
         )}
       </Box>
 
