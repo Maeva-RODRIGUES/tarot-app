@@ -24,7 +24,7 @@ import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData, updateUser, createUser } from "../api/usersApi";
-import { uploadFile } from "../api/uploadApi"; // Import pour gérer le téléchargement de fichiers
+import { uploadAvatar } from "../api/uploadApi"; // Import pour gérer le téléchargement de fichiers
 
 function SettingsAdminPage() {
   const toast = useToast(); // Pour afficher les notifications toast
@@ -121,9 +121,9 @@ function SettingsAdminPage() {
     if (avatarFile && user && user.userId) {
       try {
         const formData = new FormData();
-        formData.append("image", avatarFile); // Ajoute le fichier d'avatar au formulaire
-        formData.append("id", user.userId); // Ajoute l'ID de l'utilisateur au formulaire
-        const response = await uploadFile(formData); // Appelle l'API pour télécharger l'avatar
+        formData.append("avatar", avatarFile); // Utilise le champ "avatar" pour le fichier
+        formData.append("userId", user.userId); // Utilise "userId" pour l'ID de l'utilisateur
+        const response = await uploadAvatar(formData); // Utilise la fonction correcte pour l'avatar
 
         // Met à jour l'URL de l'avatar dans l'état
         setAdminData({ ...adminData, avatarUrl: response.avatarUrl });
@@ -149,6 +149,7 @@ function SettingsAdminPage() {
       }
     }
   };
+
   // ---------------------------------------------------------------------
 
   // Fonction pour gérer les changements dans le formulaire
