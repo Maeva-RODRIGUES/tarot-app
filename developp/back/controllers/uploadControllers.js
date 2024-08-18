@@ -107,6 +107,10 @@ const deleteFile = (req, res) => {
   });
 };
 
+//-------------------------------------------------------------------
+// Section avatar 
+//-------------------------------------------------------------------
+
 // Fonction pour télécharger et mettre à jour l'avatar de l'utilisateur
 const uploadAvatar = async (req, res) => {
   try {
@@ -142,6 +146,23 @@ const uploadAvatar = async (req, res) => {
   }
 };
 
+// Fonction pour récupérer et afficher l'avatar de l'utilisateur.
+const getAvatar = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.params.userId);
+
+    if (!user || !user.avatar_url) {
+      return res.status(404).json({ message: 'Avatar non trouvé pour cet utilisateur' });
+    }
+
+    res.json({ avatarUrl: user.avatar_url });
+  } catch (error) {
+    console.error('Erreur lors de la récupération de l\'avatar:', error);
+    res.status(500).json({ message: 'Erreur serveur', error });
+  }
+};
+
+
 
 module.exports = {
   uploadFile,
@@ -149,5 +170,6 @@ module.exports = {
   getFile,
   updateFile,
   deleteFile,
-  uploadAvatar
+  uploadAvatar,
+  getAvatar
 };

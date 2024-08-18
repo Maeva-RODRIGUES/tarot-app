@@ -39,7 +39,7 @@ import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData, updateUser } from "../api/usersApi";
-import { uploadFile } from "../api/uploadApi";
+import { uploadFile, uploadAvatar } from "../api/uploadApi";
 import {
   fetchReviews,
   createReview,
@@ -111,9 +111,9 @@ function UserSettingPage() {
     if (avatarFile && user && user.userId) {
       try {
         const formData = new FormData();
-        formData.append("image", avatarFile);
-        formData.append("id", user.userId);
-        const response = await uploadFile(formData); // Envoie le fichier d'avatar à l'API pour le téléchargement
+        formData.append("avatar", avatarFile); // Notez le changement ici, pour correspondre à la clé attendue
+        formData.append("userId", user.userId); // Assurez-vous que le champ userId est bien envoyé
+        const response = await uploadAvatar(formData); // Utilisation de la fonction uploadAvatar
         setUserData({ ...userData, avatarUrl: response.avatarUrl }); // Met à jour l'URL de l'avatar dans l'état utilisateur
         toast({
           title: "Avatar mis à jour.",
