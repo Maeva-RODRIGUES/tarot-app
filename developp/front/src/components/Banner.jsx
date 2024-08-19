@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+/* eslint-disable react/require-default-props */
 // Banner.jsx
 
 import React from "react";
@@ -6,8 +8,7 @@ import { Box, Image } from "@chakra-ui/react";
 
 function Banner({
   src,
-  alt,
-  height = "300px", // Valeur par défaut pour la hauteur
+  height = "200px", // Valeur par défaut pour la hauteur
   logow, // Logo à afficher dans la bannière
   backgroundPosition = "center", // Position de l'arrière-plan
 }) {

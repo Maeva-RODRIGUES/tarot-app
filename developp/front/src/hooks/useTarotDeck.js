@@ -2,7 +2,7 @@
 // useTarotDeck.js : gère l'état et la logique du jeu de tarot.
 import { useState, useEffect } from "react";
 import useCards from "./useCards"; // Importer le hook pour récupérer les cartes
-import backImage from "../assets/img/backlove.png"; // Importation de l'image du verso des cartes
+import backImage from "../assets/img/backdeck.jpg"; // Importation de l'image du verso des cartes
 
 // Hook personnalisé pour gérer le jeu de tarot
 const useTarotDeck = () => {

@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 // src/components/Header.jsx
 
 import React from "react";
