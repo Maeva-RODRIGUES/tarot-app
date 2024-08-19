@@ -36,7 +36,7 @@ module.exports = {
         specialLink: ["to"],
       },
     ],
-    "no-console": ["error", { allow: ["warn", "error"] }],
+    "no-console": "off",
   },
   settings: {
     react: {

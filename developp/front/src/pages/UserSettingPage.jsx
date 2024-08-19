@@ -1,7 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-restricted-globals */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-unused-vars */
 // UserSettingPage.jsx
 
 // Importation des dépendances nécessaires
@@ -34,12 +31,11 @@ import {
   FaStarHalfAlt,
 } from "react-icons/fa"; // Importation d'icônes
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { parse, format, isValid } from "date-fns";
 import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData, updateUser } from "../api/usersApi";
-import { uploadFile, uploadAvatar } from "../api/uploadApi";
+import { uploadAvatar } from "../api/uploadApi";
 import {
   fetchReviews,
   createReview,
@@ -52,6 +48,9 @@ function UserSettingPage() {
   const toast = useToast(); // Hook pour afficher des notifications toast
   const navigate = useNavigate(); // Hook pour naviguer entre les pages
   const { user, logout } = useAuth(); // Récupère l'utilisateur connecté et la fonction de déconnexion depuis le contexte d'authentification
+
+  // ---------------------
+  // État pour stocker les données de l'utilisateur
   const [userData, setUserData] = useState({
     name: "",
     surname: "",
@@ -60,26 +59,41 @@ function UserSettingPage() {
     city_of_birth: "",
     time_of_birth: "",
     avatarUrl: "",
-  }); // État pour stocker les données de l'utilisateur
-  const [avatarFile, setAvatarFile] = useState(null); // État pour stocker le fichier d'avatar sélectionné
-  const [reviews, setReviews] = useState([]); // État pour stocker les commentaires de l'utilisateur
-  const [newReview, setNewReview] = useState({ rating: 0, comment: "" }); // État pour stocker le nouveau commentaire
-  const [editingReview, setEditingReview] = useState(null); // État pour déterminer si un commentaire est en cours d'édition
+  });
 
+  // État pour stocker le fichier d'avatar sélectionné
+  const [avatarFile, setAvatarFile] = useState(null);
+
+  // État pour stocker les commentaires de l'utilisateur
+  const [reviews, setReviews] = useState([]);
+
+  // État pour stocker le nouveau commentaire
+  const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
+
+  // État pour déterminer si un commentaire est en cours d'édition
+  const [editingReview, setEditingReview] = useState(null);
+
+  // ---------------------
   // Effet pour récupérer les données de l'utilisateur lors du montage du composant
   useEffect(() => {
     const fetchUserData = async () => {
       if (user && user.userId) {
         try {
           const data = await getUserData(user.userId); // Récupère les données de l'utilisateur depuis l'API
+
+          // Formatage et validation de la date de naissance
           if (data.birthday) {
-            const parsedDate = parse(data.birthday, "yyyy-MM-dd", new Date()); // Parse et valide la date de naissance
-            if (isValid(parsedDate)) {
-              data.birthday = format(parsedDate, "yyyy-MM-dd");
+            const parsedDate = new Date(data.birthday); // Convertit la date de naissance reçue en objet Date
+            if (!isNaN(parsedDate)) {
+              // Vérifie si la date est valide
+              const formattedDate = parsedDate.toLocaleDateString("fr-FR"); // Formate la date en "dd/mm/yyyy"
+              const [day, month, year] = formattedDate.split("/"); // Sépare jour, mois, année
+              data.birthday = `${year}-${month}-${day}`; // Reformate en "yyyy-mm-dd"
             } else {
-              data.birthday = "";
+              data.birthday = ""; // Si la date n'est pas valide, on la vide
             }
           }
+
           setUserData(data); // Met à jour l'état avec les données de l'utilisateur
 
           // Récupérer les commentaires de l'utilisateur
@@ -101,20 +115,24 @@ function UserSettingPage() {
     fetchUserData(); // Appelle la fonction pour récupérer les données utilisateur
   }, [user, toast]); // Dépendance de l'effet aux changements de l'utilisateur et du toast
 
+  // ---------------------
   // Gestion du changement d'avatar
   const handleAvatarChange = (e) => {
     setAvatarFile(e.target.files[0]); // Met à jour l'état avec le fichier d'avatar sélectionné
   };
 
+  // ---------------------
   // Gestion du téléchargement de l'avatar
   const handleAvatarUpload = async () => {
     if (avatarFile && user && user.userId) {
       try {
         const formData = new FormData();
-        formData.append("avatar", avatarFile); // Notez le changement ici, pour correspondre à la clé attendue
-        formData.append("userId", user.userId); // Assurez-vous que le champ userId est bien envoyé
+        formData.append("avatar", avatarFile); // Ajoute le fichier d'avatar au formulaire
+        formData.append("userId", user.userId); // Ajoute l'ID de l'utilisateur au formulaire
         const response = await uploadAvatar(formData); // Utilisation de la fonction uploadAvatar
         setUserData({ ...userData, avatarUrl: response.avatarUrl }); // Met à jour l'URL de l'avatar dans l'état utilisateur
+
+        // Notification de succès
         toast({
           title: "Avatar mis à jour.",
           description: "Votre avatar a été mis à jour avec succès.",
@@ -123,6 +141,7 @@ function UserSettingPage() {
           isClosable: true,
         });
       } catch (error) {
+        // Notification d'erreur
         toast({
           title: "Erreur",
           description: "Impossible de mettre à jour l'avatar.",
@@ -134,34 +153,46 @@ function UserSettingPage() {
     }
   };
 
+  // ---------------------
   // Nettoyage et formatage des données utilisateur avant envoi
   const cleanAndFormatData = (data) => {
+    console.log("Données avant nettoyage et formatage:", data); // Log avant nettoyage
+
     const cleanedData = { ...data };
 
-    if (
-      !cleanedData.birthday ||
-      isNaN(new Date(cleanedData.birthday).getTime())
-    ) {
-      delete cleanedData.birthday; // Supprime la date de naissance si elle est invalide
-    } else {
-      const parsedDate = parse(cleanedData.birthday, "yyyy-MM-dd", new Date());
-      if (isValid(parsedDate)) {
-        cleanedData.birthday = format(parsedDate, "yyyy-MM-dd");
+    // Valider la date avant de la formater
+    if (cleanedData.birthday) {
+      console.log("Date de naissance originale:", cleanedData.birthday);
+
+      // Conversion de la date au format local et reformatage
+      const dateObj = new Date(cleanedData.birthday); // Convertit la date reçue en objet Date
+      if (!isNaN(dateObj)) {
+        const localeDateString = dateObj.toLocaleDateString("fr-FR"); // Convertit en chaîne locale "dd/mm/yyyy"
+        const [day, month, year] = localeDateString.split("/"); // Sépare jour, mois, année
+        cleanedData.birthday = `${year}-${month}-${day}`; // Reformate en "yyyy-mm-dd"
+        console.log("Date de naissance après formatage:", cleanedData.birthday);
       } else {
-        delete cleanedData.birthday;
+        console.log("Date de naissance invalide, suppression de la date.");
+        cleanedData.birthday = ""; // Si la date n'est pas valide, mieux vaut la mettre à jour comme vide
       }
     }
 
+    console.log("Données après nettoyage et formatage:", cleanedData); // Log après nettoyage
     return cleanedData;
   };
 
+  // ---------------------
   // Gestion de la soumission du formulaire pour mettre à jour les informations utilisateur
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Empêche le rechargement de la page à la soumission du formulaire
     if (user && user.userId) {
       try {
+        console.log("Soumission du formulaire avec les données:", userData);
         const cleanedData = cleanAndFormatData(userData); // Nettoie et formate les données avant l'envoi
         await updateUser(user.userId, cleanedData); // Met à jour les données utilisateur via l'API
+        console.log("Mise à jour réussie pour l'utilisateur ID:", user.userId);
+
+        // Notification de succès
         toast({
           title: "Informations mises à jour.",
           description: "Vos informations ont été mises à jour avec succès.",
@@ -170,6 +201,8 @@ function UserSettingPage() {
           isClosable: true,
         });
       } catch (error) {
+        // Notification d'erreur en cas d'échec
+        console.error("Erreur lors de la mise à jour des informations:", error);
         toast({
           title: "Erreur",
           description: "Impossible de mettre à jour les informations.",
@@ -181,9 +214,10 @@ function UserSettingPage() {
     }
   };
 
+  // ---------------------
   // Gestion de la soumission d'un commentaire
   const handleReviewSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Empêche le rechargement de la page à la soumission du formulaire
     try {
       if (editingReview) {
         await updateReview(editingReview.id, newReview); // Met à jour un commentaire existant
@@ -204,11 +238,14 @@ function UserSettingPage() {
           isClosable: true,
         });
       }
-      const updatedReviews = await fetchReviews(user.userId); // Récupère les commentaires mis à jour
+
+      // Récupère les commentaires mis à jour
+      const updatedReviews = await fetchReviews(user.userId);
       setReviews(updatedReviews); // Met à jour l'état avec les nouveaux commentaires
       setNewReview({ rating: 0, comment: "" }); // Réinitialise le formulaire de commentaire
       setEditingReview(null); // Réinitialise l'état d'édition de commentaire
     } catch (error) {
+      // Notification d'erreur en cas d'échec
       toast({
         title: "Erreur",
         description: "Impossible d'ajouter ou de mettre à jour le commentaire.",
@@ -219,12 +256,14 @@ function UserSettingPage() {
     }
   };
 
+  // ---------------------
   // Préparation du formulaire pour l'édition d'un commentaire
   const handleEditReview = (review) => {
     setNewReview({ rating: review.rating, comment: review.comment }); // Charge le commentaire dans le formulaire
     setEditingReview(review); // Met à jour l'état pour indiquer qu'on est en mode édition
   };
 
+  // ---------------------
   // Suppression d'un commentaire
   const handleDeleteReview = async (id) => {
     try {
@@ -236,9 +275,12 @@ function UserSettingPage() {
         duration: 5000,
         isClosable: true,
       });
-      const updatedReviews = await fetchReviews(user.userId); // Récupère les commentaires mis à jour
+
+      // Récupère les commentaires mis à jour
+      const updatedReviews = await fetchReviews(user.userId);
       setReviews(updatedReviews); // Met à jour l'état avec les nouveaux commentaires
     } catch (error) {
+      // Notification d'erreur en cas d'échec
       toast({
         title: "Erreur",
         description: "Impossible de supprimer le commentaire.",
@@ -249,17 +291,18 @@ function UserSettingPage() {
     }
   };
 
+  // ---------------------
   // Gestion de la déconnexion de l'utilisateur
   const handleLogout = () => {
     logout(); // Appelle la fonction de déconnexion du contexte
     navigate("/"); // Redirige vers la page d'accueil
   };
 
+  // ---------------------
   // Rendu du composant
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <HeaderDashboard /> {/* Affiche l'en-tête du tableau de bord */}
-
       {/* Menu de navigation latéral */}
       <Flex
         as="nav"
@@ -318,15 +361,16 @@ function UserSettingPage() {
           </Button>
         </VStack>
       </Flex>
-
       {/* Contenu principal de la page des paramètres utilisateur */}
       <Box ml="250px" p="8" flex="1">
-        <Heading mb="4">Paramètres du Profil</Heading>
+        <Heading mb="4">Paramètres du profil</Heading>
         <VStack mb="8" align="center">
-          <Avatar size="xl" src={userData.avatarUrl} /> {/* Affiche l'avatar de l'utilisateur */}
+          <Avatar size="xl" src={userData.avatarUrl} />{" "}
+          {/* Affiche l'avatar de l'utilisateur */}
           <FormControl id="avatar" mt="4">
-            <FormLabel>Mettre à jour l'avatar</FormLabel>
-            <Input type="file" onChange={handleAvatarChange} /> {/* Champ pour sélectionner un nouveau fichier d'avatar */}
+            <FormLabel>Mettre à jour l&#39;`avatar</FormLabel>
+            <Input type="file" onChange={handleAvatarChange} />{" "}
+            {/* Champ pour sélectionner un nouveau fichier d'avatar */}
             <Button mt="2" colorScheme="blue" onClick={handleAvatarUpload}>
               Télécharger
             </Button>
@@ -505,7 +549,6 @@ function UserSettingPage() {
           </form>
         </Box>
       </Box>
-
       <Footer /> {/* Affiche le pied de page */}
     </Box>
   );

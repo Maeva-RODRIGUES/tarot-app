@@ -3,7 +3,6 @@
 const { sendEtherealEmail } = require('../utils/etherealEmail'); 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
 const { User, Role } = require('../models/indexModels'); 
 
 // ------------------------------------------------------------
@@ -29,6 +28,9 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Identifiants incorrects' });
     }
 
+    console.log('Mot de passe fourni:', password);
+    console.log('Hachage stocké dans la base de données:', user.password);
+    
     // Comparer le mot de passe fourni avec le hash stocké
     const isMatch = await bcrypt.compare(password, user.password);
     // Afficher le résultat de la comparaison pour le débogage

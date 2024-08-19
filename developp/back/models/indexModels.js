@@ -31,7 +31,7 @@ const Drawing = require('./drawingsModels')(sequelize, DataTypes);
 
 
 // Appel des fonctions associate pour définir les associations
-User.associate({ Role });
+User.associate({ Role,Drawing });
 Role.associate({ User });
 
 

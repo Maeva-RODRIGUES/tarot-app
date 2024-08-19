@@ -1,6 +1,4 @@
-/* eslint-disable no-undef */
 /* eslint-disable no-shadow */
-/* eslint-disable no-console */
 // src/components/TarotDeck.jsx
 
 import { Box, SimpleGrid, Button, Text } from "@chakra-ui/react";
@@ -109,7 +107,12 @@ function TarotDeck({ theme, onDrawComplete }) {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <SimpleGrid columns={[2, null, 11]} spacingX="2px" spacingY="10px">
+      <SimpleGrid
+        columns={[2, null, 11]}
+        spacingX="2px"
+        spacingY="10px"
+        ml="-200px"
+      >
         {cards.map((card, index) => (
           <Box
             key={card.id}
@@ -151,6 +154,7 @@ function TarotDeck({ theme, onDrawComplete }) {
                   justifyContent="center"
                   height="200px"
                   position="relative"
+                  mr="200px"
                 >
                   <TarotCard card={card} backImage={backImage} isFlipped />
                 </Box>
@@ -158,7 +162,7 @@ function TarotDeck({ theme, onDrawComplete }) {
                   mt={2}
                   position="absolute"
                   bottom="-10"
-                  left="50%"
+                  ml="50%"
                   transform="translateX(-50%)"
                 >
                   {card.keyword1}, {card.keyword2}, {card.keyword3}

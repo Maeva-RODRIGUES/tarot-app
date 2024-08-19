@@ -59,25 +59,32 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: 'Roles',
         key: 'id'
-      }
+      },
+      defaultValue: 2, // Définit 2 comme valeur par défaut pour les utilisateurs standard
     },
+
     avatar_url: {
       type: DataTypes.STRING,
-      allowNull: true, // Le champ avatar_url peut être null
+      allowNull: true, // Permet d'accepter null ou ""
+      defaultValue: "", // Définit une chaîne vide comme valeur par défaut
     },
   }, {
     timestamps: true,
     hooks: {
       beforeCreate: async (user) => {
         if (user.password) {
+          console.log('Mot de passe avant hachage:', user.password);
           const salt = await bcrypt.genSalt(10);
           user.password = await bcrypt.hash(user.password, salt);
+          console.log('Mot de passe après hachage:', user.password);
         }
       },
       beforeUpdate: async (user) => {
         if (user.changed('password')) {
+          console.log('Mot de passe avant mise à jour:', user.password);
           const salt = await bcrypt.genSalt(10);
           user.password = await bcrypt.hash(user.password, salt);
+          console.log('Mot de passe après mise à jour:', user.password);
         }
       }
     },
@@ -107,6 +114,7 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = function(models) {
     User.belongsTo(models.Role, { foreignKey: 'id_Roles', as: 'role' });
+    User.hasMany(models.Drawing, { foreignKey: 'id_Users', as: 'drawings' });
   };
 
   return User;

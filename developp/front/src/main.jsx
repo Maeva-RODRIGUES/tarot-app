@@ -1,10 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // src/main.jsx
 
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router } from "react-router-dom";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 import "./styles/index.css";
@@ -27,7 +26,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               {/* Ajout du DrawingsProvider */}
               <QueryClientProvider client={queryClient}>
                 <App />
-                <ReactQueryDevtools initialIsOpen={false} />
               </QueryClientProvider>
             </DrawingsProvider>{" "}
             {/* Fermeture du DrawingsProvider */}
