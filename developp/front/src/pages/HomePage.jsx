@@ -24,11 +24,23 @@ function Homepage() {
         bannerAlt="Bannière d'accueil"
         bannerHeight="300px"
       />
-      <Box p={4}>
-        <Heading as="h1" mb={4} id="tirages">
+      <Box p={4} position="relative">
+        <Heading
+          as="h1"
+          mb={8}
+          id="tirages"
+          position="absolute"
+          top="120px" // Ajustez cette valeur pour abaisser le titre
+          left="50%"
+          transform="translateX(-50%)"
+        >
           TOUS NOS TIRAGES
         </Heading>
-        <CardsMenu />
+        <Box mt="80px">
+          {" "}
+          {/* Ajouter un espace sous le titre pour éviter de chevaucher les cartes */}
+          <CardsMenu />
+        </Box>
         <Box position="relative" textAlign="center" mt={8}>
           <MotionBox
             position="absolute"

@@ -57,6 +57,7 @@ function TarotCard({ card, isFlipped, backImage }) {
           bgImage={`url(${backImage})`} // Utilisation de l'image du dos de la carte
           bgSize="cover" // Couvrir toute la surface
           borderRadius="md" // Bords arrondis pour le dos de la carte aussi
+          border="4px solid black" // Ajout de la bordure noire
         />
       )}
     </Box>
