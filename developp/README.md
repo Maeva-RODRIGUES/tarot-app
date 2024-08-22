@@ -19,7 +19,7 @@
 
 ## 🛠️ Outils
 
-- ![Logo de VS Code](/public/icons8-code-studio-visuel-2019-50.png)
+- ![Logo de VS Code](./front/public/icons8-code-studio-visuel-2019-50.png)
 
 
 ## 🎥 Vidéo du site
