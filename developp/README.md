@@ -11,7 +11,7 @@
 
 ## 🌐 Technologies appliquées
 
-- ![Logo de js](../developp/front/public/icons8-react-js-50.png)
+- ![Logo de js](./front/public/icons8-javascript-50.png)
 - ![Logo de react](/developp/front/public/icons8-react-js-50.png)
 - ![Logo de vite](/developp/front/public/vite.svg)
 - ![Logo de express](/developp/front/public/icons8-express-js-50.png)
