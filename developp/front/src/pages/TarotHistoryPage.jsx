@@ -16,7 +16,14 @@ import {
   SimpleGrid,
   Collapse,
 } from "@chakra-ui/react";
-import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt, FaChevronDown, FaChevronRight } from "react-icons/fa";
+import {
+  FaUser,
+  FaRegFileAlt,
+  FaCog,
+  FaSignOutAlt,
+  FaChevronDown,
+  FaChevronRight,
+} from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
@@ -137,7 +144,7 @@ function TarotHistoryPage() {
               acc[month] = acc[month] || [];
               acc[month].push(draw);
               return acc;
-            }, {})
+            }, {}),
           ).map(([month, draws]) => (
             <Box key={month} mb="8">
               <HStack
@@ -145,7 +152,9 @@ function TarotHistoryPage() {
                 cursor="pointer"
                 _hover={{ color: "blue.500" }}
               >
-                <Icon as={collapsedSections[month] ? FaChevronRight : FaChevronDown} />
+                <Icon
+                  as={collapsedSections[month] ? FaChevronRight : FaChevronDown}
+                />
                 <Heading size="md">{month}</Heading>
               </HStack>
               <Collapse in={!collapsedSections[month]}>
@@ -187,7 +196,8 @@ function TarotHistoryPage() {
                                 {card.name_card}
                               </Text>
                               <Text fontSize="sm">
-                                {card.keyword1}, {card.keyword2}, {card.keyword3}
+                                {card.keyword1}, {card.keyword2},{" "}
+                                {card.keyword3}
                               </Text>
                             </Box>
                           ))}

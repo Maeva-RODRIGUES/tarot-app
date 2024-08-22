@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 // AppointmentPopup.jsx
 
 import React from "react";

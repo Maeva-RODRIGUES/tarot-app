@@ -543,8 +543,16 @@ function UserSettingPage() {
                 }
               />
             </FormControl>
-            <Button type="submit" mt="4" colorScheme="blue">
-              {editingReview ? "Mettre à jour" : "Ajouter"} Commentaire
+            <Button
+              type="submit"
+              bg="#191970"
+              color="white"
+              _hover={{ bg: "#0f1a4c" }}
+              width="200px"
+              alignSelf="center"
+              mt="4"
+            >
+              {editingReview ? "Mettre à jour" : "Ajouter"} commentaire
             </Button>
           </form>
         </Box>
