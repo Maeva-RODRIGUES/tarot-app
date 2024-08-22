@@ -11,10 +11,10 @@
 
 ## 🌐 Technologies appliquées
 
-- ![Logo de js](/public/icons8-javascript-50.png)
-- ![Logo de react](/public/icons8-react-js-50.png)
-- ![Logo de vite](/public/vite.svg)
-- ![Logo de express](/public/icons8-express-js-50.png)
+- ![Logo de js](./front/public/icons8-javascript-50.png)
+- ![Logo de react](./front/public/icons8-react-js-50.png)
+- ![Logo de vite](./front/public/vite.svg)
+- ![Logo de express](./front/public/icons8-express-js-50.png)
 
 
 ## 🛠️ Outils
