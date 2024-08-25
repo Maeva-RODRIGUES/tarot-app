@@ -18,12 +18,12 @@ import {
   HStack,
   VStack,
 } from "@chakra-ui/react";
-import { FaStar, FaStarHalfAlt } from "react-icons/fa"; // Import star icons
+import { FaStar, FaStarHalfAlt } from "react-icons/fa"; // Import des icônes d'étoiles
 import Rating from "react-rating";
 
 function CommentModal({ isOpen, onClose, comment, onDelete }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} size={{ base: "sm", md: "xl" }}> {/* Taille responsive du modal */}
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Commentaire détails</ModalHeader>

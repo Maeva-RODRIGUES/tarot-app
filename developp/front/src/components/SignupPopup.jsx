@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable react/no-unescaped-entities */
 // SignupPopup.jsx
 
@@ -24,7 +25,7 @@ import { usePopup } from "./context/PopupContext";
 import { createUser } from "../api/usersApi";
 
 function SignupPopup() {
-  const { popupType, closePopup } = usePopup();
+  const { popupType, closePopup } = usePopup(); // Gestion du type de popup et fermeture
 
   // Détermine si la popup d'inscription est ouverte
   const isOpen = popupType === "signup";
@@ -95,7 +96,9 @@ function SignupPopup() {
   return (
     <Modal isOpen={isOpen} onClose={closePopup}>
       <ModalOverlay />
-      <ModalContent maxWidth="600px">
+      <ModalContent maxWidth={{ base: "90%", md: "600px" }}>
+        {" "}
+        {/* Largeur responsive de la modal */}
         <ModalHeader>
           <Box textAlign="center" w="100%">
             <Heading as="h2" size="lg">
@@ -208,7 +211,6 @@ function SignupPopup() {
             </>
           )}
         </ModalBody>
-
         <ModalFooter>
           {!isRegistered && (
             // Bouton pour soumettre le formulaire d'inscription

@@ -31,9 +31,9 @@ function AppointmentPopup() {
   return (
     <Modal isOpen={popupType === "contact"} onClose={closePopup}>
       <ModalOverlay />
-      <ModalContent maxWidth="1200px">
+      <ModalContent maxWidth={{ base: "90%", md: "1200px" }}>
         {" "}
-        {/* Définit une largeur personnalisée */}
+        {/* Largeur responsive de la modal */}
         <ModalHeader>
           <Box textAlign="center" w="100%">
             <Heading as="h2" size="lg" p={3}>
@@ -47,9 +47,13 @@ function AppointmentPopup() {
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Flex>
+          <Flex
+            flexDirection={{ base: "column", md: "row" }} // Disposition en colonne sur petits écrans, en ligne sur les plus grands
+          >
             {/* Image à gauche */}
-            <Box flex="1" p={4}>
+            <Box flex={{ base: "0", md: "1" }} p={4} mb={{ base: 4, md: 0 }}>
+              {" "}
+              {/* Marges responsive */}
               <Image
                 src="/src/assets/img/rdvpopup.png" // Remplace par le chemin vers ton image
                 alt="Intuition"

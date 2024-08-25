@@ -119,14 +119,14 @@ function TarotDrawPage() {
         <Header
           bannerSrc={images.header}
           bannerAlt={`Bannière d'accueil pour le thème ${theme}`}
-          bannerHeight="300px"
+          bannerHeight={{ base: "200px", md: "300px" }} // Hauteur responsive de la bannière
           backgroundPosition="50% 20%"
         />
         <Box p={4} textAlign="center">
-          <Heading as="h1" size="xl" mb={10}>
+          <Heading as="h1" size={{ base: "lg", md: "xl" }} mb={10}>
             VOTRE TIRAGE {frenchTheme.toUpperCase()}
           </Heading>
-          <Text fontSize="lg" mb={8}>
+          <Text fontSize={{ base: "md", md: "lg" }} mb={8}>
             <Icon as={TbCardsFilled} mr={2} />
             <Text as="span" fontWeight="bold">
               Tirez 3 cartes
@@ -150,7 +150,7 @@ function TarotDrawPage() {
       <Footer
         bannerSrc={images.footer}
         bannerAlt={`Bannière de pied de page pour le thème ${theme}`}
-        bannerHeight="300px"
+        bannerHeight={{ base: "200px", md: "300px" }} // Hauteur responsive du pied de page
         footerStyle={{ backgroundColor: "#f8f9fa" }}
       />
     </>

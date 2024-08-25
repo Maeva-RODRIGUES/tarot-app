@@ -24,8 +24,12 @@ function CardsMenu() {
   };
 
   return (
-    <Box as="main" p={20}>
-      <Flex justify="center" align="center">
+    <Box as="main" p={{ base: 4, md: 10, lg: 20 }}> {/* Responsive padding */}
+      <Flex
+        justify="center"
+        align="center"
+        direction={{ base: "column", md: "row" }} // Stack cards vertically on small screens, horizontally on larger screens
+      >
         <MotionBox
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -35,7 +39,7 @@ function CardsMenu() {
           <Image
             src="/src/assets/icons/cardiconlove.png"
             alt="Love"
-            boxSize="400px"
+            boxSize={{ base: "150px", md: "300px", lg: "400px" }} // Responsive size for images
             objectFit="cover"
           />
         </MotionBox>
@@ -49,7 +53,7 @@ function CardsMenu() {
           <Image
             src="/src/assets/icons/cardiconwork.png"
             alt="Work"
-            boxSize="400px"
+            boxSize={{ base: "150px", md: "300px", lg: "400px" }} // Responsive size for images
             objectFit="cover"
           />
         </MotionBox>
@@ -63,7 +67,7 @@ function CardsMenu() {
           <Image
             src="/src/assets/icons/cardiconspirituel.png"
             alt="Spirit"
-            boxSize="400px"
+            boxSize={{ base: "150px", md: "300px", lg: "400px" }} // Responsive size for images
             objectFit="cover"
           />
         </MotionBox>

@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 // SettingsAdminPage.jsx
 
 import React, { useState, useEffect } from "react";
@@ -31,7 +32,6 @@ function SettingsAdminPage() {
   const navigate = useNavigate(); // Pour la navigation entre les pages
   const { user, logout } = useAuth(); // Récupération des infos d'authentification et de déconnexion
 
-  // État pour stocker les données de l'administrateur
   const [adminData, setAdminData] = useState({
     name: "",
     surname: "",
@@ -46,7 +46,6 @@ function SettingsAdminPage() {
 
   const [avatarFile, setAvatarFile] = useState(null); // État pour stocker le fichier d'avatar sélectionné
 
-  // État pour stocker les données du nouvel administrateur
   const [newAdminData, setNewAdminData] = useState({
     name: "",
     surname: "",
@@ -59,21 +58,15 @@ function SettingsAdminPage() {
     role_id: "", // Nouveau champ pour le rôle
   });
 
-  // ---------------------------------------------------------------------
-  // Effet pour récupérer les données de l'administrateur lors du montage du composant
   useEffect(() => {
     const fetchAdminData = async () => {
       if (user && user.userId) {
-        // Vérifie si l'utilisateur est défini et a un userId valide
         try {
           const data = await getUserData(user.userId); // Récupère les données de l'utilisateur depuis l'API
 
           let formattedBirthday = "";
           if (data.birthday) {
-            // Parse la date de naissance au format attendu "yyyy-MM-dd"
             const parsedDate = parse(data.birthday, "yyyy-MM-dd", new Date());
-
-            // Si la date est valide, la reformate, sinon la vide
             if (isValid(parsedDate)) {
               formattedBirthday = format(parsedDate, "yyyy-MM-dd");
             }
@@ -95,7 +88,6 @@ function SettingsAdminPage() {
             "Erreur lors de la récupération des données administrateur:",
             error,
           );
-          // Affiche un toast en cas d'erreur de récupération des données
           toast({
             title: "Erreur",
             description: "Impossible de récupérer les données administrateur.",
@@ -107,16 +99,12 @@ function SettingsAdminPage() {
       }
     };
     fetchAdminData(); // Appelle la fonction pour récupérer les données administrateur
-  }, [user, toast]); // L'effet dépend de l'utilisateur et du toast
-  // ---------------------------------------------------------------------
+  }, [user, toast]);
 
-  // Fonction pour gérer la sélection d'un nouveau fichier d'avatar
   const handleAvatarChange = (e) => {
     setAvatarFile(e.target.files[0]);
   };
 
-  // ---------------------------------------------------------------------
-  // Fonction pour télécharger le nouvel avatar
   const handleAvatarUpload = async () => {
     if (avatarFile && user && user.userId) {
       try {
@@ -125,10 +113,8 @@ function SettingsAdminPage() {
         formData.append("userId", user.userId); // Utilise "userId" pour l'ID de l'utilisateur
         const response = await uploadAvatar(formData); // Utilise la fonction correcte pour l'avatar
 
-        // Met à jour l'URL de l'avatar dans l'état
         setAdminData({ ...adminData, avatarUrl: response.avatarUrl });
 
-        // Affiche un toast de succès après le téléchargement de l'avatar
         toast({
           title: "Avatar mis à jour.",
           description: "Votre avatar a été mis à jour avec succès.",
@@ -138,7 +124,6 @@ function SettingsAdminPage() {
         });
       } catch (error) {
         console.error("Erreur lors de la mise à jour de l'avatar:", error);
-        // Affiche un toast d'erreur si le téléchargement échoue
         toast({
           title: "Erreur",
           description: "Impossible de mettre à jour l'avatar.",
@@ -150,9 +135,6 @@ function SettingsAdminPage() {
     }
   };
 
-  // ---------------------------------------------------------------------
-
-  // Fonction pour gérer les changements dans le formulaire
   const handleAdminFormChange = (e) => {
     const { name, value } = e.target;
     setAdminData((prevData) => ({
@@ -161,7 +143,6 @@ function SettingsAdminPage() {
     }));
   };
 
-  // Fonction pour nettoyer et formater les données avant la mise à jour
   const cleanAndFormatData = (data) => {
     const cleanedData = { ...data };
 
@@ -179,13 +160,10 @@ function SettingsAdminPage() {
     return cleanedData;
   };
 
-  // Fonction pour valider le mot de passe
   const validatePassword = (password) => {
     return password.length >= 8; // Vérifie que le mot de passe contient au moins 8 caractères
   };
 
-  // ---------------------------------------------------------------------
-  // Fonction pour gérer la soumission du formulaire de mise à jour du profil
   const handleAdminFormSubmit = async (e) => {
     e.preventDefault();
 
@@ -216,7 +194,6 @@ function SettingsAdminPage() {
 
     try {
       const cleanedData = cleanAndFormatData(adminData); // Nettoie et formate les données avant l'envoi
-      // Filtrer les données pour ne conserver que les champs remplis
       const finalData = {};
       Object.keys(cleanedData).forEach((key) => {
         if (cleanedData[key]) {
@@ -224,13 +201,10 @@ function SettingsAdminPage() {
         }
       });
 
-      // N'envoyer le mot de passe que s'il a été modifié
       if (!adminData.password) {
         delete finalData.password;
         delete finalData.confirmPassword;
       }
-
-      console.log("Données finales envoyées :", finalData);
 
       await updateUser(user.userId, finalData); // Met à jour les données utilisateur via l'API
 
@@ -252,15 +226,12 @@ function SettingsAdminPage() {
       });
     }
   };
-  // ---------------------------------------------------------------------
 
-  // Fonction pour gérer les changements dans le formulaire du nouvel administrateur
   const handleNewAdminFormChange = (e) => {
     const { name, value } = e.target;
     setNewAdminData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  // Fonction pour gérer la soumission du formulaire pour ajouter un nouvel administrateur
   const handleNewAdminSubmit = async (e) => {
     e.preventDefault();
 
@@ -287,7 +258,6 @@ function SettingsAdminPage() {
     }
 
     try {
-      // Ajoutez ici l'ID de rôle pour l'administrateur
       const adminRoleData = {
         ...newAdminData,
         role_id: 1, // Assurez-vous que "1" est bien l'ID du rôle "Admin"
@@ -302,7 +272,6 @@ function SettingsAdminPage() {
         isClosable: true,
       });
 
-      // Réinitialise le formulaire
       setNewAdminData({
         name: "",
         surname: "",
@@ -329,13 +298,11 @@ function SettingsAdminPage() {
     }
   };
 
-  // Fonction pour gérer la déconnexion
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  // Rendu du composant
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
@@ -345,13 +312,15 @@ function SettingsAdminPage() {
         p="4"
         bg="customBlue"
         color="white"
-        direction="column"
-        height="calc(100vh - 60px)"
-        width="250px"
-        position="fixed"
+        direction={{ base: "row", md: "column" }} // Adjust direction for responsiveness
+        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Responsive height
+        width={{ base: "100%", md: "250px" }} // Full width on small screens
+        position={{ base: "static", md: "fixed" }} // Position static on small screens
         top="100px"
         left="0"
         boxShadow="md"
+        zIndex="1000"
+        overflowY={{ base: "auto", md: "unset" }} // Add scrolling for small screens if necessary
       >
         <VStack align="start" spacing="4" w="full">
           <RouterLink
@@ -398,11 +367,10 @@ function SettingsAdminPage() {
         </VStack>
       </Flex>
 
-      <Box ml="250px" p="8" pt="8" flex="1">
+      <Box ml={{ base: "0", md: "250px" }} p="8" pt="8" flex="1">
         <Heading mb="6">Paramètres administrateur</Heading>
 
         <VStack spacing="6" align="start">
-          {/* Section pour afficher et mettre à jour l'avatar */}
           <VStack mb="8" align="center">
             <Avatar size="xl" src={adminData.avatarUrl} />
             <FormControl id="avatar" mt="4">
@@ -507,7 +475,6 @@ function SettingsAdminPage() {
             </form>
           </Box>
 
-          {/* Formulaire pour ajouter un nouvel admin */}
           <Box w="100%" borderWidth="1px" borderRadius="lg" p="6">
             <Heading size="md" mb="4">
               Ajouter un nouvel administrateur

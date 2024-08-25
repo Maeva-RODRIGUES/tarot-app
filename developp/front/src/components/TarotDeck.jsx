@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import TarotCard from "./TarotCard";
 import useTarotDeck from "../hooks/useTarotDeck";
 import useCards from "../hooks/useCards";
-import { shuffleAnimation, cutAnimation } from "../animations/animations";
+import { shuffleAnimation } from "../animations/animations";
 import { fetchThemes } from "../api/themesApi";
 
 // Fonction utilitaire pour sélectionner une interprétation aléatoire
@@ -121,22 +121,22 @@ function TarotDeck({ theme, onDrawComplete }) {
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <SimpleGrid
-        columns={[2, null, 11]}
+        columns={[2, null, 11]} // Grille de cartes responsive : 2 colonnes sur petits écrans, 11 sur grands écrans
         spacingX="2px"
         spacingY="10px"
-        ml="-200px"
+        ml={{ base: 0, lg: "-200px" }} // Marge à gauche responsive, aucune sur mobile, négative sur grands écrans
       >
         {cards.map((card, index) => (
           <Box
-            key={card.id}
+            key={card.id} // Utilisation de l'ID de la carte comme clé
             className="play-card"
-            onClick={() => handleClick(index)}
+            onClick={() => handleClick(index)} // Gestion du clic sur une carte
           >
             <TarotCard
               card={card}
               frontColor={card.keyword1}
               backImage={backImage}
-              isFlipped={flippedCards[index]}
+              isFlipped={flippedCards[index]} // Indique si la carte est retournée
             />
           </Box>
         ))}
@@ -161,7 +161,11 @@ function TarotDeck({ theme, onDrawComplete }) {
           <Text fontSize="xl" fontWeight="bold">
             VOTRE AVENIR EN DÉTAIL
           </Text>
-          <SimpleGrid columns={3} spacing={10} mt={5}>
+          <SimpleGrid
+            columns={{ base: 1, md: 3 }} // Affiche les cartes sélectionnées en colonne sur mobile, en ligne sur écran moyen et plus
+            spacing={10}
+            mt={5}
+          >
             {selectedCards.map((card) => (
               <Box key={card.id} textAlign="center" position="relative">
                 <Box
@@ -171,7 +175,7 @@ function TarotDeck({ theme, onDrawComplete }) {
                   justifyContent="center"
                   height="200px"
                   position="relative"
-                  mr="200px"
+                  mr={{ base: 0, lg: "200px" }} // Marge à droite responsive
                 >
                   <TarotCard card={card} backImage={backImage} isFlipped />
                 </Box>
@@ -182,7 +186,8 @@ function TarotDeck({ theme, onDrawComplete }) {
                   ml="50%"
                   transform="translateX(-50%)"
                 >
-                  {card.keyword1}, {card.keyword2}, {card.keyword3}
+                  {card.keyword1}, {card.keyword2}, {card.keyword3}{" "}
+                  {/* Affiche les mots-clés de la carte */}
                 </Text>
               </Box>
             ))}
@@ -193,7 +198,8 @@ function TarotDeck({ theme, onDrawComplete }) {
             <Text fontSize="lg" fontWeight="bold" mb={5}>
               Interprétation Générale
             </Text>
-            <Text>{themeInterpretation}</Text>
+            <Text>{themeInterpretation}</Text>{" "}
+            {/* Affiche l'interprétation du thème */}
           </Box>
         </Box>
       )}
@@ -203,8 +209,8 @@ function TarotDeck({ theme, onDrawComplete }) {
 
 // Définit les types des props attendues
 TarotDeck.propTypes = {
-  theme: PropTypes.string.isRequired,
-  onDrawComplete: PropTypes.func.isRequired,
+  theme: PropTypes.string.isRequired, // Le thème du tirage est requis
+  onDrawComplete: PropTypes.func.isRequired, // La fonction à appeler à la fin du tirage est requise
 };
 
 export default TarotDeck;

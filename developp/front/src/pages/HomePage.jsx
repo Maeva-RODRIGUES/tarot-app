@@ -22,7 +22,8 @@ function Homepage() {
       <Header
         bannerSrc={backgroundTexture}
         bannerAlt="Bannière d'accueil"
-        bannerHeight="300px"
+        // Responsiv
+        bannerHeight={{ base: "200px", md: "300px", lg: "400px" }}
       />
       <Box p={4} position="relative">
         <Heading
@@ -30,15 +31,15 @@ function Homepage() {
           mb={8}
           id="tirages"
           position="absolute"
-          top="120px" // Ajustez cette valeur pour abaisser le titre
+          // Responsiv
+          top={{ base: "80px", md: "100px", lg: "120px" }}
           left="50%"
           transform="translateX(-50%)"
         >
           TOUS NOS TIRAGES
         </Heading>
-        <Box mt="80px">
-          {" "}
-          {/* Ajouter un espace sous le titre pour éviter de chevaucher les cartes */}
+        <Box mt={{ base: "40px", md: "60px", lg: "80px" }}>
+          {/* Responsiv CardsMenu */}
           <CardsMenu />
         </Box>
         <Box position="relative" textAlign="center" mt={8}>
@@ -62,7 +63,8 @@ function Homepage() {
             <Image
               src="/src/assets/img/hand.jpg"
               alt="Main"
-              boxSize="800px"
+              // Responsiv
+              boxSize={{ base: "100%", md: "600px", lg: "800px" }}
               objectFit="cover"
             />
           </MotionBox>
@@ -74,13 +76,20 @@ function Homepage() {
             position="relative"
             zIndex="1"
           >
-            <Box mb={2} ml="540" mt="70" position="relative" zIndex="1">
+            <Box
+              mb={2}
+              ml={{ base: 0, md: "540px" }}
+              mt={{ base: 0, md: "70px" }}
+              position="relative"
+              zIndex="1"
+            >
               <Heading as="h2">VOS TÉMOIGNAGES</Heading>
             </Box>
           </Flex>
         </Box>
         <Flex justify="right" align="center" mt={4}>
-          <Box w="58%">
+          <Box w={{ base: "100%", md: "75%", lg: "58%" }}>
+            {/* Responsiv TestimonialsCarousel */}
             <TestimonialsCarousel />
           </Box>
         </Flex>
@@ -91,7 +100,8 @@ function Homepage() {
       <Footer
         bannerSrc={footerBanner}
         bannerAlt="Bannière de pied de page"
-        bannerHeight="300px"
+        // Responsiv bannerHeight footer
+        bannerHeight={{ base: "200px", md: "300px", lg: "400px" }}
       />
     </Box>
   );

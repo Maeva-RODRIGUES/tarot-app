@@ -78,9 +78,9 @@ function TarotHistoryPage() {
         bg="customBlue"
         color="white"
         direction="column"
-        height="calc(100vh - 60px)"
-        width="250px"
-        position="fixed"
+        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Hauteur responsive
+        width={{ base: "100%", md: "250px" }} // Largeur responsive
+        position={{ base: "relative", md: "fixed" }} // Position responsive
         top="100px"
         left="0"
         boxShadow="md"
@@ -130,7 +130,12 @@ function TarotHistoryPage() {
         </VStack>
       </Flex>
 
-      <Box ml="250px" p="8" pt="8" flex="1">
+      <Box
+        ml={{ base: "0", md: "250px" }} // Marge à gauche responsive
+        p="8"
+        pt="8"
+        flex="1"
+      >
         <Heading mb="4">Historique des tirages de tarot</Heading>
         {loading ? (
           <Text>Chargement...</Text>
@@ -179,7 +184,11 @@ function TarotHistoryPage() {
                       </Text>
 
                       <Flex justifyContent="center">
-                        <SimpleGrid columns={[1, 2, 3]} spacing={10} mb={8}>
+                        <SimpleGrid
+                          columns={{ base: 1, sm: 2, md: 3 }} // Colonnes responsives
+                          spacing={10}
+                          mb={8}
+                        >
                           {draw.cards.map((card, cardIndex) => (
                             <Box key={cardIndex} textAlign="center">
                               <Image

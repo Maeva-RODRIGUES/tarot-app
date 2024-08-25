@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+// eslint-disable-next-line prettier/prettier
+// eslint-disable-next-line prettier/prettier
 // src/pages/ResetPasswordPage.jsx
 
 import React, { useState } from "react";
@@ -34,7 +37,15 @@ function ResetPasswordPage() {
   };
 
   return (
-    <Box>
+    <Box
+      maxW={{ base: "90%", md: "400px" }} // Largeur maximale : 90% pour mobile, 400px pour écrans moyens et plus
+      mx="auto" // Centre la boîte horizontalement
+      mt={{ base: "20px", md: "40px" }} // Marge en haut : 20px pour mobile, 40px pour écrans moyens et plus
+      p={{ base: "4", md: "6" }} // Padding interne : 4 pour mobile, 6 pour écrans moyens et plus
+      borderWidth="1px" // Bordure fine pour délimiter la zone du formulaire
+      borderRadius="lg" // Bords arrondis
+      boxShadow="md" // Ombre légère pour donner du relief
+    >
       <form onSubmit={handleSubmit}>
         <Input
           type="password"
@@ -42,8 +53,15 @@ function ResetPasswordPage() {
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           required
+          mb={4} // Marge inférieure pour espacer les éléments
+          size="lg" // Taille du champ d'entrée légèrement plus grande pour une meilleure lisibilité
         />
-        <Button type="submit" mt={4}>
+        <Button
+          type="submit"
+          colorScheme="blue"
+          width="full" // Largeur complète du bouton
+          size="lg" // Taille du bouton plus grande pour correspondre à l'entrée
+        >
           Réinitialiser le mot de passe
         </Button>
       </form>

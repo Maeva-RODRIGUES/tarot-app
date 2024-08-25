@@ -1,5 +1,8 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable import/extensions */
 // AboutPage.jsx
 
+// Importation des dépendances nécessaires
 import React from "react";
 import { Box, Heading, Flex, Image, Button, Text } from "@chakra-ui/react";
 import Header from "../components/Header.jsx";
@@ -10,11 +13,12 @@ import backgroundAbout from "../assets/img/cartomancienne.jpg";
 import footerBannerAbout from "../assets/img/destinee.png";
 
 function AboutPage() {
-  const { openPopup, popupType } = usePopup(); // Ajout de `popupType`
+  const { openPopup } = usePopup(); // Récupère la fonction pour ouvrir le popup
 
+  // Fonction déclenchée lorsque l'utilisateur clique sur le bouton "Prendre RDV"
   const handleClick = () => {
     console.log("Bouton cliqué !");
-    openPopup("contact"); // Ouverture du popup avec le type 'contact'
+    openPopup("contact"); // Ouvre le popup avec le type 'contact'
   };
 
   return (
@@ -28,8 +32,15 @@ function AboutPage() {
         <Heading>BIENVENUE SUR LA ROUE DU DESTIN</Heading>
       </Box>
       <Box p="8">
-        <Flex direction="row" align="flex-start" alignItems="center" mt="-80px">
-          <Box flex="1">
+        <Flex
+          direction={{ base: "column", md: "row" }} // Flex direction responsive
+          align="flex-start"
+          alignItems="center"
+          mt={{ base: "0", md: "-80px" }} // Marge responsive en haut
+        >
+          <Box flex="1" mb={{ base: "8", md: "0" }}>
+            {" "}
+            {/* Marges ajustées pour le responsive */}
             <Heading size="md">
               Votre espace dédié au tirage de tarot en ligne.
             </Heading>
@@ -48,26 +59,38 @@ function AboutPage() {
           <Image
             src="/src/assets/icons/iconcards.png"
             alt="Illustration"
-            boxSize="500px" // Ajuste la taille de l'image
-            width="700px"
-            height="700px"
+            boxSize={{ base: "300px", md: "500px" }} // Taille responsive
+            width={{ base: "100%", md: "700px" }} // Largeur responsive
+            height={{ base: "auto", md: "700px" }} // Hauteur responsive
             objectFit="contain" // Assure que l'image garde ses proportions
-            ml="8" // Ajoute un espace à gauche de l'image
-            transform="rotate(30deg)"
+            ml={{ base: "0", md: "8" }} // Marge responsive à gauche
+            mt={{ base: "4", md: "0" }} // Marge responsive en haut
+            transform="rotate(30deg)" // Rotation de l'image
           />
         </Flex>
       </Box>
 
-      <Flex p="8" justifyContent="space-between" alignItems="center">
+      <Flex
+        p="8"
+        direction={{ base: "column", md: "row" }} // Flex direction responsive
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Image
           src="/src/assets/img/visagecarto.png"
           alt="Illustration"
-          boxSize="500px"
-          width="600px"
-          height="600px"
-          marginTop="-300px"
+          boxSize={{ base: "300px", md: "500px" }} // Taille responsive
+          width={{ base: "100%", md: "600px" }} // Largeur responsive
+          height={{ base: "auto", md: "600px" }} // Hauteur responsive
+          marginTop={{ base: "0", md: "-300px" }} // Marge responsive en haut
+          mb={{ base: "8", md: "0" }} // Marge en bas responsive
         />
-        <Box ml={8}>
+        <Box
+          ml={{ base: "0", md: "8" }}
+          textAlign={{ base: "center", md: "left" }}
+        >
+          {" "}
+          {/* Alignement et marge responsive */}
           <Heading size="md">
             Rencontrez notre cartomancienne professionnelle
           </Heading>

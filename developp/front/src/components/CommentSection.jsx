@@ -53,13 +53,23 @@ function CommentSection() {
   };
 
   return (
-    <Box mt={10} display="flex" flexDirection="column" alignItems="center">
-      <Box width="60%">
+    <Box
+      mt={10}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      width="100%"
+    >
+      <Box width={{ base: "100%", md: "80%", lg: "60%" }}>
+        {" "}
+        {/* Responsive width */}
         {showTextarea ? (
           <form onSubmit={handleSubmit(onSubmit)}>
             <Textarea
               {...register("comment")}
               placeholder="Votre commentaire"
+              resize="vertical"
+              width="100%"
             />
             <Button
               type="submit"
@@ -67,6 +77,7 @@ function CommentSection() {
               bg="#191970"
               color="white"
               borderRadius="full"
+              width="100px"
             >
               Envoyer
             </Button>
@@ -82,13 +93,13 @@ function CommentSection() {
                 bg="#191970"
                 color="white"
                 borderRadius="full"
+                width="180px"
               >
                 Ajouter un commentaire
               </Button>
             </Flex>
           </Box>
         )}
-
         {/* Affichage des commentaires existants */}
         <Box mt={8}>
           {loading ? (
@@ -101,9 +112,19 @@ function CommentSection() {
                 p={4}
                 borderWidth="1px"
                 borderRadius="lg"
+                width="100%"
               >
-                <Flex alignItems="center" mb={2}>
-                  <Avatar size="sm" name="User" mr={2} />
+                <Flex
+                  direction={{ base: "column", md: "row" }}
+                  alignItems={{ base: "flex-start", md: "center" }}
+                  mb={2}
+                >
+                  <Avatar
+                    size="sm"
+                    name="User"
+                    mr={{ base: 0, md: 2 }}
+                    mb={{ base: 2, md: 0 }}
+                  />
                   <Text fontWeight="bold">
                     {comment.username || "Utilisateur"}
                   </Text>

@@ -20,7 +20,8 @@ function Banner({
       height={height}
       backgroundImage={`url(${src})`}
       backgroundSize="cover"
-      backgroundPosition={backgroundPosition}
+      // Responsiveness background position
+      backgroundPosition={{ base: "center", md: backgroundPosition }}
     >
       <Box
         position="absolute"
@@ -33,19 +34,23 @@ function Banner({
         width="100%"
         height="100%"
       >
-        <Image src={logow} alt="Logo" height="500px" />{" "}
-        {/* Ajuste la taille du logo ici si nécessaire */}
+        <Image
+          src={logow}
+          alt="Logo"
+          // Responsiveness logo
+          height={{ base: "150px", md: "300px", lg: "500px" }}
+        />
       </Box>
     </Box>
   );
 }
 
 Banner.propTypes = {
-  src: PropTypes.string.isRequired, // URL de l'image de la bannière
-  alt: PropTypes.string.isRequired, // Texte alternatif pour l'image
-  height: PropTypes.string, // Hauteur de la bannière
-  logow: PropTypes.string.isRequired, // URL du logo à afficher dans la bannière
-  backgroundPosition: PropTypes.string, // Position de l'arrière-plan
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  logow: PropTypes.string.isRequired,
+  backgroundPosition: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 export default Banner;

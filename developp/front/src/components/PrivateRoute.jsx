@@ -1,13 +1,13 @@
+/* eslint-disable react/prop-types */
 // PrivateRoute.jsx
 
 import React, { useEffect } from "react";
-import { useLocation, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import { usePopup } from "./context/PopupContext"; // Importation du contexte de la popup
 
 function PrivateRoute({ children }) {
   const { isAuthenticated } = useAuth(); // Vérification de l'authentification
-  const location = useLocation();
   const { openPopup } = usePopup(); // Accéder à la fonction pour ouvrir la popup
 
   useEffect(() => {

@@ -26,22 +26,22 @@ import { usePopup } from "./context/PopupContext";
 import { useAuth } from "./context/AuthContext";
 
 function LoginPopup() {
-  const { popupType, closePopup } = usePopup();
-  const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
-  const toast = useToast();
-  const navigate = useNavigate();
+  const { popupType, closePopup } = usePopup(); // Gestion du type de popup et fermeture
+  const { login } = useAuth(); // Fonction de connexion
+  const [email, setEmail] = useState(""); // État pour l'email
+  const [password, setPassword] = useState(""); // État pour le mot de passe
+  const [showPassword, setShowPassword] = useState(false); // État pour afficher ou non le mot de passe
+  const [error, setError] = useState(""); // État pour les erreurs
+  const toast = useToast(); // Hook pour afficher des notifications
+  const navigate = useNavigate(); // Hook pour naviguer entre les pages
 
-  if (popupType !== "login") return null;
+  if (popupType !== "login") return null; // Si le type de popup n'est pas "login", ne rien afficher
 
   const handleLogin = async () => {
-    setError("");
+    setError(""); // Réinitialiser les erreurs
     try {
-      const credentials = { email, password };
-      const response = await login(credentials);
+      const credentials = { email, password }; // Récupération des credentials
+      const response = await login(credentials); // Appel à la fonction de connexion
 
       closePopup(); // Ferme la popup après une connexion réussie
       toast({
@@ -81,13 +81,15 @@ function LoginPopup() {
   };
 
   const handleShowPasswordClick = () => {
-    setShowPassword(!showPassword);
+    setShowPassword(!showPassword); // Inverser l'état de visibilité du mot de passe
   };
 
   return (
     <Modal isOpen={popupType === "login"} onClose={closePopup}>
       <ModalOverlay />
-      <ModalContent maxWidth="600px">
+      <ModalContent maxWidth={{ base: "90%", md: "600px" }}>
+        {" "}
+        {/* Largeur responsive du contenu de la modal */}
         <ModalHeader>
           <Box textAlign="center" w="100%">
             <Heading as="h2" size="lg">
@@ -127,11 +129,10 @@ function LoginPopup() {
           </FormControl>
           {error && (
             <Text color="red.500" mb={4}>
-              {error}
+              {error} {/* Affichage de l'erreur si elle existe */}
             </Text>
           )}
         </ModalBody>
-
         <ModalFooter>
           <Button bg="#191970" color="white" mr={3} onClick={handleLogin}>
             Se connecter

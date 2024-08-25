@@ -40,6 +40,7 @@ function DashboardUserPage() {
   const [loading, setLoading] = useState(true);
   const [lastDrawing, setLastDrawing] = useState(null);
 
+  // Chargement des données utilisateur et du dernier tirage
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,10 +69,7 @@ function DashboardUserPage() {
     }
   }, [userId, toast, navigate]);
 
-  const handleViewMoreClick = () => {
-    navigate(`/profile/${userId}/drawingsstory`);
-  };
-
+  // Gestion de la déconnexion
   const handleLogout = () => {
     logout();
     toast({
@@ -84,6 +82,12 @@ function DashboardUserPage() {
     navigate("/"); // Redirige vers la page d'accueil après la déconnexion
   };
 
+  // Gestion du bouton "Voir plus"
+  const handleViewMoreClick = () => {
+    navigate(`/profile/${userId}/drawingsstory`);
+  };
+
+  // Affichage d'un spinner pendant le chargement
   if (loading) {
     return (
       <Box
@@ -97,6 +101,7 @@ function DashboardUserPage() {
     );
   }
 
+  // Gestion des erreurs de chargement des données utilisateur
   if (!userData) {
     return (
       <Box
@@ -131,10 +136,10 @@ function DashboardUserPage() {
         bg="customBlue"
         color="white"
         direction="column"
-        height="calc(100vh - 60px)"
-        width="250px"
-        position="fixed"
-        top="100px"
+        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Responsivité du menu latéral
+        width={{ base: "100%", md: "250px" }} // Responsivité de la largeur du menu
+        position={{ base: "relative", md: "fixed" }} // Position du menu
+        top={{ base: "0", md: "100px" }}
         left="0"
         boxShadow="md"
       >
@@ -183,7 +188,7 @@ function DashboardUserPage() {
         </VStack>
       </Flex>
 
-      <Box ml="250px" p="8" pt="8" flex="1">
+      <Box ml={{ base: "0", md: "250px" }} p="8" pt="8" flex="1">
         {/* Activité Récente */}
         <Box
           p="4"
@@ -193,7 +198,7 @@ function DashboardUserPage() {
           bg="white"
           boxShadow="md"
           mb="8"
-          maxWidth="300px"
+          maxWidth={{ base: "100%", sm: "300px" }} // Responsivité de la largeur du box
         >
           <Heading size="md" mb="4">
             Activité Récente :
@@ -209,10 +214,10 @@ function DashboardUserPage() {
         </Box>
         {/* Dernier Tirage */}
         <Flex direction="column" alignItems="center" mb="8">
-          <Heading size="lg" mb="16">
+          <Heading size="lg" mb="16" textAlign="center">
             VOTRE DERNIER TIRAGE
           </Heading>
-          <Flex mb="7" justifyContent="center">
+          <Flex mb="7" justifyContent="center" flexWrap="wrap">
             {lastDrawing?.Cards?.map((card, index) => (
               <Image
                 key={index}
@@ -222,6 +227,7 @@ function DashboardUserPage() {
                 height="180px"
                 borderRadius="10px"
                 mx="7"
+                my="3"
                 border="2px solid black"
                 transform={
                   index === 0

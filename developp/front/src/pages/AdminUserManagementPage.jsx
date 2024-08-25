@@ -24,14 +24,7 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
-import {
-  FaUser,
-  FaRegFileAlt,
-  FaCog,
-  FaSignOutAlt,
-  FaUsers,
-  FaFileAlt,
-} from "react-icons/fa";
+import { FaCog, FaSignOutAlt, FaUsers, FaFileAlt } from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { parse, format, isValid } from "date-fns";
 import Header from "../components/HeaderDashboard";
@@ -275,10 +268,10 @@ function AdminUserManagementPage() {
         bg="customBlue"
         color="white"
         direction="column"
-        height="calc(100vh - 60px)"
-        width="250px"
-        position="fixed"
-        top="100px"
+        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Responsivité du menu latéral
+        width={{ base: "100%", md: "250px" }} // Responsivité de la largeur du menu
+        position={{ base: "relative", md: "fixed" }} // Position du menu
+        top={{ base: "0", md: "100px" }}
         left="0"
         boxShadow="md"
       >
@@ -327,7 +320,7 @@ function AdminUserManagementPage() {
         </VStack>
       </Flex>
 
-      <Box ml="250px" p="8" pt="8" flex="1">
+      <Box ml={{ base: "0", md: "250px" }} p="8" pt="8" flex="1">
         <Heading mb="12">Gestion des utilisateurs</Heading>
         <Table variant="simple">
           <Thead>

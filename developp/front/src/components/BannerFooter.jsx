@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/require-default-props */
 /* eslint-disable import/no-extraneous-dependencies */
 // BannerFooter.jsx
@@ -6,12 +7,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Box } from "@chakra-ui/react";
 
-// eslint-disable-next-line no-unused-vars
 function BannerFooter({ src, alt, height = "100px" }) {
   return (
     <Box
       width="100%"
-      height={height}
+      // Responsiveness added for banner height
+      height={{ base: "100px", md: "150px", lg: "200px" }}
       backgroundImage={`url(${src})`}
       backgroundSize="cover"
       backgroundPosition="center"
@@ -31,7 +32,7 @@ function BannerFooter({ src, alt, height = "100px" }) {
 BannerFooter.propTypes = {
   src: PropTypes.string.isRequired,
   alt: PropTypes.string.isRequired,
-  height: PropTypes.string,
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
 
 export default BannerFooter;

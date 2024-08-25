@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-globals */
 // UserSettingPage.jsx
 
-// Importation des dépendances nécessaires
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -49,7 +48,6 @@ function UserSettingPage() {
   const navigate = useNavigate(); // Hook pour naviguer entre les pages
   const { user, logout } = useAuth(); // Récupère l'utilisateur connecté et la fonction de déconnexion depuis le contexte d'authentification
 
-  // ---------------------
   // État pour stocker les données de l'utilisateur
   const [userData, setUserData] = useState({
     name: "",
@@ -73,7 +71,6 @@ function UserSettingPage() {
   // État pour déterminer si un commentaire est en cours d'édition
   const [editingReview, setEditingReview] = useState(null);
 
-  // ---------------------
   // Effet pour récupérer les données de l'utilisateur lors du montage du composant
   useEffect(() => {
     const fetchUserData = async () => {
@@ -115,13 +112,11 @@ function UserSettingPage() {
     fetchUserData(); // Appelle la fonction pour récupérer les données utilisateur
   }, [user, toast]); // Dépendance de l'effet aux changements de l'utilisateur et du toast
 
-  // ---------------------
   // Gestion du changement d'avatar
   const handleAvatarChange = (e) => {
     setAvatarFile(e.target.files[0]); // Met à jour l'état avec le fichier d'avatar sélectionné
   };
 
-  // ---------------------
   // Gestion du téléchargement de l'avatar
   const handleAvatarUpload = async () => {
     if (avatarFile && user && user.userId) {
@@ -153,44 +148,32 @@ function UserSettingPage() {
     }
   };
 
-  // ---------------------
   // Nettoyage et formatage des données utilisateur avant envoi
   const cleanAndFormatData = (data) => {
-    console.log("Données avant nettoyage et formatage:", data); // Log avant nettoyage
-
     const cleanedData = { ...data };
 
     // Valider la date avant de la formater
     if (cleanedData.birthday) {
-      console.log("Date de naissance originale:", cleanedData.birthday);
-
-      // Conversion de la date au format local et reformatage
       const dateObj = new Date(cleanedData.birthday); // Convertit la date reçue en objet Date
       if (!isNaN(dateObj)) {
         const localeDateString = dateObj.toLocaleDateString("fr-FR"); // Convertit en chaîne locale "dd/mm/yyyy"
         const [day, month, year] = localeDateString.split("/"); // Sépare jour, mois, année
         cleanedData.birthday = `${year}-${month}-${day}`; // Reformate en "yyyy-mm-dd"
-        console.log("Date de naissance après formatage:", cleanedData.birthday);
       } else {
-        console.log("Date de naissance invalide, suppression de la date.");
         cleanedData.birthday = ""; // Si la date n'est pas valide, mieux vaut la mettre à jour comme vide
       }
     }
 
-    console.log("Données après nettoyage et formatage:", cleanedData); // Log après nettoyage
     return cleanedData;
   };
 
-  // ---------------------
   // Gestion de la soumission du formulaire pour mettre à jour les informations utilisateur
   const handleSubmit = async (e) => {
     e.preventDefault(); // Empêche le rechargement de la page à la soumission du formulaire
     if (user && user.userId) {
       try {
-        console.log("Soumission du formulaire avec les données:", userData);
         const cleanedData = cleanAndFormatData(userData); // Nettoie et formate les données avant l'envoi
         await updateUser(user.userId, cleanedData); // Met à jour les données utilisateur via l'API
-        console.log("Mise à jour réussie pour l'utilisateur ID:", user.userId);
 
         // Notification de succès
         toast({
@@ -202,7 +185,6 @@ function UserSettingPage() {
         });
       } catch (error) {
         // Notification d'erreur en cas d'échec
-        console.error("Erreur lors de la mise à jour des informations:", error);
         toast({
           title: "Erreur",
           description: "Impossible de mettre à jour les informations.",
@@ -214,7 +196,6 @@ function UserSettingPage() {
     }
   };
 
-  // ---------------------
   // Gestion de la soumission d'un commentaire
   const handleReviewSubmit = async (e) => {
     e.preventDefault(); // Empêche le rechargement de la page à la soumission du formulaire
@@ -256,14 +237,12 @@ function UserSettingPage() {
     }
   };
 
-  // ---------------------
   // Préparation du formulaire pour l'édition d'un commentaire
   const handleEditReview = (review) => {
     setNewReview({ rating: review.rating, comment: review.comment }); // Charge le commentaire dans le formulaire
     setEditingReview(review); // Met à jour l'état pour indiquer qu'on est en mode édition
   };
 
-  // ---------------------
   // Suppression d'un commentaire
   const handleDeleteReview = async (id) => {
     try {
@@ -291,14 +270,12 @@ function UserSettingPage() {
     }
   };
 
-  // ---------------------
   // Gestion de la déconnexion de l'utilisateur
   const handleLogout = () => {
     logout(); // Appelle la fonction de déconnexion du contexte
     navigate("/"); // Redirige vers la page d'accueil
   };
 
-  // ---------------------
   // Rendu du composant
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
@@ -310,9 +287,9 @@ function UserSettingPage() {
         bg="customBlue"
         color="white"
         direction="column"
-        height="calc(100vh - 60px)"
-        width="250px"
-        position="fixed"
+        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Hauteur responsive
+        width={{ base: "100%", md: "250px" }} // Largeur responsive
+        position={{ base: "relative", md: "fixed" }} // Position responsive
         top="100px"
         left="0"
         boxShadow="md"
@@ -362,13 +339,17 @@ function UserSettingPage() {
         </VStack>
       </Flex>
       {/* Contenu principal de la page des paramètres utilisateur */}
-      <Box ml="250px" p="8" flex="1">
+      <Box
+        ml={{ base: "0", md: "250px" }} // Marge à gauche responsive
+        p="8"
+        flex="1"
+      >
         <Heading mb="4">Paramètres du profil</Heading>
         <VStack mb="8" align="center">
           <Avatar size="xl" src={userData.avatarUrl} />{" "}
           {/* Affiche l'avatar de l'utilisateur */}
           <FormControl id="avatar" mt="4">
-            <FormLabel>Mettre à jour l&#39;`avatar</FormLabel>
+            <FormLabel>Mettre à jour l&#39;avatar</FormLabel>
             <Input type="file" onChange={handleAvatarChange} />{" "}
             {/* Champ pour sélectionner un nouveau fichier d'avatar */}
             <Button mt="2" colorScheme="blue" onClick={handleAvatarUpload}>

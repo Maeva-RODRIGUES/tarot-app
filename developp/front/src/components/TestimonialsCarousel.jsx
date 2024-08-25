@@ -10,9 +10,9 @@ import "slick-carousel/slick/slick-theme.css";
 import { fetchAllReviews } from "../api/reviewsApi"; // Importation de la fonction pour récupérer les commentaires
 
 function TestimonialsCarousel() {
-  const sliderRef = useRef(null);
-  const [testimonials, setTestimonials] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const sliderRef = useRef(null); // Référence pour le slider
+  const [testimonials, setTestimonials] = useState([]); // État pour stocker les témoignages
+  const [loading, setLoading] = useState(true); // État pour gérer le chargement
 
   const settings = {
     dots: true,
@@ -41,21 +41,29 @@ function TestimonialsCarousel() {
   }, []);
 
   return (
-    <Box p={4} w="50%" ml="260" mt="100">
+    <Box
+      p={4}
+      w={{ base: "100%", md: "75%", lg: "50%" }} // Largeur responsive
+      ml={{ base: 0, md: "auto" }} // Marge à gauche responsive, centrée sur mobile
+      mt={{ base: 4, md: 10, lg: 20 }} // Marge en haut responsive
+    >
       {loading ? (
-        <Spinner />
+        <Spinner /> // Afficher un spinner pendant le chargement
       ) : (
         <Slider ref={sliderRef} {...settings}>
           {testimonials.map((testimonial, index) => (
-            <Box key={index} onClick={() => sliderRef.current.slickNext()}>
+            <Box
+              key={index} // Utiliser l'index comme clé (pas idéal, mais acceptable ici)
+              onClick={() => sliderRef.current.slickNext()} // Passer au témoignage suivant au clic
+            >
               <Text mt={2}>{testimonial.comment}</Text>{" "}
               {/* Affichage du commentaire */}
               <Flex mt={2}>
                 {[...Array(5)].map((_, i) => (
                   <Box
                     as="span"
-                    color={i < testimonial.rating ? "gold" : "gray"}
-                    key={i}
+                    color={i < testimonial.rating ? "gold" : "gray"} // Couleur des étoiles en fonction de la note
+                    key={i} // Clé pour chaque étoile
                   >
                     ★
                   </Box>

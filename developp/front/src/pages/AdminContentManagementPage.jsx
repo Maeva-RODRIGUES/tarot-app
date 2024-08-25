@@ -4,8 +4,8 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
-// src/pages/AdminContentManagementPage.jsx
 
+// Importation des dépendances nécessaires
 import React, { useState } from "react";
 import {
   Box,
@@ -36,8 +36,6 @@ import {
   FaCog,
   FaSignOutAlt,
   FaUsers,
-  FaStar,
-  FaStarHalfAlt,
   FaChevronDown,
   FaChevronUp,
   FaEdit,
@@ -45,7 +43,6 @@ import {
   FaEye,
 } from "react-icons/fa";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import Rating from "react-rating";
 import { useAuth } from "../components/context/AuthContext";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
@@ -57,11 +54,13 @@ import CommentModal from "../components/CommentModal";
 const IMAGE_BASE_URL = "http://localhost:8000";
 
 function ContentManagementPage() {
+  // Récupère les fonctions de déconnexion et de navigation
   const { logout } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
   const theme = useTheme();
 
+  // Récupère les cartes, les thèmes et les avis via les hooks personnalisés
   const {
     cards,
     isLoading: isLoadingCards,
@@ -85,6 +84,7 @@ function ContentManagementPage() {
     mutateDeleteReview,
   } = useReviews();
 
+  // États pour gérer la sélection et l'édition des commentaires, des thèmes, et des cartes
   const [selectedComment, setSelectedComment] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -104,11 +104,13 @@ function ContentManagementPage() {
   const [editingCard, setEditingCard] = useState(false);
   const [selectedThemeId, setSelectedThemeId] = useState(null);
 
+  // Gestion de la déconnexion
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
+  // Gestion de l'édition des thèmes
   const handleEditTheme = (theme) => {
     setSelectedContent(theme);
     setForm({
@@ -118,10 +120,12 @@ function ContentManagementPage() {
     setEditing(true);
   };
 
+  // Gestion de la suppression des thèmes
   const handleDeleteTheme = (id) => {
     mutateDeleteTheme(id);
   };
 
+  // Soumission du formulaire pour créer ou éditer un thème
   const handleSubmitTheme = (e) => {
     e.preventDefault();
     const themeData = {
@@ -137,6 +141,7 @@ function ContentManagementPage() {
     setEditing(false);
   };
 
+  // Gestion de l'édition des cartes
   const handleEditCard = (card) => {
     setSelectedCard(card);
     setCardForm({
@@ -150,10 +155,12 @@ function ContentManagementPage() {
     setEditingCard(true);
   };
 
+  // Gestion de la suppression des cartes
   const handleDeleteCard = (id) => {
     mutateDeleteCard(id);
   };
 
+  // Gestion du changement d'image pour les cartes
   const handleCardImageChange = (e) => {
     const file = e.target.files[0];
     setCardImage(file);
@@ -163,6 +170,7 @@ function ContentManagementPage() {
     }
   };
 
+  // Soumission du formulaire pour créer ou éditer une carte
   const handleSubmitCard = async (e) => {
     e.preventDefault();
     const cardData = {
@@ -215,6 +223,7 @@ function ContentManagementPage() {
     setEditingCard(false);
   };
 
+  // Ouverture et fermeture du modal pour les commentaires
   const handleOpenModal = (comment) => {
     setSelectedComment(comment);
     setModalOpen(true);
@@ -225,6 +234,7 @@ function ContentManagementPage() {
     setModalOpen(false);
   };
 
+  // Gestion de la suppression des commentaires
   const handleDeleteComment = (id) => {
     mutateDeleteReview(id);
     toast({
@@ -237,8 +247,9 @@ function ContentManagementPage() {
     handleCloseModal();
   };
 
+  // Affichage du loader pendant le chargement des cartes, thèmes ou avis
   if (isLoadingCards || isLoadingThemes || isLoadingReviews) {
-    return <Text>Loading...</Text>;
+    return <Text>Chargement...</Text>;
   }
 
   return (
@@ -303,9 +314,9 @@ function ContentManagementPage() {
         </VStack>
       </Flex>
 
-      <Box ml="250px" p="8" pt="8" flex="1">
+      <Box ml={["0", "250px"]} p="8" pt="8" flex="1">
         {/* Gestion des Thèmes */}
-        <Grid templateColumns="1fr 2fr" gap={6} mb={12}>
+        <Grid templateColumns={["1fr", "1fr 2fr"]} gap={6} mb={12}>
           <Card>
             <CardHeader>
               <Heading size="md">Gestion des thèmes</Heading>
@@ -411,9 +422,9 @@ function ContentManagementPage() {
           <CardHeader>
             <Heading size="md">Gestion des cartes</Heading>
           </CardHeader>
-          <CardBody display="flex">
+          <CardBody display="flex" flexDirection={["column", "row"]}>
             {/* Colonne gauche: Liste des vignettes */}
-            <Box width="30%" maxHeight="600px" overflowY="auto">
+            <Box width={["100%", "30%"]} maxHeight="600px" overflowY="auto">
               <Grid
                 templateColumns="repeat(auto-fill, minmax(100px, 1fr))"
                 gap={2}
@@ -434,7 +445,7 @@ function ContentManagementPage() {
                       boxSize="80px"
                       height="150px"
                       objectFit="cover"
-                      border={("solid", "2px")}
+                      border="solid 2px"
                       borderRadius={15}
                       mb="2"
                     />
@@ -447,7 +458,7 @@ function ContentManagementPage() {
             </Box>
 
             {/* Colonne droite: Formulaire de modification */}
-            <Box width="70%" pl="8">
+            <Box width={["100%", "70%"]} pl={[0, "8"]} mt={[4, 0]}>
               {selectedCard ? (
                 <form onSubmit={handleSubmitCard}>
                   <FormControl mb="4">
@@ -530,7 +541,7 @@ function ContentManagementPage() {
                         objectFit="cover"
                         mb="4"
                         height={350}
-                        border={("solid", "2px")}
+                        border="solid 2px"
                         borderRadius={15}
                       />
                     </FormControl>
