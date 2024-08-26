@@ -106,13 +106,23 @@ const usersControllers = {
         const { name, surname, email, birthday, city_of_birth, time_of_birth, password, role_id } = req.body;
 
         try {
+            // Log avant la vérification de doublon
+            console.log('Vérification de l\'existence d\'un utilisateur avec l\'email:', email);
+
             const existingUser = await User.findOne({ where: { email } });
             if (existingUser) {
+                console.log('Utilisateur avec cet email déjà existant:', existingUser);
                 return res.status(400).json({ message: 'Un utilisateur avec cet email existe déjà' });
             }
 
-            const hashedPassword = await bcrypt.hash(password, 10);
+           // Vérifiez si le rôle existe avant la création
+           const validRoleId = await Role.findByPk(role_id);
+           if (!validRoleId) {
+               console.log('Rôle spécifié n\'existe pas:', role_id);
+               return res.status(400).json({ message: 'Le rôle spécifié n\'existe pas' });
+           }
 
+            // Créer l'utilisateur (le mot de passe sera hashé dans les hooks du modèle)
             const newUser = await User.create({
                 name,
                 surname,
@@ -120,10 +130,13 @@ const usersControllers = {
                 birthday: convertToDBFormat(birthday), // Conversion de la date avant stockage
                 city_of_birth,
                 time_of_birth,
-                password: hashedPassword,
+                password, // Le mot de passe sera haché par les hooks
                 id_Roles: role_id,
                 avatar_url: "", // Initialiser avec une chaîne vide
             });
+
+             // Log après la création de l'utilisateur
+             console.log('Utilisateur créé:', newUser.toJSON());
 
             res.status(201).json({ message: 'Utilisateur créé avec succès', user: newUser });
         } catch (error) {

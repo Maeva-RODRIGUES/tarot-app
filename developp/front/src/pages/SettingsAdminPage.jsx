@@ -4,28 +4,23 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Flex,
   Heading,
   VStack,
-  HStack,
-  Icon,
-  Text,
   Button,
-  Spacer,
   FormControl,
   FormLabel,
   Input,
   useToast,
   Avatar,
 } from "@chakra-ui/react";
-import { FaCog, FaSignOutAlt, FaUsers, FaFileAlt } from "react-icons/fa";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { parse, format, isValid } from "date-fns";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData, updateUser, createUser } from "../api/usersApi";
-import { uploadAvatar } from "../api/uploadApi"; // Import pour gérer le téléchargement de fichiers
+import { uploadAvatar } from "../api/uploadApi"; 
+import SidebarNav from "../components/SidebarNav"; // Ajout MAJ
 
 function SettingsAdminPage() {
   const toast = useToast(); // Pour afficher les notifications toast
@@ -307,65 +302,7 @@ function SettingsAdminPage() {
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
 
-      <Flex
-        as="nav"
-        p="4"
-        bg="customBlue"
-        color="white"
-        direction={{ base: "row", md: "column" }} // Adjust direction for responsiveness
-        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Responsive height
-        width={{ base: "100%", md: "250px" }} // Full width on small screens
-        position={{ base: "static", md: "fixed" }} // Position static on small screens
-        top="100px"
-        left="0"
-        boxShadow="md"
-        zIndex="1000"
-        overflowY={{ base: "auto", md: "unset" }} // Add scrolling for small screens if necessary
-      >
-        <VStack align="start" spacing="4" w="full">
-          <RouterLink
-            to="/admin/users"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaUsers} />
-              <Text>Gestion des utilisateurs</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to="/admin/content"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaFileAlt} />
-              <Text>Gestion du contenu</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to="/admin/settings"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaCog} />
-              <Text>Paramètres</Text>
-            </HStack>
-          </RouterLink>
-
-          <Spacer />
-
-          <Button
-            onClick={handleLogout}
-            variant="link"
-            color="white"
-            _hover={{ textDecoration: "none", color: "blue.400" }}
-          >
-            <HStack>
-              <Icon as={FaSignOutAlt} />
-              <Text>Déconnexion</Text>
-            </HStack>
-          </Button>
-        </VStack>
-      </Flex>
+      <SidebarNav /> {/* Ajout MAJ */}
 
       <Box ml={{ base: "0", md: "250px" }} p="8" pt="8" flex="1">
         <Heading mb="6">Paramètres administrateur</Heading>

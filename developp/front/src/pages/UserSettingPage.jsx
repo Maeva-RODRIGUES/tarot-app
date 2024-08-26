@@ -41,6 +41,8 @@ import {
   updateReview,
   deleteReview,
 } from "../api/reviewsApi";
+import SidebarNav from "../components/SidebarNav"; // Ajout MAJ
+
 
 // Composant principal pour la page des paramètres utilisateur
 function UserSettingPage() {
@@ -280,64 +282,10 @@ function UserSettingPage() {
   return (
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <HeaderDashboard /> {/* Affiche l'en-tête du tableau de bord */}
+      
       {/* Menu de navigation latéral */}
-      <Flex
-        as="nav"
-        p="4"
-        bg="customBlue"
-        color="white"
-        direction="column"
-        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Hauteur responsive
-        width={{ base: "100%", md: "250px" }} // Largeur responsive
-        position={{ base: "relative", md: "fixed" }} // Position responsive
-        top="100px"
-        left="0"
-        boxShadow="md"
-      >
-        <VStack align="start" spacing="4" w="full">
-          <RouterLink
-            to={`/profile/${user?.userId}`}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaUser} />
-              <Text>Mon profil</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to={`/profile/${user?.userId}/drawingsstory`}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaRegFileAlt} />
-              <Text>Mes tirages</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to={`/profile/${user?.userId}/settings`}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaCog} />
-              <Text>Paramètres</Text>
-            </HStack>
-          </RouterLink>
+      <SidebarNav /> {/* Ajout MAJ */}
 
-          <Spacer />
-
-          <Button
-            onClick={handleLogout}
-            variant="link"
-            color="white"
-            _hover={{ textDecoration: "none", color: "blue.400" }}
-          >
-            <HStack>
-              <Icon as={FaSignOutAlt} />
-              <Text>Déconnexion</Text>
-            </HStack>
-          </Button>
-        </VStack>
-      </Flex>
       {/* Contenu principal de la page des paramètres utilisateur */}
       <Box
         ml={{ base: "0", md: "250px" }} // Marge à gauche responsive

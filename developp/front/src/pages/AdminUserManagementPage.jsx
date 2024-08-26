@@ -4,14 +4,10 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Flex,
   Heading,
   VStack,
   HStack,
-  Icon,
-  Text,
   Button,
-  Spacer,
   Table,
   Thead,
   Tbody,
@@ -24,14 +20,14 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
-import { FaCog, FaSignOutAlt, FaUsers, FaFileAlt } from "react-icons/fa";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { parse, format, isValid } from "date-fns";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { fetchUsers, updateUser, deleteUser } from "../api/usersApi";
 import { fetchRoles } from "../api/rolesApi";
+import SidebarNav from "../components/SidebarNav"; // Ajout MAJ
 
 function AdminUserManagementPage() {
   const { logout } = useAuth();
@@ -262,63 +258,8 @@ function AdminUserManagementPage() {
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
 
-      <Flex
-        as="nav"
-        p="4"
-        bg="customBlue"
-        color="white"
-        direction="column"
-        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Responsivité du menu latéral
-        width={{ base: "100%", md: "250px" }} // Responsivité de la largeur du menu
-        position={{ base: "relative", md: "fixed" }} // Position du menu
-        top={{ base: "0", md: "100px" }}
-        left="0"
-        boxShadow="md"
-      >
-        <VStack align="start" spacing="4" w="full">
-          <RouterLink
-            to="/admin/users"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaUsers} />
-              <Text>Gestion des utilisateurs</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to="/admin/content"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaFileAlt} />
-              <Text>Gestion du contenu</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to="/admin/settings"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaCog} />
-              <Text>Paramètres</Text>
-            </HStack>
-          </RouterLink>
-
-          <Spacer />
-
-          <Button
-            onClick={handleLogout}
-            variant="link"
-            color="white"
-            _hover={{ textDecoration: "none", color: "blue.400" }}
-          >
-            <HStack>
-              <Icon as={FaSignOutAlt} />
-              <Text>Déconnexion</Text>
-            </HStack>
-          </Button>
-        </VStack>
-      </Flex>
+     {/* Menu de navigation latéral */}
+     <SidebarNav /> {/* Ajout MAJ */}
 
       <Box ml={{ base: "0", md: "250px" }} p="8" pt="8" flex="1">
         <Heading mb="12">Gestion des utilisateurs</Heading>

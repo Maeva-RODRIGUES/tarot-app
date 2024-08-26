@@ -11,24 +11,20 @@ import {
   VStack,
   HStack,
   Icon,
-  Button,
-  Spacer,
   SimpleGrid,
   Collapse,
 } from "@chakra-ui/react";
 import {
-  FaUser,
-  FaRegFileAlt,
-  FaCog,
-  FaSignOutAlt,
   FaChevronDown,
   FaChevronRight,
 } from "react-icons/fa";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { fetchUserDrawings } from "../api/drawApi";
+import SidebarNav from "../components/SidebarNav"; // Ajout MAJ
+
 
 const IMAGE_BASE_URL = "http://localhost:8000";
 
@@ -72,63 +68,7 @@ function TarotHistoryPage() {
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
 
-      <Flex
-        as="nav"
-        p="4"
-        bg="customBlue"
-        color="white"
-        direction="column"
-        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Hauteur responsive
-        width={{ base: "100%", md: "250px" }} // Largeur responsive
-        position={{ base: "relative", md: "fixed" }} // Position responsive
-        top="100px"
-        left="0"
-        boxShadow="md"
-      >
-        <VStack align="start" spacing="4" w="full">
-          <RouterLink
-            to={`/profile/${user?.userId}`}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaUser} />
-              <Text>Mon profil</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to={`/profile/${user?.userId}/drawingsstory`}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaRegFileAlt} />
-              <Text>Mes tirages</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to={`/profile/${user?.userId}/settings`}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaCog} />
-              <Text>Paramètres</Text>
-            </HStack>
-          </RouterLink>
-
-          <Spacer />
-
-          <Button
-            onClick={handleLogout}
-            variant="link"
-            color="white"
-            _hover={{ textDecoration: "none", color: "blue.400" }}
-          >
-            <HStack>
-              <Icon as={FaSignOutAlt} />
-              <Text>Déconnexion</Text>
-            </HStack>
-          </Button>
-        </VStack>
-      </Flex>
+      <SidebarNav /> {/* Ajout MAJ */}
 
       <Box
         ml={{ base: "0", md: "250px" }} // Marge à gauche responsive

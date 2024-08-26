@@ -50,6 +50,8 @@ import useCards from "../hooks/useCards";
 import useThemes from "../hooks/useThemes";
 import useReviews from "../hooks/useReviews";
 import CommentModal from "../components/CommentModal";
+import SidebarNav from "../components/SidebarNav"; // Ajout MAJ
+
 
 const IMAGE_BASE_URL = "http://localhost:8000";
 
@@ -256,63 +258,8 @@ function ContentManagementPage() {
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
 
-      <Flex
-        as="nav"
-        p="4"
-        bg="customBlue"
-        color="white"
-        direction="column"
-        height="calc(100vh - 60px)"
-        width="250px"
-        position="fixed"
-        top="100px"
-        left="0"
-        boxShadow="md"
-      >
-        <VStack align="start" spacing="4" w="full">
-          <RouterLink
-            to="/admin/users"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaUsers} />
-              <Text>Gestion des utilisateurs</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to="/admin/content"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaFileAlt} />
-              <Text>Gestion du contenu</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to="/admin/settings"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaCog} />
-              <Text>Paramètres</Text>
-            </HStack>
-          </RouterLink>
+      <SidebarNav /> {/* Ajout MAJ */}
 
-          <Spacer />
-
-          <Button
-            onClick={handleLogout}
-            variant="link"
-            color="white"
-            _hover={{ textDecoration: "none", color: "blue.400" }}
-          >
-            <HStack>
-              <Icon as={FaSignOutAlt} />
-              <Text>Déconnexion</Text>
-            </HStack>
-          </Button>
-        </VStack>
-      </Flex>
 
       <Box ml={["0", "250px"]} p="8" pt="8" flex="1">
         {/* Gestion des Thèmes */}

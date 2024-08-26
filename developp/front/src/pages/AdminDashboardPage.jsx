@@ -4,14 +4,7 @@
 import React from "react";
 import {
   Box,
-  Flex,
   Heading,
-  VStack,
-  HStack,
-  Icon,
-  Text,
-  Button,
-  Spacer,
   SimpleGrid,
   Stat,
   StatLabel,
@@ -19,11 +12,10 @@ import {
   StatHelpText,
   StatArrow,
 } from "@chakra-ui/react";
-import { FaCog, FaSignOutAlt, FaUsers, FaFileAlt } from "react-icons/fa";
-import { Link as RouterLink } from "react-router-dom";
 import Header from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
+import SidebarNav from "../components/SidebarNav"; // Ajout MAJ
 
 function AdminDashboardPage() {
   const { logout } = useAuth();
@@ -40,66 +32,7 @@ function AdminDashboardPage() {
       <Header />
 
       {/* Menu de navigation latéral */}
-      <Flex
-        as="nav"
-        p="4"
-        bg="customBlue"
-        color="white"
-        direction="column"
-        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Responsivité du menu latéral
-        width={{ base: "100%", md: "250px" }} // Responsivité de la largeur du menu
-        position={{ base: "relative", md: "fixed" }} // Ajustement de la position en fonction de la taille de l'écran
-        top={{ base: "0", md: "100px" }}
-        left="0"
-        boxShadow="md"
-      >
-        {/* Navigation des sections d'administration */}
-        <VStack align="start" spacing="4" w="full">
-          <RouterLink
-            to="/admin/users"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaUsers} />
-              <Text>Gestion des utilisateurs</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to="/admin/content"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaFileAlt} />
-              <Text>Gestion du contenu</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to="/admin/settings"
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaCog} />
-              <Text>Paramètres</Text>
-            </HStack>
-          </RouterLink>
-
-          {/* Espacement dynamique pour pousser le bouton de déconnexion vers le bas */}
-          <Spacer />
-
-          {/* Bouton de déconnexion */}
-          <Button
-            onClick={handleLogout}
-            variant="link"
-            color="white"
-            _hover={{ textDecoration: "none", color: "blue.400" }}
-          >
-            <HStack>
-              <Icon as={FaSignOutAlt} />
-              <Text>Déconnexion</Text>
-            </HStack>
-          </Button>
-        </VStack>
-      </Flex>
+      <SidebarNav /> {/* Ajout MAJ */}
 
       {/* Contenu principal du tableau de bord */}
       <Box

@@ -40,7 +40,7 @@ router.post('/',
     body('birthday').isISO8601().withMessage('Entrez une date de naissance valide'),
     body('city_of_birth').notEmpty().withMessage('La ville de naissance est requise'),
     body('time_of_birth').matches(/\d{2}:\d{2}/).withMessage('L\'heure de naissance doit être au format HH:MM'),
-    body('password').isLength({ min: 6 }).withMessage('Le mot de passe doit contenir au moins 6 caractères'),
+    body('password').isLength({ min: 8 }).withMessage('Le mot de passe doit contenir au moins 6 caractères'),
     validate,
     usersController.createUser
 );

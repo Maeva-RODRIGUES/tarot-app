@@ -28,6 +28,19 @@ export const login = async (credentials) => {
   return { token, userId, role };
 };
 
+// Déconnexion utilisateur (ajout MAJ)
+export const logout = () => {
+  console.log("Déconnexion de l'utilisateur.");
+  // Supprimer le token du stockage local
+  localStorage.removeItem("token");
+  // Optionnel : Faites une requête pour notifier le serveur de la déconnexion si nécessaire
+  // await api.post(AUTH_ENDPOINT.LOGOUT); // Si votre serveur gère la déconnexion
+};
+
+
+
+
+
 // Créer un nouvel utilisateur
 export const signup = async (userData) => {
   console.log(

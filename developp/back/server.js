@@ -1,7 +1,6 @@
 //server.js
 
-require('dotenv').config();
-
+require('dotenv').config({ path: './.env' });
 
 const { sequelize } = require('./models/indexModels');
 const path = require('path');

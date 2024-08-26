@@ -9,22 +9,22 @@ module.exports = (sequelize, DataTypes) => {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     surname: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
-        isEmail: true
+        isEmail: true,
       }
     },
     birthday: {
@@ -73,22 +73,29 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       beforeCreate: async (user) => {
         if (user.password) {
-          console.log('Mot de passe avant hachage:', user.password);
-          const salt = await bcrypt.genSalt(10);
-          user.password = await bcrypt.hash(user.password, salt);
-          console.log('Mot de passe après hachage:', user.password);
+          // Vérifiez si le mot de passe semble déjà haché (par exemple, longueur typique d'un hash bcrypt)
+          const isHashed = user.password.startsWith('$2b$');
+          if (!isHashed) {
+            console.log('Mot de passe avant hachage:', user.password);
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(user.password, salt);
+            console.log('Mot de passe après hachage:', user.password);
+          }
         }
       },
       beforeUpdate: async (user) => {
         if (user.changed('password')) {
-          console.log('Mot de passe avant mise à jour:', user.password);
-          const salt = await bcrypt.genSalt(10);
-          user.password = await bcrypt.hash(user.password, salt);
-          console.log('Mot de passe après mise à jour:', user.password);
+          // Vérifiez si le mot de passe semble déjà haché (par exemple, longueur typique d'un hash bcrypt)
+          const isHashed = user.password.startsWith('$2b$');
+          if (!isHashed) {
+            console.log('Mot de passe avant mise à jour:', user.password);
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(user.password, salt);
+            console.log('Mot de passe après mise à jour:', user.password);
+          }
         }
       }
     },
-    // Surcharge de la méthode toJSON pour formater les dates
     instanceMethods: {
       toJSON: function () {
         const values = Object.assign({}, this.get());
@@ -119,4 +126,5 @@ module.exports = (sequelize, DataTypes) => {
 
   return User;
 };
+
 

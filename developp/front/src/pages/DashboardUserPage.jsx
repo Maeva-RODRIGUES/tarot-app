@@ -10,26 +10,18 @@ import {
   Text,
   Button,
   Image,
-  VStack,
   HStack,
-  Icon,
-  Spacer,
   useToast,
   Spinner,
 } from "@chakra-ui/react";
 import { CalendarIcon, TimeIcon } from "@chakra-ui/icons";
-import { FaUser, FaRegFileAlt, FaCog, FaSignOutAlt } from "react-icons/fa";
-import {
-  Outlet,
-  Link as RouterLink,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
 import { getUserData } from "../api/usersApi";
 import { fetchLastDrawingForUser } from "../api/drawApi";
+import SidebarNav from "../components/SidebarNav"; // Importer le composant SidebarNav
 
 function DashboardUserPage() {
   const navigate = useNavigate();
@@ -127,138 +119,82 @@ function DashboardUserPage() {
       })
     : "Aucune activité récente";
 
-  return (
-    <Box minHeight="100vh" display="flex" flexDirection="column">
-      <HeaderDashboard />
-      <Flex
-        as="nav"
-        p="4"
-        bg="customBlue"
-        color="white"
-        direction="column"
-        height={{ base: "auto", md: "calc(100vh - 60px)" }} // Responsivité du menu latéral
-        width={{ base: "100%", md: "250px" }} // Responsivité de la largeur du menu
-        position={{ base: "relative", md: "fixed" }} // Position du menu
-        top={{ base: "0", md: "100px" }}
-        left="0"
-        boxShadow="md"
-      >
-        <VStack align="start" spacing="4" w="full">
-          <RouterLink
-            to={`/profile/${userId}`}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaUser} />
-              <Text>Mon profil</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to={`/profile/${userId}/drawingsstory`}
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaRegFileAlt} />
-              <Text>Mes tirages</Text>
-            </HStack>
-          </RouterLink>
-          <RouterLink
-            to={`/profile/${userId}/settings`} // Utilisation du bon chemin pour les paramètres
-            style={{ textDecoration: "none", color: "white" }}
-          >
-            <HStack>
-              <Icon as={FaCog} />
-              <Text>Paramètres</Text>
-            </HStack>
-          </RouterLink>
-
-          <Spacer />
-
-          <Button
-            onClick={handleLogout}
-            variant="link"
-            color="white"
-            _hover={{ textDecoration: "none", color: "blue.400" }}
-          >
-            <HStack>
-              <Icon as={FaSignOutAlt} />
-              <Text>Déconnexion</Text>
-            </HStack>
-          </Button>
-        </VStack>
-      </Flex>
-
-      <Box ml={{ base: "0", md: "250px" }} p="8" pt="8" flex="1">
-        {/* Activité Récente */}
-        <Box
-          p="4"
-          borderWidth="1px"
-          borderRadius="md"
-          borderColor="gray.200"
-          bg="white"
-          boxShadow="md"
-          mb="8"
-          maxWidth={{ base: "100%", sm: "300px" }} // Responsivité de la largeur du box
-        >
-          <Heading size="md" mb="4">
-            Activité Récente :
-          </Heading>
-          <HStack spacing="4" mb="4">
-            <CalendarIcon boxSize="6" color="customBlue" />
-            <Text fontSize="lg">Date : {formattedDate}</Text>
-          </HStack>
-          <HStack spacing="4">
-            <TimeIcon boxSize="6" color="customBlue" />
-            <Text fontSize="lg">Heure : {formattedTime}</Text>
-          </HStack>
-        </Box>
-        {/* Dernier Tirage */}
-        <Flex direction="column" alignItems="center" mb="8">
-          <Heading size="lg" mb="16" textAlign="center">
-            VOTRE DERNIER TIRAGE
-          </Heading>
-          <Flex mb="7" justifyContent="center" flexWrap="wrap">
-            {lastDrawing?.Cards?.map((card, index) => (
-              <Image
-                key={index}
-                src={`http://localhost:8000${card.image_url}`}
-                alt={`Tarot Card ${index + 1}`}
-                width="120px"
-                height="180px"
-                borderRadius="10px"
-                mx="7"
-                my="3"
-                border="2px solid black"
-                transform={
-                  index === 0
-                    ? "rotate(-10deg)"
-                    : index === lastDrawing.Cards.length - 1
-                      ? "rotate(10deg)"
-                      : "none"
-                }
-                mt={
-                  index === Math.floor(lastDrawing.Cards.length / 2)
-                    ? "-10px"
-                    : "0"
-                }
-              />
-            ))}
-          </Flex>
-          <Button
-            mt="4"
-            bg="customBlue"
-            color="white"
-            onClick={handleViewMoreClick}
-          >
-            Voir plus
-          </Button>
+    return (
+      <Box minHeight="100vh" display="flex" flexDirection="column">
+        <HeaderDashboard />
+        <Flex>
+          <SidebarNav /> {/* Remplacer la barre de navigation latérale par SidebarNav */}
+          <Box ml={{ base: "0", md: "250px" }} p="8" pt="8" flex="1">
+            {/* Activité Récente */}
+            <Box
+              p="4"
+              borderWidth="1px"
+              borderRadius="md"
+              borderColor="gray.200"
+              bg="white"
+              boxShadow="md"
+              mb="8"
+              maxWidth={{ base: "100%", sm: "300px" }} // Responsivité de la largeur du box
+            >
+              <Heading size="md" mb="4">
+                Activité Récente :
+              </Heading>
+              <HStack spacing="4" mb="4">
+                <CalendarIcon boxSize="6" color="customBlue" />
+                <Text fontSize="lg">Date : {formattedDate}</Text>
+              </HStack>
+              <HStack spacing="4">
+                <TimeIcon boxSize="6" color="customBlue" />
+                <Text fontSize="lg">Heure : {formattedTime}</Text>
+              </HStack>
+            </Box>
+            {/* Dernier Tirage */}
+            <Flex direction="column" alignItems="center" mb="8">
+              <Heading size="lg" mb="16" textAlign="center">
+                VOTRE DERNIER TIRAGE
+              </Heading>
+              <Flex mb="7" justifyContent="center" flexWrap="wrap">
+                {lastDrawing?.Cards?.map((card, index) => (
+                  <Image
+                    key={index}
+                    src={`http://localhost:8000${card.image_url}`}
+                    alt={`Tarot Card ${index + 1}`}
+                    width="120px"
+                    height="180px"
+                    borderRadius="10px"
+                    mx="7"
+                    my="3"
+                    border="2px solid black"
+                    transform={
+                      index === 0
+                        ? "rotate(-10deg)"
+                        : index === lastDrawing.Cards.length - 1
+                        ? "rotate(10deg)"
+                        : "none"
+                    }
+                    mt={
+                      index === Math.floor(lastDrawing.Cards.length / 2)
+                        ? "-10px"
+                        : "0"
+                    }
+                  />
+                ))}
+              </Flex>
+              <Button
+                mt="4"
+                bg="customBlue"
+                color="white"
+                onClick={handleViewMoreClick}
+              >
+                Voir plus
+              </Button>
+            </Flex>
+            <Outlet /> {/* Pour afficher les routes enfants */}
+          </Box>
         </Flex>
-        <Outlet /> {/* Pour afficher les routes enfants */}
+        <Footer />
       </Box>
-
-      <Footer />
-    </Box>
-  );
-}
+    );
+  }
 
 export default DashboardUserPage;

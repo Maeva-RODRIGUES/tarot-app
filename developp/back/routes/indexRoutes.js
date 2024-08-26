@@ -24,6 +24,7 @@ const reviewsRoutes = require ('./reviewsRoutes');
 const usersRoutes = require ('./usersRoutes');
 const rolesRoutes = require ('./rolesRoutes');
 const authRoutes = require('./authRoutes');
+const passwordRoutes = require('./passwordRoutes');
 
 
 // Route pour gérer le consentement aux cookies
@@ -74,5 +75,7 @@ router.use('/roles', protect, authorize(['Admin']), rolesRoutes);
 // Routes d'authentification
 router.use('/auth', authRoutes);
 
+// Route de réinitialisation du mot de passe
+router.use('/password', passwordRoutes);
 
 module.exports = router;

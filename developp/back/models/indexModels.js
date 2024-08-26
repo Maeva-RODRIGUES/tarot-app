@@ -1,7 +1,7 @@
 // Centralise et organise les importations des models.
 //indexModels.js
 
-require('dotenv').config();
+require('dotenv').config({ path: '../.env'});
 const { Sequelize, DataTypes } = require('sequelize');
 
 
@@ -22,6 +22,7 @@ const sequelize = new Sequelize(
   }
 );
 
+// Importer les modèles
 const Card = require('./cardsModel')(sequelize, DataTypes);
 const Theme = require('./themesModels')(sequelize, DataTypes);
 const User = require('./usersModels')(sequelize, DataTypes);
@@ -48,21 +49,22 @@ Drawing.belongsTo(User, { foreignKey: 'id_Users' });
 User.hasMany(Review, { foreignKey: 'id_Users' });
 Review.belongsTo(User, { foreignKey: 'id_Users' });
 
-Drawing.belongsToMany(Card, { through: 'to_compose', foreignKey: 'id_Drawings', otherKey: 'id' });
-Card.belongsToMany(Drawing, { through: 'to_compose', foreignKey: 'id', otherKey: 'id_Drawings' });
+Drawing.belongsToMany(Card, { through: 'to_compose', foreignKey: 'id_Drawings', otherKey: 'id_Cards' });
+Card.belongsToMany(Drawing, { through: 'to_compose', foreignKey: 'id_Cards', otherKey: 'id_Drawings' });
 
-
-Card.belongsToMany(Theme, { through: 'to_have', foreignKey: 'id', otherKey: 'id_Themes' });
-Theme.belongsToMany(Card, { through: 'to_have', foreignKey: 'id_Themes', otherKey: 'id' });
+Card.belongsToMany(Theme, { through: 'to_have', foreignKey: 'id_Cards', otherKey: 'id_Themes' });
+Theme.belongsToMany(Card, { through: 'to_have', foreignKey: 'id_Themes', otherKey: 'id_Cards' });
 
 // Log de vérification
 console.log('Relation Drawing <-> Card configurée via to_compose');
 
 // Synchronisation de Sequelize avec la base de données
-sequelize.sync() 
+sequelize.sync()
   .then(() => {
     console.log('Models synchronized with the database.');
-
+  })
+  .catch((error) => {
+    console.error('Error synchronizing models with the database:', error);
   });
 
   
