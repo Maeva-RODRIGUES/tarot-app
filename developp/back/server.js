@@ -60,7 +60,7 @@ const corsOptions = {
 // Limitation du taux de requêtes
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limite chaque IP à 100 requêtes par windowMs
+  max: 200 // limite chaque IP à 100 requêtes par windowMs
 });
 app.use(limiter);
 
