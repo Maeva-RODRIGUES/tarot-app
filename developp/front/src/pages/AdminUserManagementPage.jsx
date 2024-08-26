@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 // src/pages/AdminUserManagementPage.jsx
 
 import React, { useEffect, useState } from "react";
@@ -268,6 +267,7 @@ function AdminUserManagementPage() {
             <Tr>
               <Th>ID</Th>
               <Th>Nom</Th>
+              <Th>Prénom</Th>
               <Th>Email</Th>
               <Th>Rôle</Th>
               <Th>Actions</Th>
@@ -278,6 +278,7 @@ function AdminUserManagementPage() {
               <React.Fragment key={user.id}>
                 <Tr>
                   <Td>{user.id}</Td>
+                  <Td>{user.surname}</Td>
                   <Td>{user.name}</Td>
                   <Td>{user.email}</Td>
                   <Td>{roles[user.id_Roles]}</Td>
