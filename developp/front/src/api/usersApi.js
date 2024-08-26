@@ -19,6 +19,9 @@ export const fetchUsers = async () => {
 export const createUser = async (userData) => {
   try {
     console.log("Données utilisateur à envoyer :", userData);
+    if (!userData.id_Roles) {
+      console.error("Erreur: id_Roles est indéfini dans userData");
+    }
     const response = await api.post(USERS_ENDPOINT, userData);
     console.log("Réponse de l'API de création d'utilisateur :", response.data);
     return response.data;
@@ -27,6 +30,7 @@ export const createUser = async (userData) => {
     throw error;
   }
 };
+
 
 // Mettre à jour un utilisateur existant
 export const updateUser = async (id, userData) => {

@@ -20,15 +20,18 @@ import {
   Box,
   Heading,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { usePopup } from "./context/PopupContext";
 import { createUser } from "../api/usersApi";
 
 function SignupPopup() {
   const { popupType, closePopup } = usePopup(); // Gestion du type de popup et fermeture
-
   // Détermine si la popup d'inscription est ouverte
   const isOpen = popupType === "signup";
+
+    // État pour gérer l'affichage du toast
+    const toast = useToast();
 
   // -------------------------------------------------------------------
   // État pour chaque champ de formulaire : utilisé pour capturer les saisies utilisateur
@@ -64,9 +67,16 @@ function SignupPopup() {
   const handleSignup = async () => {
     // Vérifier que les mots de passe correspondent
     if (password !== confirmPassword) {
-      alert("Les mots de passe ne correspondent pas");
+      toast({
+        title: "Erreur",
+        description: "Les mots de passe ne correspondent pas.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
       return;
     }
+
 
     // Créer un objet contenant les données utilisateur à envoyer
     const userData = {
@@ -81,15 +91,24 @@ function SignupPopup() {
     };
 
     try {
-      // Envoyer les données au serveur via l'API
       await createUser(userData);
-
-      // Si l'inscription réussit, mettre à jour l'état pour afficher un message de succès
       setIsRegistered(true);
+      toast({
+        title: "Inscription réussie",
+        description: "Votre compte a été créé avec succès.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error("Erreur lors de l'inscription:", error);
-      // Afficher un message d'erreur si l'inscription échoue
-      alert("Erreur lors de l'inscription, veuillez réessayer.");
+      toast({
+        title: "Erreur lors de l'inscription",
+        description: "Une erreur est survenue lors de la création de votre compte.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 

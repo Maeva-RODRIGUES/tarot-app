@@ -115,12 +115,20 @@ const usersControllers = {
                 return res.status(400).json({ message: 'Un utilisateur avec cet email existe déjà' });
             }
 
-           // Vérifiez si le rôle existe avant la création
-           const validRoleId = await Role.findByPk(role_id);
-           if (!validRoleId) {
-               console.log('Rôle spécifié n\'existe pas:', role_id);
-               return res.status(400).json({ message: 'Le rôle spécifié n\'existe pas' });
-           }
+          // Définir un rôle par défaut si role_id n'est pas fourni
+        let validRoleId = role_id;
+        if (!role_id) {
+            const defaultRole = await Role.findOne({ where: { role_name: 'User' } }); // Assurez-vous que le rôle "User" existe
+            validRoleId = defaultRole ? defaultRole.id : null;
+        } else {
+            const role = await Role.findByPk(role_id);
+            validRoleId = role ? role.id : null;
+        }
+
+        if (!validRoleId) {
+            console.log('Rôle spécifié n\'existe pas:', role_id);
+            return res.status(400).json({ message: 'Le rôle spécifié n\'existe pas' });
+        }
 
             // Créer l'utilisateur (le mot de passe sera hashé dans les hooks du modèle)
             const newUser = await User.create({
@@ -131,7 +139,7 @@ const usersControllers = {
                 city_of_birth,
                 time_of_birth,
                 password, // Le mot de passe sera haché par les hooks
-                id_Roles: role_id,
+                id_Roles: validRoleId,
                 avatar_url: "", // Initialiser avec une chaîne vide
             });
 

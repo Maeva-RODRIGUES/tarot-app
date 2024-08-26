@@ -15,7 +15,7 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { CalendarIcon, TimeIcon } from "@chakra-ui/icons";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Outlet  } from "react-router-dom";
 import HeaderDashboard from "../components/HeaderDashboard";
 import Footer from "../components/Footer";
 import { useAuth } from "../components/context/AuthContext";
