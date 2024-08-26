@@ -1,8 +1,5 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-no-constructed-context-values */
 // AuthContext.jsx
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   login as apiLogin,
@@ -89,6 +86,11 @@ export function AuthProvider({ children }) {
   };
 
   const isAuthenticated = () => !!user;
+  const hasRole = (roleId) => {
+    // Vérifie si l'utilisateur a le rôle avec l'ID correspondant
+    return user?.role?.id === roleId;
+  };
+  
 
   return (
     <AuthContext.Provider
@@ -97,6 +99,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         isAuthenticated,
+        hasRole,
         requestPasswordReset,
         resetUserPassword,
       }}

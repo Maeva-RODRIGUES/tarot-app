@@ -2,13 +2,13 @@
   "name": "tarot-frontend",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint --fix . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest --env=jsdom"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -37,13 +37,14 @@
     "styled-components": "^6.1.12"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-react": "^7.24.7",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.0",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "eslint": "^9.9.1",
-    "eslint-config-airbnb": "^19.0.4",
+    "babel-jest": "^29.7.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.9.0",
@@ -51,8 +52,20 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.11",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
+    "jest-transform-css": "^6.0.1",
     "prettier": "^3.3.3",
     "vite": "^5.4.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest",
+      "^.+\\.css$": "jest-transform-css"
+    },
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+       "<rootDir>setupTests.js"
+    ]
   }
 }

@@ -38,6 +38,9 @@ function App() {
             {/* Ajout du DrawingsProvider */}
             <Routes>
               <Route path="/" element={<Homepage />} />
+              
+              
+               {/* Pages protégées par l'authentification */}
 
               {/* Route pour sélectionner les thèmes de tirage */}
               <Route
@@ -49,6 +52,9 @@ function App() {
                 }
               />
 
+                {/* Autres routes protégées... */}
+
+              {/* Routes administratives protégées par un contrôle de rôle */}
               {/* Route pour afficher les tirages en fonction du thème sélectionné */}
               <Route
                 path="/tarot-draw/:theme"
@@ -118,7 +124,7 @@ function App() {
               <Route
                 path="/admin"
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute requiredRole={1}>
                     <AdminDashboardPage />
                   </PrivateRoute>
                 }
@@ -126,7 +132,7 @@ function App() {
               <Route
                 path="/admin/users"
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute requiredRole={1}>
                     <AdminUserManagementPage />
                   </PrivateRoute>
                 }
@@ -134,7 +140,7 @@ function App() {
               <Route
                 path="/admin/content"
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute requiredRole={1}>
                     <ContentManagementPage />
                   </PrivateRoute>
                 }
@@ -142,7 +148,7 @@ function App() {
               <Route
                 path="/admin/settings"
                 element={
-                  <PrivateRoute>
+                  <PrivateRoute requiredRole={1}>
                     <SettingsAdminPage />
                   </PrivateRoute>
                 }

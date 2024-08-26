@@ -1,5 +1,3 @@
-/* eslint-disable no-alert */
-/* eslint-disable react/no-unescaped-entities */
 // SignupPopup.jsx
 
 import React, { useState } from "react";
