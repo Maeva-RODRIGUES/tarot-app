@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // src/api/usersApi.js
 
 import api from "./configAxios";
