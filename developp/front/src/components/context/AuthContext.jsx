@@ -57,7 +57,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("token");
-    window.location.href = "/"; // Redirige l'utilisateur vers la page de connexion
+    //window.location.href = "/"; // Redirige l'utilisateur vers la page de connexion
   };
   
 

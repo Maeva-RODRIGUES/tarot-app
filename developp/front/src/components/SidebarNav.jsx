@@ -14,8 +14,10 @@ const SidebarNav = () => {
 
   console.log("Données utilisateur dans SidebarNav:", user);
 
-  const handleLogout = () => {
-    logout(); // Appelle la fonction logout pour déconnecter l'utilisateur
+  const handleLogout = async () => {
+    await logout(); // Déconnexion de l'utilisateur
+    
+    // Affichage de la notification après la déconnexion
     toast({
       title: "Déconnexion réussie",
       description: "Vous avez été déconnecté avec succès.",
@@ -23,8 +25,15 @@ const SidebarNav = () => {
       duration: 5000,
       isClosable: true,
     });
-    
+
+ // Redirection après un délai
+ setTimeout(() => {
+  window.location.href = "/"; // Rediriger après la notification
+}, 1000);
+
+
   };
+  
 
   if (!user) {
     return null; // Si l'utilisateur n'est pas encore défini, ne pas afficher la barre latérale
