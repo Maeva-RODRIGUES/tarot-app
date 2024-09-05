@@ -30,77 +30,64 @@ function Homepage() {
           as="h1"
           mb={8}
           id="tirages"
-          position="absolute"
+          position="relative"
           // Responsiv
           top={{ base: "80px", md: "100px", lg: "120px" }}
           left="50%"
           transform="translateX(-50%)"
+          zIndex="1"
         >
-          TOUS NOS TIRAGES
+          Tous nos tirages
         </Heading>
-        <Box mt={{ base: "40px", md: "60px", lg: "80px" }}>
+        <Box mt={{ base: "120px", md: "60px", lg: "80px" }}>
           {/* Responsiv CardsMenu */}
           <CardsMenu />
         </Box>
-        <Box position="relative" textAlign="center" mt={8}>
-          <MotionBox
-            position="absolute"
-            top="0"
-            left="0"
-            transform="translateX(0)"
-            zIndex="-1"
-            style={{
-              transform: `translateY(${y}px)`,
-              opacity: 0.8,
-              background:
-                "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 30%, rgba(255, 255, 255, 1) 80%, rgba(255, 255, 255, 0))",
-              WebkitMaskImage:
-                "linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)",
-              maskImage:
-                "linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)",
-            }}
-          >
-            <Image
-              src="/src/assets/img/hand.jpg"
-              alt="Main"
-              // Responsiv
-              boxSize={{ base: "100%", md: "600px", lg: "800px" }}
-              objectFit="cover"
-            />
-          </MotionBox>
 
-          <Flex
-            direction="column"
-            align="center"
-            mb={6}
-            position="relative"
-            zIndex="1"
-          >
-            <Box
-              mb={2}
-              ml={{ base: 0, md: "540px" }}
-              mt={{ base: 0, md: "70px" }}
-              position="relative"
-              zIndex="1"
-            >
-              <Heading as="h2">VOS TÉMOIGNAGES</Heading>
-            </Box>
-          </Flex>
+        <Flex
+          direction={{ base: "column", lg: "row" }}
+          align="center"
+          mt={8}
+          textAlign="center"
+          justifyContent="space-between"  // Assure que l'espace entre les éléments est équilibré
+        >
+          <MotionBox
+            flex="1"  // Assure que l'image occupe l'espace disponible à gauche
+            mb={{ base: 8, lg: 0 }}
+            zIndex="0"
+        >
+          <Image
+            src="/src/assets/img/hand.jpg"
+            alt="Main"
+            boxSize="100%"  // L'image occupe tout l'espace disponible dans sa flexbox
+            objectFit="cover"
+            loading="lazy"
+          />
+        </MotionBox>
+
+        <Box
+          width={{ base: "100%", md: "60%", lg: "400px" }}  // Taille fixe pour le carrousel
+          ml={{ lg: 8 }}  // Marge à gauche pour espacer le carrousel de l'image
+          zIndex="1"
+        >
+          <Heading as="h2" mb={6} textAlign="center">
+            Vos témoignages
+          </Heading>
+          <TestimonialsCarousel />
         </Box>
-        <Flex justify="right" align="center" mt={4}>
-          <Box w={{ base: "100%", md: "75%", lg: "58%" }}>
-            {/* Responsiv TestimonialsCarousel */}
-            <TestimonialsCarousel />
-          </Box>
-        </Flex>
-        <Box mt={10} pb={8} position="relative">
+      </Flex>
+
+        <Box
+          mt={{ base: "100px", md: "150px", lg: "200px" }}
+          pb={8}
+          position="relative"
+        >
           <Cartomancienne />
         </Box>
       </Box>
       <Footer
         bannerSrc={footerBanner}
         bannerAlt="Bannière de pied de page"
-        // Responsiv bannerHeight footer
         bannerHeight={{ base: "200px", md: "300px", lg: "400px" }}
       />
     </Box>
@@ -108,3 +95,8 @@ function Homepage() {
 }
 
 export default Homepage;
+
+        
+
+    
+    

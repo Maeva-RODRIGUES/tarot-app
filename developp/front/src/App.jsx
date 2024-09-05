@@ -1,7 +1,6 @@
-/* eslint-disable import/extensions */
 // App.jsx
 
-import React, { useEffect }  from "react";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
 
 import Homepage from "./pages/HomePage.jsx";
@@ -29,15 +28,6 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 function App() {
-  useEffect(() => {
-    async function loadVite() {
-      const vite = await import('vite');
-      console.log(vite);
-      // Utiliser Vite ici
-    }
-    loadVite();
-  }, []);
-
 
   return (
     <ChakraProviderWrapper>

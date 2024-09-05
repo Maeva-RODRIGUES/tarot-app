@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/require-default-props */
 // src/components/Header.jsx
 
 import React from "react";
@@ -16,7 +14,7 @@ function Header({
   backgroundPosition = "center",
 }) {
   return (
-    <header>
+    <header style={{ margin: 0, padding: 0 }}>
       <Navbar logo={navbarLogo} />
       {bannerSrc && (
         <Banner
@@ -27,6 +25,7 @@ function Header({
           logow={bannerLogo} // Assure-toi que la prop est bien 'logow'
           // Responsiveness added for background position
           backgroundPosition={{ base: "center", md: backgroundPosition }}
+          style={{ margin: 0, padding: 0 }}
         />
       )}
     </header>

@@ -1,14 +1,28 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 // NavbarFooter.jsx
 
 import React from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  IconButton,
+  useDisclosure,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  VStack,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { usePopup } from "./context/PopupContext"; // Importer le hook pour gérer les popups
 
 function NavbarFooter({ logo }) {
   const { openPopup } = usePopup(); // Obtenir la fonction pour ouvrir la popup
+  const { isOpen, onOpen, onClose } = useDisclosure(); // Gestion du Drawer
 
   // Fonction pour ouvrir le popup de contact
   const handleContactClick = (e) => {
@@ -18,68 +32,124 @@ function NavbarFooter({ logo }) {
 
   return (
     <Box
-      bg="black" // Fond noir pour le footer
-      color="white" // Texte en blanc pour contraste
-      fontFamily="Urbanist" // Police de caractères Urbanist
-      p={2} // Padding de 2 unités
-      w="100vw" // Largeur totale du viewport
-      position="relative" // Position relative pour permettre d'autres ajustements
-      bottom="0" // Positionné en bas de la page
-      left="0" // Aligné à gauche
-      zIndex="1000" // Assure que le footer est au-dessus d'autres éléments
-      m={0} // Pas de marge externe
+      bg="black"
+      color="white"
+      fontFamily="Urbanist"
+      p={2}
+      w="100vw"
+      position="relative"
+      bottom="0"
+      left="0"
+      m={0}
     >
       <Flex
         align="center"
         maxW="1200px"
         mx="auto"
         w="100%"
-        direction={{ base: "column", md: "row" }} // Empile verticalement sur mobile, horizontalement sur écran moyen et plus
-        textAlign={{ base: "center", md: "left" }} // Centre le texte sur mobile
+        direction={{ base: "row", md: "row" }}
+        flexWrap="wrap" 
+        mt={{ base: 3, md: 6 }}
+        justifyContent="space-between" // Permet de bien espacer les éléments
       >
+        {/* Bouton du menu burger pour les petits écrans */}
+        <IconButton
+          display={{ base: "block", md: "none" }} // Affiché seulement sur mobile/tablette
+          icon={<HamburgerIcon />}
+          aria-label="Open menu"
+          onClick={onOpen}
+          bg="white"
+          _hover={{ bg: "gray.700" }}
+          mr={2}
+        />
+
         {/* Section gauche avec les liens de navigation */}
         <Flex
           align="center"
-          mb={{ base: 4, md: 0 }} // Marge en bas sur mobile, rien sur écran moyen et plus
-          direction={{ base: "column", md: "row" }} // Empile les liens verticalement sur mobile
+          mb={{ base: 4, md: 0 }}
+          direction={{ base: "column", md: "row" }}
+          display={{ base: "none", md: "flex" }} // Masqué sur mobile/tablette
+          justifyContent="flex-start" // Les éléments sont alignés à gauche
         >
-          <Link to="/" style={{ marginRight: "20px" }}>
+          <RouterLink to="/" style={linkStyle}>
             Accueil
-          </Link>
-          <Link to="/#tirages" style={{ marginRight: "20px" }}>
+          </RouterLink>
+          <RouterLink to="/#tirages" style={linkStyle}>
             Tirages
-          </Link>
-          <Link to="/about" style={{ marginRight: "20px" }}>
+          </RouterLink>
+          <RouterLink to="/about" style={linkStyle}>
             À propos
-          </Link>
-          <a
-            href="#"
-            onClick={handleContactClick} // Appelle la fonction pour ouvrir le popup de contact
-            style={{ marginRight: "20px" }}
-          >
+          </RouterLink>
+          <span onClick={handleContactClick} style={linkStyle}>
             Contact
-          </a>
-          <Link to="/legal-mentions" style={{ marginRight: "20px" }}>
+          </span>
+          <RouterLink to="/legal-mentions" style={linkStyle}>
             Mentions légales
-          </Link>
-          <Link to="/privacy-policy">Politique de confidentialité</Link>
+          </RouterLink>
+          <RouterLink to="/privacy-policy" style={linkStyle}>
+            Politique de confidentialité
+          </RouterLink>
         </Flex>
 
         {/* Section droite avec le logo et le copyright */}
         <Flex
           align="center"
-          ml={{ base: 0, md: "auto" }}
+          justifyContent={{ base: "center", md: "flex-end" }} // Centré sur mobile, aligné à droite sur desktop
           mt={{ base: 4, md: 0 }}
+          w={{ base: "100%", md: "auto" }}
         >
-          <Text mr={2}>© 2024</Text>
+          <Text mr={2} fontFamily="Urbanist, sans-serif" fontWeight="bold">
+            © 2024
+          </Text>
           <Box
             as="img"
             src={logo}
             alt="Logo"
-            height={{ base: "50px", md: "70px" }} // Hauteur du logo adaptée aux différentes tailles d'écran
+            height={{ base: "50px", md: "70px" }}
+             marginTop="-18px"
           />
         </Flex>
       </Flex>
+
+      {/* Drawer pour le menu burger */}
+      <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent bg="black">
+          <DrawerCloseButton color="white" />
+          <DrawerHeader borderBottomWidth="1px" color="white">
+            Menu
+          </DrawerHeader>
+          <DrawerBody>
+            <VStack align="start" spacing={4}>
+              <RouterLink to="/" onClick={onClose} style={{ color: "white" }}>
+                Accueil
+              </RouterLink>
+              <RouterLink to="/#tirages" onClick={onClose} style={{ color: "white" }}>
+                Tirages
+              </RouterLink>
+              <RouterLink to="/about" onClick={onClose} style={{ color: "white" }}>
+                À propos
+              </RouterLink>
+              <span
+                href="#"
+                onClick={(e) => {
+                  handleContactClick(e);
+                  onClose();
+                }}
+                style={{ color: "white", cursor: "pointer" }}
+              >
+                Contact
+              </span>
+              <RouterLink to="/legal-mentions" onClick={onClose} style={{ color: "white" }}>
+                Mentions légales
+              </RouterLink>
+              <RouterLink to="/privacy-policy" onClick={onClose} style={{ color: "white" }}>
+                Politique de confidentialité
+              </RouterLink>
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Box>
   );
 }
@@ -89,3 +159,12 @@ NavbarFooter.propTypes = {
 };
 
 export default NavbarFooter;
+
+// Style pour les liens
+const linkStyle = {
+  marginRight: "20px",
+  color: "white",
+  fontFamily: "Urbanist, sans-serif",
+  fontWeight: "bold",
+};
+

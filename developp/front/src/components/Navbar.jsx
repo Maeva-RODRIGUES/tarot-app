@@ -1,88 +1,222 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 // Navbar.jsx
 
 import React from "react";
-import { Box, Flex, Spacer } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Spacer,
+  IconButton,
+  useDisclosure,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  VStack,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { HamburgerIcon } from "@chakra-ui/icons";
 import PropTypes from "prop-types";
-import { Link as RouterLink } from "react-router-dom"; // Importer Link de react-router-dom pour la navigation
-import { usePopup } from "./context/PopupContext"; // Importer le hook usePopup pour gérer les popups
+import { Link as RouterLink } from "react-router-dom";
+import { usePopup } from "./context/PopupContext";
 
 function Navbar({ logo }) {
-  const { openPopup } = usePopup(); // Utilisation du hook usePopup pour ouvrir les popups
+  const { openPopup } = usePopup();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+// Déterminer si les liens "Connexion" et "Inscription" doivent être affichés
+  const isDesktop = useBreakpointValue({ base: false, md: true });
 
   return (
     <Box
-      bg="black" // Couleur de fond de la navbar
-      color="white" // Couleur du texte dans la navbar
-      fontFamily="Urbanist" // Police de caractères utilisée
-      p={2} // Padding de 2 unités
-      w="100vw" // Largeur totale de la navbar, couvrant toute la vue
-      position="fixed" // Positionnement fixe pour que la navbar reste en haut de la page
-      top="0" // Positionné en haut de la page
-      left="0" // Aligné à gauche
-      zIndex="1000" // Assure que la navbar est au-dessus d'autres éléments
+      bg="black"
+      color="white"
+      fontFamily="Urbanist, sans-serif"
+      p={2}
+      w="100vw"
+      position="fixed"
+      top="0"
+      left="0"
+      zIndex="1000"
     >
       <Flex
         align="center"
         maxW="1200px"
         mx="auto"
         w="100%"
-        direction={{ base: "column", md: "row" }} // Empile les éléments verticalement sur mobile, horizontalement sur écran moyen et plus
+        direction={{ base: "row", md: "row" }}
       >
+        {/* Bouton du menu burger pour les petits écrans */}
+        <IconButton
+          display={{ base: "block", md: "none" }} // Affiché seulement sur mobile/tablette
+          icon={<HamburgerIcon />}
+          aria-label="Open menu"
+          onClick={onOpen}
+          bg="white"
+          _hover={{ bg: "gray.700" }}
+          mr={2}
+        />
+
         {/* Section de gauche avec les liens de navigation */}
-        <Flex align="center" mb={{ base: 4, md: 0 }}> {/* Ajoute une marge en bas sur mobile */}
-          <RouterLink to="/" style={{ marginRight: "20px", color: "white" }}>
+        <Flex
+          align="center"
+          mb={{ base: 4, md: 0 }}
+          display={{ base: "none", md: "flex" }} // Masqué sur mobile/tablette
+        >
+          <RouterLink to="/"  style={{
+              marginRight: "20px",
+              color: "white",
+              fontWeight: "bold",
+              fontFamily: "Urbanist, sans-serif",
+            }}
+            >
+
             Accueil
           </RouterLink>
           <RouterLink
             to="/#tirages"
-            style={{ marginRight: "20px", color: "white" }}
+             style={{
+              marginRight: "20px",
+              color: "white",
+              fontWeight: "bold",
+              fontFamily: "Urbanist, sans-serif",
+            }}
           >
             Tirages
           </RouterLink>
           <RouterLink
             to="/about"
-            style={{ marginRight: "20px", color: "white" }}
+            style={{
+              marginRight: "20px",
+              color: "white",
+              fontWeight: "bold",
+              fontFamily: "Urbanist, sans-serif",
+            }}
           >
             À propos
           </RouterLink>
           <span
-            onClick={() => openPopup("contact")} // Ouvre la popup de contact
-            style={{ marginRight: "20px", color: "white", cursor: "pointer" }} // Ajout du curseur pointer pour indiquer qu'il est cliquable
+            onClick={() => openPopup("contact")}
+            style={{
+              marginRight: "20px",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontFamily: "Urbanist, sans-serif",
+            }}
           >
             Contact
           </span>
         </Flex>
-        <Spacer /> {/* Espace entre les deux sections (liens de gauche et éléments de droite) */}
+
+        <Spacer />
+
+    
         {/* Section de droite avec les boutons de connexion/inscription et le logo */}
         <Flex align="center" fontWeight="bold">
-          <span
-            onClick={() => openPopup("login")} // Ouvre la popup de connexion
-            style={{ marginRight: "20px", color: "white", cursor: "pointer" }}
-          >
-            Connexion
-          </span>
-          <span
-            onClick={() => openPopup("signup")} // Ouvre la popup d'inscription
-            style={{ marginRight: "20px", color: "white", cursor: "pointer" }}
-          >
-            Inscription
-          </span>
+          {isDesktop && (
+            <>
+              <span
+                onClick={() => openPopup("login")}
+                style={{
+                  marginRight: "20px",
+                  color: "white",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  fontFamily: "Urbanist, sans-serif",
+                }}
+              >
+                Connexion
+              </span>
+              <span
+                onClick={() => openPopup("signup")}
+                style={{
+                  marginRight: "20px",
+                  color: "white",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  fontFamily: "Urbanist, sans-serif",
+                }}
+              >
+                Inscription
+              </span>
+            </>
+          )}
           <Box
             as="img"
             src={logo}
             alt="Logo"
-            height={{ base: "50px", md: "70px" }} // Taille du logo adaptée aux différentes tailles d'écran
+            height={{ base: "40px", md: "70px" }} // Ajuste la taille du logo selon la taille de l'écran
+            ml="auto" // Aligne le logo à droite
           />
         </Flex>
       </Flex>
+
+      {/* Drawer pour le menu burger */}
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+        <DrawerOverlay />
+        <DrawerContent bg="black">
+          <DrawerCloseButton color="white" />
+          <DrawerHeader borderBottomWidth="1px" color="white">
+            Menu
+          </DrawerHeader>
+          <DrawerBody>
+            <VStack align="start" spacing={4}>
+              <RouterLink to="/" onClick={onClose} style={{ color: "white" }}>
+                Accueil
+              </RouterLink>
+              <RouterLink
+                to="/#tirages"
+                onClick={onClose}
+                style={{ color: "white" }}
+              >
+                Tirages
+              </RouterLink>
+              <RouterLink
+                to="/about"
+                onClick={onClose}
+                style={{ color: "white" }}
+              >
+                À propos
+              </RouterLink>
+              <span
+                onClick={() => {
+                  openPopup("contact");
+                  onClose();
+                }}
+                style={{ color: "white", cursor: "pointer" }}
+              >
+                Contact
+              </span>
+              <span
+                onClick={() => {
+                  openPopup("login");
+                  onClose();
+                }}
+                style={{ color: "white", cursor: "pointer" }}
+              >
+                Connexion
+              </span>
+              <span
+                onClick={() => {
+                  openPopup("signup");
+                  onClose();
+                }}
+                style={{ color: "white", cursor: "pointer" }}
+              >
+                Inscription
+              </span>
+            </VStack>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Box>
   );
 }
 
 Navbar.propTypes = {
-  logo: PropTypes.string.isRequired, // Le logo est requis et doit être une chaîne de caractères
+  logo: PropTypes.string.isRequired,
 };
 
 export default Navbar;

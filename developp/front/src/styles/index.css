@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: 'Urbanist';
-  src: url('../assets/font/Urbanist/static/Urbanist-Bold.ttf') format('truetype');
+  src: url('../assets/font/Urbanist/static/Urbanist-Light.ttf') format('truetype');
 
   font-weight: normal;
   font-style: normal;
@@ -19,12 +19,15 @@
   src: url('../assets/font/Cinzel_Decorative/CinzelDecorative-Regular.ttf') format('truetype');
 }
 
+body {
+  font-family: 'Urbanist', sans-serif;
+}
+
 h1 {
   font-family: 'Cinzel_Decorative';
   color: #191970; /* Bleu nuit */
   font-size: 28px;
   text-align: center;
-
 }
 
 h2 {
@@ -34,10 +37,23 @@ h2 {
 
 }
 
+.slick-prev {
+  left: 20px; 
+  z-index: 2; 
+}
+
+.slick-next {
+  right: 20px; 
+  z-index: 2; 
+}
+
+
 .slick-prev:before,
 .slick-next:before {
   color: black; 
 }
+
+
 
 h3 {
   font-family: 'Cinzel_Decorative';
@@ -47,7 +63,7 @@ h3 {
 
 h4 {
 font-family: 'Urbanist';
-font-size: 20;
+font-size: 14;
 }
 
 .card-container {
@@ -56,3 +72,7 @@ font-size: 20;
   z-index: 10;  /* Assurez-vous que les cartes sont au-dessus des autres éléments */
 }
 
+header, .navbar, .banner {
+  margin: 0;
+  padding: 0;
+}

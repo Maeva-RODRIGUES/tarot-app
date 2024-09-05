@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unused-prop-types */
-/* eslint-disable react/require-default-props */
 // Banner.jsx
 
 import React from "react";
@@ -15,7 +13,7 @@ function Banner({
   return (
     <Box
       position="relative"
-      mt="60px" // Marge supérieure pour ne pas se superposer au Header
+      mt={{ base: "0", md: "0" }}
       width="100%"
       height={height}
       backgroundImage={`url(${src})`}
@@ -38,7 +36,7 @@ function Banner({
           src={logow}
           alt="Logo"
           // Responsiveness logo
-          height={{ base: "150px", md: "300px", lg: "500px" }}
+          height={{ base: "250px", md: "400px", lg: "600px" }}
         />
       </Box>
     </Box>
