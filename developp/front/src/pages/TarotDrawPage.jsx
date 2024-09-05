@@ -3,7 +3,7 @@
 // src/pages/TarotDrawPage.jsx
 
 import React, { useState, useEffect } from "react";
-import { Box, Heading, Text, Icon } from "@chakra-ui/react";
+import { Box, Heading, Text, Icon, useToast } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { TbCardsFilled } from "react-icons/tb";
 import Header from "../components/Header";
@@ -37,6 +37,7 @@ function TarotDrawPage() {
   const [error, setError] = useState(null);
   const { addDrawing } = useDrawings();
   const { user } = useAuth();
+  const toast = useToast(); // Hook pour afficher les notifications
 
   const themeMap = {
     love: "amour",
@@ -74,7 +75,16 @@ function TarotDrawPage() {
 
     fetchCardsData();
     fetchThemeData(); // Appeler la fonction pour charger les thèmes au montage du composant
-  }, [theme]);
+  
+    // Afficher la notification après le chargement de la page
+  toast({
+    title: "Astuce",
+    description: "N'oubliez pas de mélanger les cartes avant de faire un tirage.",
+    status: "info",
+    duration: 8000,
+    isClosable: true,
+  });
+}, [theme, toast]);
 
   // Fonction pour convertir le nom du thème en ID
   const getThemeIdByName = (themeName) => {

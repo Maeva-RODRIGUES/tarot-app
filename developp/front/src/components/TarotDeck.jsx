@@ -1,7 +1,6 @@
-/* eslint-disable no-shadow */
 // src/components/TarotDeck.jsx
 
-import { Box, SimpleGrid, Button, Text } from "@chakra-ui/react";
+import { Box, SimpleGrid, Button, Text, useToast } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import TarotCard from "./TarotCard";
@@ -38,20 +37,24 @@ function TarotDeck({ theme, onDrawComplete }) {
   // État pour stocker l'interprétation thématique choisie
   const [themeInterpretation, setThemeInterpretation] = useState("");
 
-  // Fonction déclenchée lorsque l'utilisateur clique sur "Mélangez"
-  const handleShuffle = () => {
-    shuffleCards(); // Mélange les cartes
-    shuffleAnimation(".play-card"); // Lance l'animation de mélange
+ //toast pour notification
+ const toast = useToast();
 
-    // Après un court délai, permet à l'utilisateur de sélectionner des cartes et cache le bouton
-    setTimeout(() => {
-      setCanSelectCards(true);
-      setShowButton(false); // Cache le bouton une fois que les cartes sont mélangées
-    }, 1000);
-  };
+// Fonction déclenchée lorsque l'utilisateur clique sur "Mélangez"
+ const handleShuffle = () => {
+   shuffleCards(); // Mélange les cartes
+   shuffleAnimation(".play-card");// Lance l'animation de mélange
+
+// Après un court délai, permet à l'utilisateur de sélectionner des cartes et cache le bouton
+   setTimeout(() => {
+     setCanSelectCards(true);
+     setShowButton(false);// Cache le bouton une fois que les cartes sont mélangées
+   }, 1000);
+ };
 
   // Fonction déclenchée lorsque l'utilisateur clique sur une carte
   const handleClick = async (index) => {
+    console.log(`Carte cliquée à l'index : ${index}`);
     // Vérifie que l'utilisateur peut sélectionner des cartes et qu'il n'a pas déjà sélectionné trois cartes
     if (canSelectCards && selectedCards.length < 3 && !flippedCards[index]) {
       const newFlippedCards = [...flippedCards];
@@ -95,6 +98,16 @@ function TarotDeck({ theme, onDrawComplete }) {
             if (onDrawComplete) {
               onDrawComplete(newSelectedCards, randomInterpretation);
             }
+
+            // Affiche une notification invitant à défiler vers le bas
+            toast({
+              title: "Interprétation prête",
+              description: "Faites défiler vers le bas pour voir votre interprétation.",
+              status: "info",
+              duration: 8000,
+              isClosable: true,
+            });
+
           } else {
             console.error(`Thème ${theme} non trouvé.`);
           }
@@ -130,7 +143,9 @@ function TarotDeck({ theme, onDrawComplete }) {
           <Box
             key={card.id} // Utilisation de l'ID de la carte comme clé
             className="play-card"
-            onClick={() => handleClick(index)} // Gestion du clic sur une carte
+            onClick={() => {
+              handleClick(index-1);
+            }} // Gestion du clic sur une carte
           >
             <TarotCard
               card={card}

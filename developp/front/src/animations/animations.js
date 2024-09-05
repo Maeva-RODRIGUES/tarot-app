@@ -1,11 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-console */
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-use-before-define */
-/* eslint-disable prettier/prettier */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable prettier/prettier */
 // src/animations/animations.js
 import anime from 'animejs';
 

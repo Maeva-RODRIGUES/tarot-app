@@ -45,21 +45,21 @@ const SidebarNav = () => {
   const userLinks = (
     <>
       <RouterLink to={`/profile/${user.userId}`} style={{ textDecoration: "none", color: "white" }}>
-        <HStack>
-          <Icon as={FaUser} />
-          <Text>Mon profil</Text>
+        <HStack spacing={2}>
+        <Icon as={FaUser} style={{ marginBottom: '18px' }}/>
+          <Text fontWeight="bold">Mon profil</Text>
         </HStack>
       </RouterLink>
       <RouterLink to={`/profile/${user.userId}/drawingsstory`} style={{ textDecoration: "none", color: "white" }}>
         <HStack>
-          <Icon as={FaRegFileAlt} />
-          <Text>Mes tirages</Text>
+          <Icon as={FaRegFileAlt} style={{ marginBottom: '18px' }}/>
+          <Text fontWeight="bold">Mes tirages</Text>
         </HStack>
       </RouterLink>
       <RouterLink to={`/profile/${user.userId}/settings`} style={{ textDecoration: "none", color: "white" }}>
         <HStack>
-          <Icon as={FaCog} />
-          <Text>Paramètres</Text>
+          <Icon as={FaCog} style={{ marginBottom: '18px' }} />
+          <Text fontWeight="bold">Paramètres</Text>
         </HStack>
       </RouterLink>
     </>
@@ -70,20 +70,20 @@ const SidebarNav = () => {
     <>
       <RouterLink to="/admin/users" style={{ textDecoration: "none", color: "white" }}>
         <HStack>
-          <Icon as={FaUsers} />
-          <Text>Gestion des utilisateurs</Text>
+          <Icon as={FaUsers} style={{ marginBottom: '18px' }} />
+          <Text fontWeight="bold">Gestion des utilisateurs</Text>
         </HStack>
       </RouterLink>
       <RouterLink to="/admin/content" style={{ textDecoration: "none", color: "white" }}>
         <HStack>
-          <Icon as={FaFileAlt} />
-          <Text>Gestion du contenu</Text>
+          <Icon as={FaFileAlt} style={{ marginBottom: '18px' }}/>
+          <Text fontWeight="bold">Gestion du contenu</Text>
         </HStack>
       </RouterLink>
       <RouterLink to="/admin/settings" style={{ textDecoration: "none", color: "white" }}>
         <HStack>
-          <Icon as={FaCog} />
-          <Text>Paramètres</Text>
+          <Icon as={FaCog} style={{ marginBottom: '18px' }} />
+          <Text fontWeight="bold">Paramètres</Text>
         </HStack>
       </RouterLink>
     </>
