@@ -20,11 +20,12 @@ function PrivacyPolicyPage() {
             as="h1"
             size={{ base: "lg", md: "xl" }} // Taille du titre ajustée pour les petits écrans
             mb={{ base: 6, md: 8 }} // Marge en bas ajustée
+            
           >
             Politique de Confidentialité
           </Heading>
           <Box mb={{ base: 6, md: 8 }}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Collecte des informations
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -36,7 +37,7 @@ function PrivacyPolicyPage() {
             </Text>
           </Box>
           <Box mb={{ base: 6, md: 8 }}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Utilisation des informations
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -70,7 +71,7 @@ function PrivacyPolicyPage() {
             </Box>
           </Box>
           <Box mb={{ base: 6, md: 8 }}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Confidentialité des informations
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -83,7 +84,7 @@ function PrivacyPolicyPage() {
             </Text>
           </Box>
           <Box mb={{ base: 6, md: 8 }}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Divulgation à des tiers
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -95,7 +96,7 @@ function PrivacyPolicyPage() {
             </Text>
           </Box>
           <Box mb={{ base: 6, md: 8 }}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Protection des informations
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -110,7 +111,7 @@ function PrivacyPolicyPage() {
             </Text>
           </Box>
           <Box mb={{ base: 6, md: 8 }}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Consentement
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>

@@ -25,7 +25,7 @@ function LegalMentionsPage() {
           <Heading
             as="h1"
             size={{ base: "lg", md: "xl" }} // Taille du texte adaptée selon la taille de l'écran
-            mb={6}
+            mb={10}
             textAlign={{ base: "center", md: "left" }} // Centrer le titre sur les petits écrans
           >
             Mentions Légales
@@ -33,7 +33,7 @@ function LegalMentionsPage() {
 
           {/* Section des informations de l'entreprise */}
           <Box mb={6}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Informations de l'entreprise
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}> {/* Ajustement de la taille du texte */}
@@ -51,7 +51,7 @@ function LegalMentionsPage() {
 
           {/* Section du directeur de la publication */}
           <Box mb={6}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Directeur de la publication
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -61,7 +61,7 @@ function LegalMentionsPage() {
 
           {/* Section de l'hébergeur du site */}
           <Box mb={6}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Hébergeur du site
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -77,7 +77,7 @@ function LegalMentionsPage() {
 
           {/* Section sur la propriété intellectuelle */}
           <Box mb={6}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Propriété intellectuelle
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -91,7 +91,7 @@ function LegalMentionsPage() {
 
           {/* Section sur la limitation de responsabilité */}
           <Box mb={6}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Limitation de responsabilité
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>
@@ -105,7 +105,7 @@ function LegalMentionsPage() {
 
           {/* Section sur les liens externes */}
           <Box mb={6}>
-            <Heading as="h2" size="lg" mb={4}>
+            <Heading as="h2" size="lg" mb={4} fontFamily="Urbanist">
               Liens externes
             </Heading>
             <Text fontSize={{ base: "sm", md: "md" }}>

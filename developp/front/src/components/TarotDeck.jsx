@@ -174,7 +174,7 @@ function TarotDeck({ theme, onDrawComplete }) {
       {selectedCards.length === 3 && (
         <Box mt={10} textAlign="center">
           <Text fontSize="xl" fontWeight="bold">
-            VOTRE AVENIR EN DÉTAIL
+            VOTRE AVENIR EN DÉTAIL 🔮  
           </Text>
           <SimpleGrid
             columns={{ base: 1, md: 3 }} // Affiche les cartes sélectionnées en colonne sur mobile, en ligne sur écran moyen et plus
@@ -197,11 +197,14 @@ function TarotDeck({ theme, onDrawComplete }) {
                 <Text
                   mt={2}
                   position="absolute"
-                  bottom="-10"
+                  bottom="-12"
                   ml="50%"
                   transform="translateX(-50%)"
+                  fontStyle="italic"
                 >
-                  {card.keyword1}, {card.keyword2}, {card.keyword3}{" "}
+                  <Text as="span" fontWeight="bold" mr={1}>{card.keyword1}</Text>, 
+                  <Text as="span" fontWeight="bold" mr={1}>{card.keyword2} </Text>, 
+                  <Text as="span" fontWeight="bold">{card.keyword3}</Text> 
                   {/* Affiche les mots-clés de la carte */}
                 </Text>
               </Box>
@@ -209,11 +212,11 @@ function TarotDeck({ theme, onDrawComplete }) {
           </SimpleGrid>
 
           {/* Affiche l'interprétation générale du thème */}
-          <Box mb={5} mt={20}>
+          <Box mb={5} mt={20} maxWidth="700px" mx="auto">
             <Text fontSize="lg" fontWeight="bold" mb={5}>
-              Interprétation Générale
+              Interprétation générale
             </Text>
-            <Text>{themeInterpretation}</Text>{" "}
+            <Text whiteSpace="pre-wrap" fontSize="md" >{themeInterpretation}</Text>{" "}
             {/* Affiche l'interprétation du thème */}
           </Box>
         </Box>

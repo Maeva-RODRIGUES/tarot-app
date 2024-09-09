@@ -136,22 +136,22 @@ function DashboardUserPage() {
               mb="8"
               maxWidth={{ base: "100%", sm: "300px" }} // Responsivité de la largeur du box
             >
-              <Heading size="md" mb="4">
+              <Heading size="md" mb="4" fontFamily="Urbanist">
                 Activité Récente :
               </Heading>
-              <HStack spacing="4" mb="4">
-                <CalendarIcon boxSize="6" color="customBlue" />
+              <HStack spacing="2">
+                <CalendarIcon boxSize="4" color="customBlue" mt="-4" />
                 <Text fontSize="lg">Date : {formattedDate}</Text>
               </HStack>
-              <HStack spacing="4">
-                <TimeIcon boxSize="6" color="customBlue" />
+              <HStack spacing="2" mt="-6">
+                <TimeIcon boxSize="4" color="customBlue" mt="-4"/>
                 <Text fontSize="lg">Heure : {formattedTime}</Text>
               </HStack>
             </Box>
             {/* Dernier Tirage */}
             <Flex direction="column" alignItems="center" mb="8">
               <Heading size="lg" mb="16" textAlign="center">
-                VOTRE DERNIER TIRAGE
+                Votre dernier tirage
               </Heading>
               <Flex mb="7" justifyContent="center" flexWrap="wrap">
                 {lastDrawing?.Cards?.map((card, index) => (

@@ -77,6 +77,7 @@ function TarotHistoryPage() {
         flex="1"
       >
         <Heading mb="4">Historique des tirages de tarot</Heading>
+        
         {loading ? (
           <Text>Chargement...</Text>
         ) : (
@@ -91,7 +92,7 @@ function TarotHistoryPage() {
               return acc;
             }, {}),
           ).map(([month, draws]) => (
-            <Box key={month} mb="8">
+            <Box key={month} mb="2" pt="8">
               <HStack
                 onClick={() => toggleSection(month)}
                 cursor="pointer"
@@ -100,7 +101,7 @@ function TarotHistoryPage() {
                 <Icon
                   as={collapsedSections[month] ? FaChevronRight : FaChevronDown}
                 />
-                <Heading size="md">{month}</Heading>
+                <Heading size="md" fontFamily="Urbanist" >{month} </Heading>
               </HStack>
               <Collapse in={!collapsedSections[month]}>
                 {draws.map((draw, index) => (
@@ -115,11 +116,11 @@ function TarotHistoryPage() {
                     boxShadow="md"
                   >
                     <VStack spacing="6" align="start">
-                      <Heading size="md" mb="4">
+                      <Heading size="md" mb="4" fontFamily="Urbanist">
                         Tirage {index + 1} -{" "}
                         {new Date(draw.date).toLocaleDateString("fr-FR")}
                       </Heading>
-                      <Text fontSize="lg" mb="4" fontWeight="bold">
+                      <Text fontSize="lg" mb="4" fontWeight="bold" fontFamily="Urbanist">
                         Thème : {draw.Theme.title_theme}
                       </Text>
 
@@ -141,7 +142,7 @@ function TarotHistoryPage() {
                                 border="2px solid black"
                                 borderRadius="15px"
                               />
-                              <Text fontSize="md" fontWeight="bold">
+                              <Text fontSize="md" fontWeight="bold" fontFamily="Urbanist">
                                 {card.name_card}
                               </Text>
                               <Text fontSize="sm">
@@ -154,7 +155,7 @@ function TarotHistoryPage() {
                       </Flex>
 
                       <Box mt="4">
-                        <Heading size="sm" color="purple.700">
+                        <Heading size="sm" color="purple.700" fontFamily="Urbanist">
                           Interprétation générale :
                         </Heading>
                         <Text fontSize="md" mt="2">

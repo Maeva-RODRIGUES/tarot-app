@@ -320,7 +320,7 @@ function SettingsAdminPage() {
           </VStack>
 
           <Box w="100%" borderWidth="1px" borderRadius="lg" p="6">
-            <Heading size="md" mb="4">
+            <Heading size="md" mb="4" fontFamily="Urbanist">
               Mise à jour du profil
             </Heading>
             <form onSubmit={handleAdminFormSubmit}>
@@ -413,7 +413,7 @@ function SettingsAdminPage() {
           </Box>
 
           <Box w="100%" borderWidth="1px" borderRadius="lg" p="6">
-            <Heading size="md" mb="4">
+            <Heading size="md" mb="4" fontFamily="Urbanist">
               Ajouter un nouvel administrateur
             </Heading>
             <form onSubmit={handleNewAdminSubmit}>

@@ -137,7 +137,7 @@ function TarotDrawPage() {
             VOTRE TIRAGE {frenchTheme.toUpperCase()}
           </Heading>
           <Text fontSize={{ base: "md", md: "lg" }} mb={8}>
-            <Icon as={TbCardsFilled} mr={2} />
+            <Icon as={TbCardsFilled} mr={2} transform="translateY(3px)"/>
             <Text as="span" fontWeight="bold">
               Tirez 3 cartes
             </Text>{" "}
@@ -148,13 +148,17 @@ function TarotDrawPage() {
           {error ? (
             <Box color="red.500">{error}</Box>
           ) : (
+            <Box>
             <TarotDeck
               cards={cards}
               theme={theme}
               onDrawComplete={handleDrawComplete}
             />
+            </Box>
           )}
+          <Box mt="40" padding={2}>
           <CommentSection />
+          </Box>
         </Box>
       </Box>
       <Footer

@@ -29,7 +29,7 @@ function AboutPage() {
         bannerHeight="300px"
       />
       <Box p="5" textAlign="center">
-        <Heading>BIENVENUE SUR LA ROUE DU DESTIN</Heading>
+        <Heading>Bienvenue sur la roue du destin</Heading>
       </Box>
       <Box p="8">
         <Flex
@@ -41,7 +41,7 @@ function AboutPage() {
           <Box flex="1" mb={{ base: "8", md: "0" }}>
             {" "}
             {/* Marges ajustées pour le responsive */}
-            <Heading size="md">
+            <Heading size="md" fontFamily="Urbanist">
               Votre espace dédié au tirage de tarot en ligne.
             </Heading>
             <Text mt="6">
@@ -91,7 +91,7 @@ function AboutPage() {
         >
           {" "}
           {/* Alignement et marge responsive */}
-          <Heading size="md">
+          <Heading size="md" fontFamily="Urbanist">
             Rencontrez notre cartomancienne professionnelle
           </Heading>
           <Text mt="4">
@@ -111,7 +111,7 @@ function AboutPage() {
       </Flex>
 
       <Box p="10" textAlign="center" mx="auto" maxW="container.md">
-        <Heading size="md">
+        <Heading size="md" fontFamily="Urbanist">
           Prenez rendez-vous pour une consultation approfondie
         </Heading>
         <Text mt="8">

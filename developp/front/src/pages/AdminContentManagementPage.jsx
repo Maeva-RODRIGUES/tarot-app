@@ -1,9 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-shadow */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-unused-vars */
 
 // Importation des dépendances nécessaires
 import React, { useState } from "react";
@@ -528,8 +522,8 @@ function ContentManagementPage() {
                     borderRadius="md"
                     bg="white"
                   >
-                    <Heading size="sm" mb="2">
-                      Utilisateur ID: {comment.id_Users}
+                    <Heading size="sm" mb="2"  fontFamily="Urbanist">
+                      Utilisateur ID : {comment.id_Users}
                     </Heading>
                     <Text isTruncated>{comment.comment}</Text>
                     <HStack mt="4" spacing="4">

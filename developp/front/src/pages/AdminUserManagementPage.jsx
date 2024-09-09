@@ -265,12 +265,12 @@ function AdminUserManagementPage() {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>ID</Th>
-              <Th>Nom</Th>
-              <Th>Prénom</Th>
-              <Th>Email</Th>
-              <Th>Rôle</Th>
-              <Th>Actions</Th>
+              <Th fontFamily="Urbanist">ID</Th>
+              <Th fontFamily="Urbanist">Nom</Th>
+              <Th fontFamily="Urbanist">Prénom</Th>
+              <Th fontFamily="Urbanist" >Email</Th>
+              <Th fontFamily="Urbanist">Rôle</Th>
+              <Th fontFamily="Urbanist">Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
